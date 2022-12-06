@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,8 +12,9 @@ public class Role {
     private Long id;
     private String industryName;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
+    @OneToMany(
+            mappedBy = "role")
+    private List<User> users = new ArrayList<>();
     public Role() {
     }
 
