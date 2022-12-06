@@ -1,29 +1,32 @@
 package pl.matkan.wholesaler.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "companies")
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String nip;
-    private Long industryId;
+
+    @ManyToOne
+    @JoinColumn(name="industry_id")
+    private Industry industry;
+    //private Long industryId;
     private String address;
+
     private Long userId;
     private boolean isDeleted;
 
     public Company() {
     }
 
-    public Company(String name, String nip, Long industryId, String address, Long userId, boolean isDeleted) {
+    public Company(String name, String nip, String address, Long userId, boolean isDeleted) {
         this.name = name;
         this.nip = nip;
-        this.industryId = industryId;
+      //  this.industryId = industryId;
         this.address = address;
         this.userId = userId;
         this.isDeleted = isDeleted;
@@ -53,13 +56,13 @@ public class Company {
         this.nip = nip;
     }
 
-    public Long getIndustryId() {
-        return industryId;
-    }
-
-    public void setIndustryId(Long industryId) {
-        this.industryId = industryId;
-    }
+//    public Long getIndustryId() {
+//        return industryId;
+//    }
+//
+//    public void setIndustryId(Long industryId) {
+//        this.industryId = industryId;
+//    }
 
     public String getAddress() {
         return address;
