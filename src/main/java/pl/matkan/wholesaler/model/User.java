@@ -1,12 +1,10 @@
 package pl.matkan.wholesaler.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,18 +13,20 @@ public class User {
     private String surname;
     private Date dateOfBirth;
     private String login;
-    private int roleId;
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    //private int roleId;
+    private Role role;
     private boolean isDeleted;
 
     public User() {
     }
 
-    public User(String name, String surname, Date dateOfBirth, String login, int roleId, boolean isDeleted) {
+    public User(String name, String surname, Date dateOfBirth, String login, boolean isDeleted) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.login = login;
-        this.roleId = roleId;
         this.isDeleted = isDeleted;
     }
 
@@ -69,13 +69,21 @@ public class User {
     public void setLogin(String login) {
         this.login = login;
     }
+//
+//    public int getRoleId() {
+//        return roleId;
+//    }
+//
+//    public void setRoleId(int roleId) {
+//        this.roleId = roleId;
+//    }
 
-    public int getRoleId() {
-        return roleId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public boolean getIsDeleted() {

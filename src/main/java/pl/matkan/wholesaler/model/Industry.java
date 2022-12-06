@@ -1,16 +1,18 @@
 package pl.matkan.wholesaler.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
+@Table(name = "industries")
 public class Industry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+
+    @OneToMany(mappedBy = "industry")
+    private List<Company> companies;
 
     public Industry(Long id, String name) {
         this.id = id;
