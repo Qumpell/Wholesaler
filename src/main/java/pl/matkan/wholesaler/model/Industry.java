@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,7 @@ public class Industry {
     private String name;
 
     @OneToMany(mappedBy = "industry")
-    private List<Company> companies;
+    private List<Company> companies = new ArrayList<>();
 
     public Industry(Long id, String name) {
         this.id = id;

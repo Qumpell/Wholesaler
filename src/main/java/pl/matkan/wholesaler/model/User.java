@@ -1,7 +1,9 @@
 package pl.matkan.wholesaler.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -13,11 +15,24 @@ public class User {
     private String surname;
     private Date dateOfBirth;
     private String login;
+
+    @OneToMany(
+            mappedBy = "user"
+    )
+    private List<Company> companies = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user"
+    )
+    private List<ContactPerson> contactPeople = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<TradeNote> tradeNotes = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name="role_id")
-    //private int roleId;
     private Role role;
-    private boolean isDeleted;
+    private boolean isDeleted = Boolean.FALSE;
 
     public User() {
     }

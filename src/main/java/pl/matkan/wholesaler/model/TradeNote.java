@@ -1,11 +1,25 @@
 package pl.matkan.wholesaler.model;
 
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name ="trade_notes" )
 public class TradeNote {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String content;
-    private boolean isDeleted;
-    private Long companyId;
-    private Long userId;
+    private boolean isDeleted = Boolean.FALSE;
+
+    @ManyToMany
+    private Set<Company> companies = new HashSet<>();
+    //private Long companyId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public TradeNote() {
     }
@@ -32,21 +46,5 @@ public class TradeNote {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

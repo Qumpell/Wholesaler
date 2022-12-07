@@ -1,14 +1,30 @@
 package pl.matkan.wholesaler.model;
 
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name="contact_persons")
 public class ContactPerson {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String surname;
     private String phoneNumber;
     private String mail;
     private String position;
-    private Long companyId;
-    private Long userWhoAddedId;
+
+    @ManyToOne
+    @JoinColumn(name="company_id")
+    private Company company;
+    //private Long companyId;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+    //private Long userWhoAddedId;
     private boolean isDeleted;
 
     public ContactPerson() {
@@ -57,27 +73,9 @@ public class ContactPerson {
     public String getPosition() {
         return position;
     }
-
     public void setPosition(String position) {
         this.position = position;
     }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
-    public Long getUserWhoAddedId() {
-        return userWhoAddedId;
-    }
-
-    public void setUserWhoAddedId(Long userWhoAddedId) {
-        this.userWhoAddedId = userWhoAddedId;
-    }
-
     public boolean isDeleted() {
         return isDeleted;
     }
