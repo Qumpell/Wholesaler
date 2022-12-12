@@ -1,0 +1,20 @@
+<h2>CUSTOMER RECORD</h2>
+
+<div class="display-one">
+    <table>
+        <tr>  <td class="bold">Id</td>      <td>{{ customer.id }}</td>          </tr>
+        <tr>  <td class="bold">First Name</td>    <td>{{ customer.firstName }}</td>        </tr>
+        <tr>  <td class="bold">Last Name<td> {{ customer.lastName }}</td>    </tr>
+        <tr>  <td class="bold">Adress:Street </td>     <td>{{ customer.street }}</td>    </tr>
+        <tr>  <td class="bold">Adress:City</td>     <td>{{ customer.city }}</td>    </tr>
+        <tr>  <td class="bold">Adress:PostCode</td>     <td>{{ customer.postCode}}</td>    </tr>
+        <tr>  <td class="bold">Credit card</td>     <td>{{ customer.creditCardNumber}}</td>    </tr>
+        <tr>  <td class="bold">Email</td>     <td>{{ customer.mail }}</td>    </tr>  </table>
+</div>
+
+<br>
+
+<div id="bottom-menu" class="menu">
+    <a ng-href="#!/customers/update/{{customer.id}}">Update</a>
+    <a ng-href="#!/customers/delete/{{customer.id}}">Delete</a>
+</div>

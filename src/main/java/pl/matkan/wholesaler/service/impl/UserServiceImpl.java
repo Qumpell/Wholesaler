@@ -12,44 +12,43 @@ import java.util.Optional;
 @Service("userService")
 @Repository
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepo;
+    private final UserRepository usrRepo;
 
     public UserServiceImpl(UserRepository userRepo) {
-        this.userRepo = userRepo;
+        this.usrRepo = userRepo;
     }
 
     @Override
     public User create(User one) {
-        return userRepo.save(one);
+        return usrRepo.save(one);
     }
 
     @Override
     public User update(Long id, User one) {
 
         one.setId(id);
-        return userRepo.save(one);
+        return usrRepo.save(one);
     }
 
     @Override
     public Optional<User> findById(Long id) {
         //	Customer dto = modelMapper.map(one.get(), EmployeeDTO.class);
-        return userRepo.findById(id);
+        return usrRepo.findById(id);
     }
 
     @Override
     public boolean existsById(Long id) {
-        return userRepo.existsById(id);
+        return usrRepo.existsById(id);
     }
 
     @Override
     public void deleteById(Long id) {
-        userRepo.deleteById(id);
+        usrRepo.deleteById(id);
     }
 
     @Override
     public List<User> findAll() {
-        List<User> all = userRepo.findAll();
-        System.out.println("company service:=" + userRepo.findAll());
+        List<User> all = usrRepo.findAll();
         return all;
     }
 }

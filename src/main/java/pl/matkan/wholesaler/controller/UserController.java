@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.controller;
 
+
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,29 +13,29 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/wholesaler/users")
+@RequestMapping(value = "/users")
 public class UserController {
+    private final UserService userSrv;
 
-    public UserService userSrv;
+    public UserController(@Qualifier("userService") UserService userSrv) {
+        this.userSrv = userSrv;
+    }
 
     /* READ */
     @GetMapping("/{id}")
     public ResponseEntity<User> getOne(@PathVariable("id") Long id) {
         Optional<User> one = userSrv.findById(id);
-
         return one.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
     @GetMapping()
     public List<User> getAll() {
-        System.out.println("trata  " + userSrv.findAll().toString());
         return userSrv.findAll();
     }
-
     /* CREATE */
     @PostMapping()
     public ResponseEntity<User> createOne(@RequestBody User one) {
-        System.out.println("co przyszlo:" + one.toString());
+        //System.out.println("co przyszlo:" + one.toString());
         User carOne = userSrv.create(one);
         return new ResponseEntity<>(carOne, HttpStatus.CREATED);
     }

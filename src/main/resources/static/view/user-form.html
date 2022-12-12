@@ -1,0 +1,84 @@
+<h2>CUSTOMER FORM REGISTER</h2>
+
+<div class="display-form">
+  <form ng-submit="formSubmit()">
+    <table>
+
+      <!-- ERROR HEADING -->
+      <tr ng-if="formErrors">
+        <td colspan="3" class="error">Please correct the problems and resubmit.</td>
+      </tr>
+
+      <!-- ID -->
+      <tr ng-if="user.id">
+        <td><label for="id">Id</label></td>
+        <td>{{ user.id }}</td>
+        <td><input type="hidden" id="id" ng-model="user.id" /></td>
+      </tr>
+
+      <!-- FIRST NAME -->
+      <tr>
+        <td><label for="name">First Name</label></td>
+        <td><input type="text" id="name" ng-model="user.name" /></td>
+        <td class="error">{{ formErrors['name'] }}</td>
+      </tr>
+
+      <!-- LAST NAME -->
+      <tr>
+        <td><label for="surname">Last Name</label></td>
+        <td><input type="text" id="surname" ng-model="user.surname" /></td>
+        <td class="error">{{ formErrors['surname'] }}</td>
+      </tr>
+
+      <!-- date of birth -->
+      <tr>
+        <td><label for="dateOfBirth">Date of birth</label></td>
+        <td><input type="text" id="dateOfBirth" ng-model="user.dateOfBirth" /></td>
+        <td class="error">{{ formErrors['dateOfBirth'] }}</td>
+      </tr>
+
+      <!-- login -->
+      <tr>
+        <td><label for="login">Login</label></td>
+        <td><input type="text" id="login" ng-model="user.login" /></td>
+        <td class="error">{{ formErrors['customer.login'] }}</td>
+      </tr>
+
+<!--      &lt;!&ndash; // Post code-&ndash;&gt;-->
+<!--      <tr>-->
+<!--        <td><label for="postCode">Post Code</label></td>-->
+<!--        <td><input type="text" id="postCode" ng-model="customer.postCode" /></td>-->
+<!--        <td class="error">{{ formErrors['postCode'] }}</td>-->
+<!--      </tr>-->
+
+<!--      &lt;!&ndash; // mobile &ndash;&gt;-->
+<!--      <tr>-->
+<!--        <td><label for="phoneNumber">Mobile</label></td>-->
+<!--        <td><input type="text" id="phoneNumber" ng-model="customer.phoneNumber" /></td>-->
+<!--        <td class="error">{{ formErrors['phoneNumber'] }}</td>-->
+<!--      </tr>-->
+
+<!--      &lt;!&ndash; // e-mail &ndash;&gt;-->
+<!--      <tr>-->
+<!--        <td><label for="mail">Email</label></td>-->
+<!--        <td><input type="text" id="mail" ng-model="customer.mail" /></td>-->
+<!--        <td class="error">{{ formErrors['mail'] }}</td>-->
+<!--      </tr>-->
+
+<!--      &lt;!&ndash; credit card &ndash;&gt;-->
+<!--      <tr>-->
+<!--        <td><label for="creditCardNumber">CREDIT CARD </label></td>-->
+<!--        <td><input type="text" id="creditCardNumber" ng-model="customer.creditCardNumber" /></td>-->
+<!--        <td class="error">{{ formErrors['creditCardNumber'] }}</td>-->
+<!--      </tr>-->
+
+      <!-- SUBMIT -->
+      <tr>
+        <td><input type="submit" value="Submit"></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+
+  </form>
+</div>
