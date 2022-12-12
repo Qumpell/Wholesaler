@@ -1,0 +1,35 @@
+<h2>USERS LIST</h2>
+
+<div class="list-all" style="width:500px;">
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Date of birth</th>
+            <th>Login</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="usr in users">
+            <td>{{ usr.id }}</td>
+            <td>{{ usr.name }} </td>
+            <td>{{ usr.surname }} </td>
+<!--            <td><a ng-href="#!/customers/one/{{user.id}}">Address</a></td>-->
+            <td>{{usr.dateOfBirth}}</td>
+            <td>{{usr.login}}</td>
+            <td><a ng-href="#!/users/update/{{ usr.id }}">Edit</a></td>
+            <td><a ng-href="#!/users/delete/{{ usr.id }}">Delete</a></td>
+<!--            <td>{{cus.mail}}</td>-->
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div id="bottom-menu" class="menu">
+    <a ng-href="#!/users/create">Create</a>
+</div>

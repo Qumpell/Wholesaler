@@ -89,4 +89,12 @@ public class Company {
     public void setTradeNotes(Set<TradeNote> tradeNotes) {
         this.tradeNotes = tradeNotes;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

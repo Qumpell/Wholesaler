@@ -2,18 +2,17 @@ package pl.matkan.wholesaler.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String surname;
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private String login;
 
     @OneToMany(
@@ -30,19 +29,18 @@ public class User {
     private List<TradeNote> tradeNotes = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name="role_id")
+    @JoinColumn(name = "role_id")
     private Role role;
     private boolean isDeleted = Boolean.FALSE;
 
     public User() {
     }
 
-    public User(String name, String surname, Date dateOfBirth, String login, boolean isDeleted) {
+    public User(String name, String surname, String dateOfBirth, String login) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.login = login;
-        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -69,11 +67,11 @@ public class User {
         this.surname = surname;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -108,4 +106,5 @@ public class User {
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
+
 }
