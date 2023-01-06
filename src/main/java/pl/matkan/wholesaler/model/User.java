@@ -1,14 +1,19 @@
 package pl.matkan.wholesaler.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+//@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
+//@Where(clause = "is_deleted=false")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String surname;
@@ -36,11 +41,12 @@ public class User {
     public User() {
     }
 
-    public User(String name, String surname, String dateOfBirth, String login) {
+    public User(String name, String surname, String dateOfBirth, String login,Role role) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.login = login;
+        this.role = role;
     }
 
     public Long getId() {
