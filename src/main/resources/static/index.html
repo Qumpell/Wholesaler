@@ -1,46 +1,40 @@
 <!DOCTYPE html>
-<html ng-app="hrApp">
+<html ng-app="hrApp" lang="en">
 
 <head>
     <title>Human Resources Management Console</title>
     <meta charset="utf-8">
-
-    <link rel="stylesheet" href="/css/main.css" />
-
-    <script src="/webjars/angularjs/angular.min.js"></script>
-    <script src="/webjars/angularjs/angular-route.min.js"></script>
-
-    <script src="/js/wholesaler-resources.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-
-<!-- MAIN-MENU -->
-<div id="main-menu" class="menu">
-    <a href="#!/users/all">Users</a>
-<!--    <a href="#!/departments/all">Departments</a>-->
-<!--    <a href="#!/positions/all">Positions</a>-->
-<!--    <a href="#!/customers/all">Customers</a>-->
-<!--    <a href="#!/rentals/all">Rentals</a>-->
-<!--    <a href="#!/cars/all">Cars</a>-->
-
-
-    <a href="/logout" class="menu-logout">Logout</a>
-
-    <hr class="menu-hline">
+<div class="page-header text-center">
+    <h2>WELCOME PAGE WHOLESALER USER REGISTRATION SYSTEM</h2>
 </div>
+<!-- MAIN-MENU -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <a href="#/users/all" class="btn btn-info navbar-btn" role="button">Users</a>
+        <a href="#/roles/all" class="btn btn-info navbar-btn" role="button">Roles</a>
+        <a href="#/companies/all" class="btn btn-info navbar-btn" role="button">Companies</a>
+        <a href="/logout" class="menu-logout">Logout</a>
+    </div>
+
+
+
+<!--    <hr class="menu-hline">-->
+</nav>
 
 
 <!-- MAIN-CONTENT -->
 <div id="main-content" ng-view></div>
 
-
-<!-- FOOTER -->
-<footer id="footer">
-    <p>&nbsp;</p>
-    <p>stopka</p>
-</footer>
-
+<link rel="stylesheet" href="/css/bootstrap.css"/>
+<script src="/js/lib/angular.js"></script>
+<script src="/js/lib/angular-resource.js"></script>
+<script src="/js/lib/angular-route.js"></script>
+<script src="/js/wholesaler-resources.js"></script>
+<script src="/js/user-controller.js"></script>
+<script src="/js/role-controller.js"></script>
 </body>
-
 </html>

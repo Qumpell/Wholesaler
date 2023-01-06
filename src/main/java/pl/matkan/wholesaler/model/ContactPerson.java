@@ -1,7 +1,5 @@
 package pl.matkan.wholesaler.model;
 
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-
 import javax.persistence.*;
 
 @Entity

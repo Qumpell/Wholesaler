@@ -1,0 +1,27 @@
+<h2>Roles</h2>
+
+<div class="list-all" style="width:500px;">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="rol in roles">
+            <td>{{ rol.id }}</td>
+            <td><a ng-href="#/roles/one/{{rol.id}}">{{ rol.name }}</a></td>
+            <td><a class="btn-info" ng-href="#/roles/update/{{rol.id}}">Edit</a></td>
+            <td><a class="btn-danger" ng-href="#/roles/delete/{{rol.id}}">Delete</a>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div id="bottom-menu" class="menu">
+    <a ng-href="#/roles/add">Add</a>
+</div>

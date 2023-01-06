@@ -1,0 +1,32 @@
+<h2>User</h2>
+
+<div class="display-one">
+    <table>
+        <tr>
+            <td class="bold">Id</td>
+            <td>{{ user.id }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Name</td>
+            <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Surname</td>
+            <td>{{ user.surname }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Birt of date</td>
+            <td>{{ user.dateOfBirth }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Role</td>
+            <td>{{ user.role.name }}</td>
+        </tr>
+    </table>
+</div>
+
+<br>
+<div id="bottom-menu" class="menu">
+    <a class="btn-info" ng-href="#/users/update/{{user.id}}">Update</a>
+    <a  class="btn-danger" ng-href="#/users/delete/{{user.id}}">Delete</a>
+</div>

@@ -1,6 +1,5 @@
 package pl.matkan.wholesaler.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.model.Role;
@@ -13,8 +12,12 @@ import java.util.Optional;
 @Service("roleService")
 @Repository
 public class RoleServiceImpl implements RoleService {
-    @Autowired
-    private RoleRepository roleRepo;
+
+    private final RoleRepository roleRepo;
+
+    public RoleServiceImpl(RoleRepository roleRepo) {
+        this.roleRepo = roleRepo;
+    }
 
     @Override
     public Role create(Role one) {
@@ -34,7 +37,6 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Role> findById(Long id) {
         Optional<Role> one = roleRepo.findById(id);
         if (one.isPresent()) {
-            //	Customer dto = modelMapper.map(one.get(), EmployeeDTO.class);
             return one;
         } else
             return Optional.empty();
@@ -47,13 +49,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteById(Long id) {
+
         roleRepo.deleteById(id);
+
     }
 
     @Override
     public List<Role> findAll() {
         List<Role> all = roleRepo.findAll();
-        System.out.println("company service:=" + roleRepo.findAll());
         return all;
     }
 }

@@ -1,0 +1,36 @@
+<h2>Users</h2>
+<div class="list-all" style="width:500px;">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">Date of birth</th>
+            <th scope="col">Login</th>
+            <th scope="col">Role</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="usr in users">
+            <td>{{ usr.id }}</td>
+            <td>{{ usr.name }}</td>
+            <td>{{ usr.surname }}</td>
+            <td>{{ usr.dateOfBirth }}</td>
+            <td><a ng-href="#/users/one/{{usr.id}}">{{ usr.login }}</a></td>
+            <td>{{ usr.role.name }}</td>
+            <td><a  type="button" class="btn-info" ng-href="#/users/update/{{usr.id}}">Edit</a></td>
+            <td><a type="button" class="btn-danger" ng-href="#/users/delete/{{usr.id}}">Delete</a>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div id="bottom-menu" class="menu">
+    <a ng-href="#/users/add">Add</a>
+</div>

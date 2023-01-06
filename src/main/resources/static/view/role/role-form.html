@@ -1,0 +1,36 @@
+<h2>Role Form</h2>
+
+<div class="display-form">
+    <form ng-submit="formSubmit()">
+        <table>
+
+            <!-- ERROR HEADING -->
+            <tr ng-if="formErrors">
+                <td colspan="3" class="error">Please correct the problems and resubmit.</td>
+            </tr>
+
+            <!-- ID -->
+            <tr ng-if="role.id">
+                <td><label for="id">Id</label></td>
+                <td>{{ role.id }}</td>
+                <td><input type="hidden" id="id" ng-model="role.id"/></td>
+            </tr>
+
+            <!-- industryName -->
+            <tr>
+                <td><label for="name">Name</label></td>
+                <td><input type="text" id="name" ng-model="role.name"/></td>
+                <td class="error">{{ formErrors['name'] }}</td>
+            </tr>
+
+            <!-- SUBMIT -->
+            <tr>
+                <td><input type="submit" value="Submit"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+

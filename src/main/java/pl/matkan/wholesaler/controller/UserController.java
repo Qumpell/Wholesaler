@@ -1,13 +1,13 @@
 package pl.matkan.wholesaler.controller;
 
 
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.service.UserService;
+import pl.matkan.wholesaler.service.impl.UserServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +15,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
-    private final UserService userSrv;
+    private final UserServiceImpl userSrv;
 
-    public UserController(@Qualifier("userService") UserService userSrv) {
+    public UserController(@Qualifier("userService") UserServiceImpl userSrv) {
         this.userSrv = userSrv;
     }
 
@@ -32,6 +32,7 @@ public class UserController {
     public List<User> getAll() {
         return userSrv.findAll();
     }
+
     /* CREATE */
     @PostMapping()
     public ResponseEntity<User> createOne(@RequestBody User one) {
@@ -53,7 +54,14 @@ public class UserController {
     /* DELETE */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void deleteOne(@PathVariable("id") Long id) {
-        userSrv.deleteById(id);
+    public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {
+        if (userSrv.existsById(id)) {
+            userSrv.deleteById(id);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+
     }
 }

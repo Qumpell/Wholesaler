@@ -8,9 +8,9 @@ import java.util.List;
 @Table(name="roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String industryName;
+    private String name;
 
     @OneToMany(
             mappedBy = "role")
@@ -18,9 +18,8 @@ public class Role {
     public Role() {
     }
 
-    public Role(Long id, String industryName) {
-        this.id = id;
-        this.industryName = industryName;
+    public Role(String name) {
+        this.name = name;
     }
 
     public Long getId() {
@@ -31,11 +30,11 @@ public class Role {
         this.id = id;
     }
 
-    public String getIndustryName() {
-        return industryName;
+    public String getName() {
+        return name;
     }
 
-    public void setIndustryName(String industryName) {
-        this.industryName = industryName;
+    public void setName(String name) {
+        this.name = name;
     }
 }

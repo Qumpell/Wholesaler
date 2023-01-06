@@ -15,8 +15,7 @@ public class Industry {
     @OneToMany(mappedBy = "industry")
     private List<Company> companies = new ArrayList<>();
 
-    public Industry(Long id, String name) {
-        this.id = id;
+    public Industry(String name) {
         this.name = name;
     }
 
