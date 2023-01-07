@@ -1,0 +1,21 @@
+<h2 class="center-header">Industry</h2>
+
+<div class="display-one">
+  <table>
+    <tr>
+      <td class="bold">Id</td>
+      <td>{{ industry.id }}</td>
+    </tr>
+    <tr>
+      <td class="bold">Name</td>
+      <td>{{ industry.name }}</td>
+    </tr>
+  </table>
+</div>
+
+<br>
+<div class="display-form">
+  <a class="btn btn-info" ng-href="#/industries/update/{{industry.id}}">Update</a>
+  <div class="divider-buttons"></div>
+  <a class="btn btn-danger" ng-href="#/industries/delete/{{industry.id}}">Delete</a>
+</div>

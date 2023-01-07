@@ -1,0 +1,72 @@
+<h2 class="center-header">Contact person form</h2>
+
+<div class="display-form">
+    <form ng-submit="formSubmit()">
+        <table>
+
+            <!-- ERROR HEADING -->
+            <tr ng-if="formErrors">
+                <td colspan="3" class="error">Please correct the problems and resubmit.</td>
+            </tr>
+
+            <!-- ID -->
+            <tr ng-if="contactPerson.id">
+                <td class="bold"><label for="id">ID</label></td>
+                <td>{{ contactPerson.id }}</td>
+                <td><input type="hidden" id="id" ng-model="contactPerson.id"/></td>
+            </tr>
+            <!-- NAME -->
+            <tr>
+                <td class="bold"><label for="name">Name</label></td>
+                <td><input type="text" id="name" ng-model="contactPerson.name"/></td>
+                <td class="error">{{ formErrors['name'] }}</td>
+            </tr>
+            <!-- SURNAME -->
+            <tr>
+                <td class="bold"><label for="surname">Name</label></td>
+                <td><input type="text" id="surname" ng-model="contactPerson.surname"/></td>
+                <td class="error">{{ formErrors['surname'] }}</td>
+            </tr>
+            <!-- PHONE NUMBER -->
+            <tr>
+                <td class="bold"><label for="phone_number">Name</label></td>
+                <td><input type="text" id="phone_number" ng-model="contactPerson.phoneNumber"/></td>
+                <td class="error">{{ formErrors['phone number'] }}</td>
+            </tr>
+            <!-- MAIL -->
+            <tr>
+                <td class="bold"><label for="mail">Mail</label></td>
+                <td><input type="text" id="mail" ng-model="contactPerson.mail"/></td>
+                <td class="error">{{ formErrors['mail'] }}</td>
+            </tr>
+            <!-- POSITION -->
+            <tr>
+                <td class="bold"><label for="position">Postion</label></td>
+                <td><input type="text" id="position" ng-model="contactPerson.position"/></td>
+                <td class="error">{{ formErrors['position'] }}</td>
+            </tr>
+
+            <!-- COMPANY ID -->
+            <tr>
+                <td class="bold"><label for="company_id">Company ID</label></td>
+                <td><input type="text" id="company_id" ng-model="contactPerson.company.id"/></td>
+                <td class="error">{{ formErrors['Company id'] }}</td>
+            </tr>
+            <!-- OWNER ID -->
+            <tr>
+                <td class="bold"><label for="owner_id">Owner ID</label></td>
+                <td>{{ contactPerson.user.id }}</td>
+                <td><input type="hidden" id="owner_id" ng-model="contactPerson.user.id"/></td>
+            </tr>
+
+            <!-- SUBMIT -->
+            <tr>
+                <td class="bold"><input type="submit" value="Submit"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+

@@ -1,0 +1,31 @@
+<h2 class="center-header">Trade notes</h2>
+<div class="list-all">
+    <div class="menu">
+        <a ng-href="#/tradeNotes/add" class="btn btn-success">Add</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Content</th>
+            <th scope="col">Company ID</th>
+            <th scope="col">Owner ID</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="trn in tradeNotes">
+            <td>{{ trn.id }}</td>
+            <td><a ng-href="#/tradeNotes/one/{{trn.id}}">view details</a></td>
+            <td>{{ trn.company.id }}</td>
+            <td>{{ trn.user.id }}</td>
+            <td><a type="button" class="btn btn-info" ng-href="#/tradeNotes/update/{{trn.id}}">Edit</a></td>
+            <td><a type="button" class="btn btn-danger" ng-href="#/tradeNotes/delete/{{trn.id}}">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+

@@ -1,4 +1,4 @@
-<h2 class="center-header">Role form</h2>
+<h2 class="center-header">Industry form</h2>
 
 <div class="display-form">
     <form ng-submit="formSubmit()">
@@ -10,16 +10,16 @@
             </tr>
 
             <!-- ID -->
-            <tr ng-if="role.id">
+            <tr ng-if="industry.id">
                 <td class="bold"><label for="id">Id</label></td>
-                <td>{{ role.id }}</td>
-                <td><input type="hidden" id="id" ng-model="role.id"/></td>
+                <td>{{ industry.id }}</td>
+                <td><input type="hidden" id="id" ng-model="industry.id"/></td>
             </tr>
 
-            <!-- role name -->
+            <!-- industryName -->
             <tr>
                 <td class="bold"><label for="name">Name</label></td>
-                <td><input type="text" id="name" ng-model="role.name"/></td>
+                <td><input type="text" id="name" ng-model="industry.name"/></td>
                 <td class="error">{{ formErrors['name'] }}</td>
             </tr>
 

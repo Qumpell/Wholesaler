@@ -3,10 +3,10 @@ package pl.matkan.wholesaler.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="contact_persons")
+@Table(name = "contact_persons")
 public class ContactPerson {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String surname;
@@ -15,17 +15,27 @@ public class ContactPerson {
     private String position;
 
     @ManyToOne
-    @JoinColumn(name="company_id")
+    @JoinColumn(name = "company_id")
     private Company company;
-    //private Long companyId;
+
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
-    //private Long userWhoAddedId;
+
     private boolean isDeleted;
 
     public ContactPerson() {
+    }
+
+    public ContactPerson(String name, String surname, String phoneNumber, String mail, String position, Company company, User user) {
+        this.name = name;
+        this.surname = surname;
+        this.phoneNumber = phoneNumber;
+        this.mail = mail;
+        this.position = position;
+        this.company = company;
+        this.user = user;
     }
 
     public Long getId() {
@@ -71,14 +81,32 @@ public class ContactPerson {
     public String getPosition() {
         return position;
     }
+
     public void setPosition(String position) {
         this.position = position;
     }
+
     public boolean isDeleted() {
         return isDeleted;
     }
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

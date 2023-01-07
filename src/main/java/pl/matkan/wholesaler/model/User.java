@@ -88,14 +88,6 @@ public class User {
     public void setLogin(String login) {
         this.login = login;
     }
-//
-//    public int getRoleId() {
-//        return roleId;
-//    }
-//
-//    public void setRoleId(int roleId) {
-//        this.roleId = roleId;
-//    }
 
     public Role getRole() {
         return role;

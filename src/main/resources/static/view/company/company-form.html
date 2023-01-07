@@ -1,0 +1,74 @@
+<h2 class="center-header">Company form</h2>
+
+<div class="display-form">
+    <form ng-submit="formSubmit()">
+        <table>
+
+            <!-- ERROR HEADING -->
+            <tr ng-if="formErrors">
+                <td colspan="3" class="error">Please correct the problems and resubmit.</td>
+            </tr>
+
+            <!-- ID -->
+            <tr ng-if="company.id">
+                <td class="bold"><label for="id">Id</label></td>
+                <td>{{ company.id }}</td>
+                <td><input type="hidden" id="id" ng-model="company.id"/></td>
+            </tr>
+
+            <!--  NAME -->
+            <tr>
+                <td class="bold"><label for="name">Name</label></td>
+                <td><input type="text" id="name" ng-model="company.name"/></td>
+                <td class="error">{{ formErrors['Name'] }}</td>
+            </tr>
+
+            <!-- NIP -->
+            <tr>
+                <td class="bold"><label for="nip">Nip</label></td>
+                <td><input type="text" id="nip" ng-model="company.nip"/></td>
+                <td class="error">{{ formErrors['nip'] }}</td>
+            </tr>
+
+            <!-- INDUSTRY -->
+            <tr>
+                <td class="bold"><label for="industry">Industry</label></td>
+                <td>
+                    <select id="industry" ng-model="company.industry.id"
+                            ng-options="ind.id as ind.name  for ind in industries"></select>
+
+                </td>
+                <td class="error">{{ formErrors['industry'] }}</td>
+            </tr>
+
+
+            <!-- ADDRESS -->
+            <tr>
+                <td class="bold"><label for="address">Address</label></td>
+                <td><input type="text" id="address" ng-model="company.address"/></td>
+                <td class="error">{{ formErrors['address'] }}</td>
+            </tr>
+            <!-- CITY -->
+            <tr>
+                <td class="bold"><label for="city">City</label></td>
+                <td><input type="text" id="city" ng-model="company.city"/></td>
+                <td class="error">{{ formErrors['city'] }}</td>
+            </tr>
+            <!-- OWNER ID -->
+            <tr>
+                <td class="bold"><label for="owner_id">Owner ID</label></td>
+                <td>{{ company.user.id }}</td>
+                <td><input type="hidden" id="owner_id" ng-model="company.user.id"/></td>
+            </tr>
+
+            <!-- SUBMIT -->
+            <tr>
+                <td class="bold"><input type="submit" value="Submit"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+

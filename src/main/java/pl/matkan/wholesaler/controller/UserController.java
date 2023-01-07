@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.matkan.wholesaler.model.User;
-import pl.matkan.wholesaler.service.UserService;
 import pl.matkan.wholesaler.service.impl.UserServiceImpl;
 
 import java.util.List;

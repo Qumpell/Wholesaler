@@ -1,0 +1,36 @@
+<h2 class="center-header">Companies</h2>
+
+<div class="list-all">
+    <div class="menu">
+        <a ng-href="#/companies/add" class="btn btn-success">Add</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Nip</th>
+            <th scope="col">Industry</th>
+            <th scope="col">Address</th>
+            <th scope="col">City</th>
+            <th scope="col">Owner id</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="com in companies">
+            <td>{{ com.id }}</td>
+            <td><a ng-href="#/companies/one/{{com.id}}">{{ com.name }}</a></td>
+            <td>{{ com.nip }}</td>
+            <td>{{ com.industry.name }}</td>
+            <td>{{ com.address }}</td>
+            <td>{{ com.city }}</td>
+            <td>{{ com.user.id }}</td>
+            <td><a type="button" class="btn btn-info" ng-href="#/companies/update/{{com.id}}">Edit</a></td>
+            <td><a type="button" class="btn btn-danger" ng-href="#/companies/delete/{{com.id}}">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>

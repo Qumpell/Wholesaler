@@ -1,0 +1,46 @@
+<h2 class="center-header">Contact person</h2>
+
+<div class="display-one">
+    <table>
+        <tr>
+            <td class="bold">ID</td>
+            <td>{{ contactPerson.id }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Name</td>
+            <td>{{ contactPerson.name }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Surname</td>
+            <td>{{ contactPerson.surname }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Phone number</td>
+            <td>{{ contactPerson.phoneNumber }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Mail</td>
+            <td>{{ contactPerson.mail }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Position</td>
+            <td>{{ contactPerson.position }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Company ID</td>
+            <td>{{ contactPerson.company.id }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Owner ID</td>
+            <td>{{ contactPerson.user.id }}</td>
+        </tr>
+    </table>
+
+</div>
+
+<br>
+<div class="display-form">
+    <a class="btn btn-info" ng-href="#/contactPersons/update/{{contactPerson.id}}">Update</a>
+    <div class="divider-buttons"></div>
+    <a  class="btn btn-danger" ng-href="#/contactPersons/delete/{{contactPerson.id}}">Delete</a>
+</div>

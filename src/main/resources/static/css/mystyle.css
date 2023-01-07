@@ -1,0 +1,31 @@
+.bold {
+    padding-right: 5em;
+}
+
+.display-one {
+    display: flex;
+    justify-content: center;
+}
+
+.display-form {
+    display: flex;
+    justify-content: center;
+}
+
+.center-header {
+    text-align: center;
+}
+
+.list-all {
+    padding-left: 15em;
+    padding-right: 15em;
+}
+
+.menu {
+    float: right;
+}
+.divider-buttons{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}

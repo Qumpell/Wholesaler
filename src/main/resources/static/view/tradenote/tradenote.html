@@ -1,0 +1,29 @@
+<h2 class="center-header">Trade note</h2>
+
+<div class="display-one">
+    <table>
+        <tr>
+            <td class="bold">ID</td>
+            <td>{{ tradeNote.id }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Content</td>
+            <td><textarea id="content" name="content" rows="4" cols="50" ng-model="tradeNote.content" readonly></textarea></td>
+        </tr>
+        <tr>
+            <td class="bold">Company ID</td>
+            <td>{{ tradeNote.company.id }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Owner ID</td>
+            <td>{{ tradeNote.user.id }}</td>
+        </tr>
+    </table>
+</div>
+
+<br>
+<div class="display-form">
+    <a class="btn btn-info" ng-href="#/tradeNotes/update/{{tradeNote.id}}">Update</a>
+    <div class="divider-buttons"></div>
+    <a  class="btn btn-danger" ng-href="#/tradeNotes/delete/{{tradeNote.id}}">Delete</a>
+</div>

@@ -1,0 +1,41 @@
+<h2 class="center-header">Company</h2>
+
+<div class="display-one">
+    <table>
+        <tr>
+            <td class="bold">Id</td>
+            <td>{{ company.id }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Name</td>
+            <td>{{ company.name }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Nip</td>
+            <td>{{ company.nip }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Industry</td>
+            <td>{{ company.industry.name }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Owner ID</td>
+            <td>{{ company.user.id }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Address</td>
+            <td>{{ company.address }}</td>
+        </tr>
+        <tr>
+            <td class="bold">City</td>
+            <td>{{ company.city }}</td>
+        </tr>
+    </table>
+</div>
+
+<br>
+<div class="display-form">
+    <a class="btn btn-info" ng-href="#/companies/update/{{company.id}}">Update</a>
+    <div class="divider-buttons"></div>
+    <a class="btn btn-danger" ng-href="#/companies/delete/{{company.id}}">Delete</a>
+</div>

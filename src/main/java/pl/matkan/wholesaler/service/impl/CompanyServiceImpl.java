@@ -1,6 +1,5 @@
 package pl.matkan.wholesaler.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.model.Company;
@@ -14,8 +13,11 @@ import java.util.Optional;
 @Repository
 public class CompanyServiceImpl implements CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepo;
+    private final CompanyRepository companyRepo;
+
+    public CompanyServiceImpl(CompanyRepository companyRepo) {
+        this.companyRepo = companyRepo;
+    }
 
     @Override
     public Company create(Company one) {
