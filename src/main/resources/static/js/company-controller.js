@@ -1,0 +1,143 @@
+//*********************************************************************************************************
+//COMPANY CONTROLLER
+//*********************************************************************************************************
+hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParams, $location, action) {
+    $log.debug('CompanyController');
+    $log.debug('action = ' + action); //logowanie akcji
+    //READ-ALL
+    $scope.getAll = function () {  //  scope dla wywołania getall
+        $http.get('/companies')
+            .then(
+                function success(response) {
+                    $scope.companies = response.data;
+                    $log.debug('GET: /companies');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /companies');
+                    $log.error(response);
+                }
+            );
+    };
+    // READ-ONE
+    $scope.getOne = function (id) {
+        $http.get('/companies/' + id)
+            .then(
+                function success(response) {
+                    $scope.company = response.data;
+                    $log.debug('GET: /companies/' + id);
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /companies/' + id);
+                    $log.error(response);
+                }
+            );
+    };
+    //CREATE
+    $scope.createOne = function (data) {
+        $http.post('/companies/', data)
+            .then(
+                function success(response) {
+                    $scope.company = response.data; // do obiektu user podstaw dane z odpowiedzi
+                    $log.debug('POST: /companies/');
+                    $log.debug(response);
+                    $location.path('/companies/all'); // zwraca sciezke bez parametrów
+                },
+                function error(response) {
+                    $log.error('POST: /companies/');
+                    $log.error(response);
+                    $scope.formErrors = response.data.fieldErrors;
+                }
+            );
+    };
+    //UPDATE
+    $scope.updateOne = function (id, data) {
+        $http.put('/companies/' + id, data)
+            .then(
+                function success(response) {
+                    $scope.company = response.data;
+                    $log.debug('PUT: /companies/');
+                    $log.debug(response);
+                    $location.path('/companies/all');
+                },
+                function error(response) {
+                    $log.error('PUT: /companies/');
+                    $log.error(response);
+                    $scope.formErrors = response.data.fieldErrors;
+                }
+            );
+    };
+    //DELETE
+    $scope.deleteOne = function (id) {
+        $http.delete('/companies/' + id)
+            .then(
+                function success(response) {
+                    $scope.company = response.data;
+                    $log.debug('DELETE: /companies/' + id);
+                    $log.debug(response);
+                    $location.path('/companies/all');
+                },
+                function error(response) {
+                    $log.error('DELETE: /companies/' + id);
+                    $log.error(response);
+                }
+            );
+    };
+
+    $scope.getAllIndustries = function () {  //  scope dla wywołania getall
+        $http.get('/industries')
+            .then(
+                function success(response) {
+                    $scope.industries = response.data;
+                    $log.debug('GET: /industries');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /industries');
+                    $log.error(response);
+                }
+            );
+    };
+
+
+
+    // AKCJA wywoluje dany scope
+
+    // GET ONE
+    if (action === 'one') {
+        var id = $routeParams['id'];  // $routeParams service wbudowany
+        $scope.getOne(id);
+    }
+    // GET ALL
+    if (action === 'all') {
+        $scope.getAll();
+    }
+    // CREATE ONE
+    if (action === 'add') {
+        $scope.company = {}; // utworz pusty obiekt
+        //$scope.getAll(); // wykonaj akcje i zwróc wszystkie
+        $scope.getAllIndustries();
+        $scope.formSubmit = function () { // formSubmit ng-submit
+            $scope.createOne($scope.company);
+        }
+    }
+    // UPDATE ONE
+    if (action === 'update') {
+        var id = $routeParams['id'];
+        $scope.getOne(id);
+        //$scope.getAll();
+        $scope.getAllIndustries();
+        $scope.formSubmit = function () {
+            $log.debug('update one: company');
+            $log.debug($scope.company);
+            $scope.updateOne($scope.company.id, $scope.company);
+        }
+    }
+    // DELETE ONE
+    if (action === 'delete') {
+        var id = $routeParams['id'];
+        $scope.deleteOne(id);
+    }
+
+});

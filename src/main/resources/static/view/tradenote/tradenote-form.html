@@ -1,0 +1,50 @@
+<h2 class="center-header">Trade note form</h2>
+
+<div class="display-form">
+    <form ng-submit="formSubmit()">
+        <table>
+
+            <!-- ERROR HEADING -->
+            <tr ng-if="formErrors">
+                <td colspan="3" class="error">Please correct the problems and resubmit.</td>
+            </tr>
+
+            <!-- ID -->
+            <tr ng-if="tradeNote.id">
+                <td class="bold"><label for="id">Id</label></td>
+                <td>{{ tradeNote.id }}</td>
+                <td><input type="hidden" id="id" ng-model="tradeNote.id"/></td>
+            </tr>
+
+            <!--  CONTENT -->
+            <tr>
+                <td class="bold"><label for="content">Content</label></td>
+                <!--                <td><input type="text" id="content" ng-model="company.name"/></td>-->
+                <td><textarea id="content" name="content" rows="4" cols="50" ng-model="tradeNote.content"></textarea></td>
+                <td class="error">{{ formErrors['Content'] }}</td>
+            </tr>
+
+            <!-- COMPANY ID -->
+            <tr>
+                <td class="bold"><label for="company_id">Company ID</label></td>
+                <td><input type="text" id="company_id" ng-model="tradeNote.company.id"/></td>
+                <td class="error">{{ formErrors['Company id'] }}</td>
+            </tr>
+            <!-- OWNER ID -->
+            <tr>
+                <td class="bold"><label for="owner_id">Owner ID</label></td>
+                <td>{{ tradeNote.user.id }}</td>
+                <td><input type="hidden" id="owner_id" ng-model="tradeNote.user.id"/></td>
+            </tr>
+
+            <!-- SUBMIT -->
+            <tr>
+                <td><input type="submit" value="Submit"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+

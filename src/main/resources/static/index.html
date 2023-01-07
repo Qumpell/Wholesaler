@@ -16,13 +16,13 @@
     <div class="container-fluid">
         <a href="#/users/all" class="btn btn-info navbar-btn" role="button">Users</a>
         <a href="#/roles/all" class="btn btn-info navbar-btn" role="button">Roles</a>
+        <a href="#/industries/all" class="btn btn-info navbar-btn" role="button">Industries</a>
         <a href="#/companies/all" class="btn btn-info navbar-btn" role="button">Companies</a>
+        <a href="#/tradeNotes/all" class="btn btn-info navbar-btn" role="button">Trade notes</a>
+        <a href="#/contactPersons/all" class="btn btn-info navbar-btn" role="button">Contact persons</a>
         <a href="/logout" class="menu-logout">Logout</a>
     </div>
 
-
-
-<!--    <hr class="menu-hline">-->
 </nav>
 
 
@@ -30,11 +30,16 @@
 <div id="main-content" ng-view></div>
 
 <link rel="stylesheet" href="/css/bootstrap.css"/>
+<link rel="stylesheet" href="/css/mystyle.css"/>
 <script src="/js/lib/angular.js"></script>
 <script src="/js/lib/angular-resource.js"></script>
 <script src="/js/lib/angular-route.js"></script>
 <script src="/js/wholesaler-resources.js"></script>
 <script src="/js/user-controller.js"></script>
 <script src="/js/role-controller.js"></script>
+<script src="/js/industry-controller.js"></script>
+<script src="/js/company-controller.js"></script>
+<script src="/js/contactPerson-controller.js"></script>
+<script src="/js/tradeNote-controller.js"></script>
 </body>
 </html>

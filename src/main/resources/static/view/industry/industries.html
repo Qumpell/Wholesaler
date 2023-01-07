@@ -1,0 +1,26 @@
+<h2 class="center-header">Industries</h2>
+<div class="list-all">
+    <div class="menu">
+        <a ng-href="#/industries/add" class="btn btn-success">Add</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="ind in industries">
+            <td>{{ ind.id }}</td>
+            <td><a ng-href="#/industries/one/{{ind.id}}">{{ ind.name }}</a></td>
+            <td><a class="btn btn-info" ng-href="#/industries/update/{{ind.id}}">Edit</a></td>
+            <td><a class="btn btn-danger" ng-href="#/industries/delete/{{ind.id}}">Delete</a>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>
+

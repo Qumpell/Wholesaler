@@ -1,4 +1,4 @@
-<h2>User Form</h2>
+<h2 class="center-header">User form</h2>
 
 <div class="display-form">
     <form ng-submit="formSubmit()">
@@ -11,41 +11,41 @@
 
             <!-- ID -->
             <tr ng-if="user.id">
-                <td><label for="id">Id</label></td>
+                <td class="bold"><label for="id">Id</label></td>
                 <td>{{ user.id }}</td>
                 <td><input type="hidden" id="id" ng-model="user.id"/></td>
             </tr>
 
             <!--  NAME -->
             <tr>
-                <td><label for="name">Name</label></td>
+                <td class="bold"><label for="name">Name</label></td>
                 <td><input type="text" id="name" ng-model="user.name"/></td>
                 <td class="error">{{ formErrors['firstName'] }}</td>
             </tr>
 
             <!-- SURNAME -->
             <tr>
-                <td><label for="surname">Surname</label></td>
+                <td class="bold"><label for="surname">Surname</label></td>
                 <td><input type="text" id="surname" ng-model="user.surname"/></td>
                 <td class="error">{{ formErrors['surName'] }}</td>
             </tr>
 
             <!-- date of birth -->
             <tr>
-                <td><label for="dateOfBirth">Date of birth</label></td>
+                <td class="bold"><label for="dateOfBirth">Date of birth</label></td>
                 <td><input type="text" id="dateOfBirth" ng-model="user.dateOfBirth"/></td>
                 <td class="error">{{ formErrors['dateOfBirth'] }}</td>
             </tr>
             <!-- login -->
             <tr>
-                <td><label for="login">Login</label></td>
+                <td class="bold"><label for="login">Login</label></td>
                 <td><input type="text" id="login" ng-model="user.login"/></td>
                 <td class="error">{{ formErrors['login'] }}</td>
             </tr>
 
             <!-- ROLE LIST -->
             <tr>
-                <td><label for="role">Role</label></td>
+                <td class="bold"><label for="role">Role</label></td>
                 <td>
                     <select id="role" ng-model="user.role.id"
                             ng-options="rol.id as rol.name  for rol in roles"></select>

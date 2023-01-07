@@ -1,6 +1,5 @@
 package pl.matkan.wholesaler.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.model.Industry;
@@ -14,8 +13,12 @@ import java.util.Optional;
 @Repository
 public class IndustryServiceImpl implements IndustryService {
 
-    @Autowired
-    private IndustryRepository industryRepo;
+
+    private final IndustryRepository industryRepo;
+
+    public IndustryServiceImpl(IndustryRepository industryRepo) {
+        this.industryRepo = industryRepo;
+    }
 
     @Override
     public Industry create(Industry one) {
