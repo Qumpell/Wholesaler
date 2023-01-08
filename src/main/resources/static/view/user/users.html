@@ -13,19 +13,21 @@
             <th scope="col">Date of birth</th>
             <th scope="col">Login</th>
             <th scope="col">Role</th>
+            <th scope="col">Status</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr ng-repeat="usr in users">
-            <td>{{ usr.id }}</td>
+        <tr ng-repeat="usr in users"    ng-cloak data-ng-class="usr.isDeleted && 'strikethrough' || 'null'">
+            <td >{{ usr.id }}</td>
             <td><a ng-href="#/users/one/{{usr.id}}">{{ usr.name }}</a></td>
             <td>{{ usr.surname }}</td>
             <td>{{ usr.dateOfBirth }}</td>
             <td>{{ usr.login }}</td>
             <td>{{ usr.role.name }}</td>
+            <td>{{ usr.isDeleted ? "inactive" : "active" }}</td>
             <td><a  type="button" class="btn btn-info" ng-href="#/users/update/{{usr.id}}">Edit</a></td>
-            <td><a type="button" class="btn btn-danger" ng-href="#/users/delete/{{usr.id}}">Delete</a>
+            <td><a  type="button" class="btn btn-danger" ng-href="#/users/delete/{{usr.id}}">{{ usr.isDeleted ? "Activate" : "Deactivate" }}</a>
             </td>
 
         </tr>

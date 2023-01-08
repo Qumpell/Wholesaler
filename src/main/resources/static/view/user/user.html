@@ -29,5 +29,5 @@
 <div class="display-form">
     <a class="btn btn-info" ng-href="#/users/update/{{user.id}}">Update</a>
     <div class="divider-buttons"></div>
-    <a  class="btn btn-danger" ng-href="#/users/delete/{{user.id}}">Delete</a>
+    <a  class="btn btn-danger" ng-href="#/users/delete/{{user.id}}">{{ user.isDeleted ? "Activate" : "Deactivate" }}</a>
 </div>

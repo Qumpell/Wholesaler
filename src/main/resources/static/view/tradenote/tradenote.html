@@ -25,5 +25,5 @@
 <div class="display-form">
     <a class="btn btn-info" ng-href="#/tradeNotes/update/{{tradeNote.id}}">Update</a>
     <div class="divider-buttons"></div>
-    <a  class="btn btn-danger" ng-href="#/tradeNotes/delete/{{tradeNote.id}}">Delete</a>
+    <a  class="btn btn-danger" ng-href="#/tradeNotes/delete/{{tradeNote.id}}">{{ tradeNote.isDeleted ? "Activate" : "Deactivate" }}</a>
 </div>

@@ -1,13 +1,17 @@
 package pl.matkan.wholesaler;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
+//import pl.matkan.wholesaler.config.RsaKeyProperties;
 import pl.matkan.wholesaler.model.*;
 import pl.matkan.wholesaler.repo.*;
 
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
+//@EnableConfigurationProperties(RsaKeyProperties.class)
 public class WholesalerApplication {
 
     public static void main(String[] args) {
@@ -23,14 +27,16 @@ public class WholesalerApplication {
         TradeNoteRepository tradeNoteRepository = configurableApplicationContext.getBean(TradeNoteRepository.class);
         ContactPersonRepository contactPersonRepository = configurableApplicationContext.getBean(ContactPersonRepository.class);
 
-        Role role = new Role("user");
-        Role role1 = new Role("admin");
+        Role role = new Role("USER");
+        Role role1 = new Role("ADMIN");
+        Role role2 = new Role("MODERATOR");
         roleRepository.save(role);
         roleRepository.save(role1);
+        roleRepository.save(role2);
 
-        User user = new User("Test", "Test", "2000-03-05", "test", role);
+        User user = new User("Test", "Test", "2000-03-05", "test","123" ,role);
         userRepository.save(user);
-        User user1 = new User("Adam", "Moanre", "1988-01-04", "adamMon", role1);
+        User user1 = new User("Adam", "Moanre", "1988-01-04", "adamMon","123" ,role1);
         userRepository.save(user1);
 
         Industry industry = new Industry("it");
@@ -43,13 +49,13 @@ public class WholesalerApplication {
         companyRepository.save(company);
         companyRepository.save(company1);
 
-        ContactPerson contactPerson = new ContactPerson("Marek", "Kowalski", "111-222-333", "test@gmail.com", "support", company, user1);
-        ContactPerson contactPerson1 = new ContactPerson("Adam", "Monek", "111-222-333", "adam@gmail.com", "consultant", company1, user);
+        ContactPerson contactPerson = new ContactPerson("Marek", "Kowalski", "111-222-333", "test@gmail.com", "support", company, user);
+        ContactPerson contactPerson1 = new ContactPerson("Adam", "Monek", "111-222-333", "adam@gmail.com", "consultant", company1, user1);
         contactPersonRepository.save(contactPerson);
         contactPersonRepository.save(contactPerson1);
 
-        TradeNote tradeNote = new TradeNote("test", company, user1);
-        TradeNote tradeNote1 = new TradeNote("sell everything", company1, user);
+        TradeNote tradeNote = new TradeNote("test", company, user);
+        TradeNote tradeNote1 = new TradeNote("sell everything", company1, user1);
         tradeNoteRepository.save(tradeNote);
         tradeNoteRepository.save(tradeNote1);
 

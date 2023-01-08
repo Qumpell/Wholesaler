@@ -23,13 +23,13 @@
             </tr>
             <!-- SURNAME -->
             <tr>
-                <td class="bold"><label for="surname">Name</label></td>
+                <td class="bold"><label for="surname">Surname</label></td>
                 <td><input type="text" id="surname" ng-model="contactPerson.surname"/></td>
                 <td class="error">{{ formErrors['surname'] }}</td>
             </tr>
             <!-- PHONE NUMBER -->
             <tr>
-                <td class="bold"><label for="phone_number">Name</label></td>
+                <td class="bold"><label for="phone_number">Phone number</label></td>
                 <td><input type="text" id="phone_number" ng-model="contactPerson.phoneNumber"/></td>
                 <td class="error">{{ formErrors['phone number'] }}</td>
             </tr>
@@ -56,7 +56,7 @@
             <tr>
                 <td class="bold"><label for="owner_id">Owner ID</label></td>
                 <td>{{ contactPerson.user.id }}</td>
-                <td><input type="hidden" id="owner_id" ng-model="contactPerson.user.id"/></td>
+                <td><input type="hidden" id="owner_id" ng-model="contactPerson.user.id"/>2</td>
             </tr>
 
             <!-- SUBMIT -->

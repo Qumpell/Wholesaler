@@ -37,5 +37,5 @@
 <div class="display-form">
     <a class="btn btn-info" ng-href="#/companies/update/{{company.id}}">Update</a>
     <div class="divider-buttons"></div>
-    <a class="btn btn-danger" ng-href="#/companies/delete/{{company.id}}">Delete</a>
+    <a class="btn btn-danger" ng-href="#/companies/delete/{{company.id}}">{{ company.isDeleted ? "Activate" : "Deactivate" }}</a>
 </div>
