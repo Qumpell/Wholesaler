@@ -29,3 +29,6 @@
     height:auto;
     display:inline-block;
 }
+.strikethrough {
+    text-decoration: line-through;
+}

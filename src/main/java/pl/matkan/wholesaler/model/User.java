@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.model;
 
+import org.hibernate.annotations.Loader;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 //@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE  users SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
 //@Where(clause = "is_deleted=false")
 public class User {
     @Id
@@ -20,13 +22,16 @@ public class User {
     private String dateOfBirth;
     private String login;
 
+    private String password;
     @OneToMany(
             mappedBy = "user"
+
     )
     private List<Company> companies = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "user"
+
     )
     private List<ContactPerson> contactPeople = new ArrayList<>();
 
@@ -41,11 +46,12 @@ public class User {
     public User() {
     }
 
-    public User(String name, String surname, String dateOfBirth, String login,Role role) {
+    public User(String name, String surname, String dateOfBirth, String login, String password, Role role) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.login = login;
+        this.password = password;
         this.role = role;
     }
 
@@ -105,4 +111,11 @@ public class User {
         this.isDeleted = isDeleted;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

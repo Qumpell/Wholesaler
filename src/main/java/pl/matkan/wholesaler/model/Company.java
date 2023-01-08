@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,6 +11,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "companies")
+//@SQLDelete(sql = "UPDATE companies SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE  companies SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
+//@Where(clause = "is_deleted=false")
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -119,5 +125,13 @@ public class Company {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }
