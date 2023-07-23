@@ -21,26 +21,18 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Company create(Company one) {
-        Company savedOne = companyRepo.save(one);
-        return savedOne;
+        return companyRepo.save(one);
     }
 
     @Override
     public Company update(Long id, Company one) {
-
         one.setId(id);
-        Company savedOne = companyRepo.save(one);
-        return savedOne;
+        return companyRepo.save(one);
     }
 
     @Override
     public Optional<Company> findById(Long id) {
-        Optional<Company> one = companyRepo.findById(id);
-        if (one.isPresent()) {
-            //	Customer dto = modelMapper.map(one.get(), EmployeeDTO.class);
-            return one;
-        } else
-            return Optional.empty();
+        return companyRepo.findById(id);
     }
 
     @Override

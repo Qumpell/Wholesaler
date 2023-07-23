@@ -22,26 +22,18 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public Industry create(Industry one) {
-        Industry savedOne = industryRepo.save(one);
-        return savedOne;
+        return industryRepo.save(one);
     }
 
     @Override
     public Industry update(Long id, Industry one) {
-
         one.setId(id);
-        Industry savedOne = industryRepo.save(one);
-        return savedOne;
+        return industryRepo.save(one);
     }
 
     @Override
     public Optional<Industry> findById(Long id) {
-        Optional<Industry> one = industryRepo.findById(id);
-        if (one.isPresent()) {
-            //	Customer dto = modelMapper.map(one.get(), EmployeeDTO.class);
-            return one;
-        } else
-            return Optional.empty();
+        return industryRepo.findById(id);
     }
 
     @Override
