@@ -1,0 +1,26 @@
+app:
+  db-init: true
+logging:
+  level:
+    org:
+      springframework:
+        web: TRACE
+spring:
+  profiles:
+    active: dev
+  datasource:
+    password: root
+    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernates:
+        show:
+          sql: true
+---
+spring:
+  config:
+    activate:
+      on-profile: test
