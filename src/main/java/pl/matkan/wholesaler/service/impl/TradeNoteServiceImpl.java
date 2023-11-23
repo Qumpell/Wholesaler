@@ -1,6 +1,5 @@
 package pl.matkan.wholesaler.service.impl;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.model.TradeNote;
 import pl.matkan.wholesaler.repo.TradeNoteRepository;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("tradeNoteService")
-@Repository
 public class TradeNoteServiceImpl implements TradeNoteService {
 
     private final TradeNoteRepository tradeNoteRepo;

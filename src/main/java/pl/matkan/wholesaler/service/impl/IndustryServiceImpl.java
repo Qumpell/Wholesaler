@@ -1,6 +1,5 @@
 package pl.matkan.wholesaler.service.impl;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.model.Industry;
 import pl.matkan.wholesaler.repo.IndustryRepository;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("industryService")
-@Repository
 public class IndustryServiceImpl implements IndustryService {
 
 
