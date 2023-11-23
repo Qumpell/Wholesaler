@@ -11,18 +11,15 @@ public class Industry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
     @OneToMany(mappedBy = "industry")
-    private List<Company> companies = new ArrayList<>();
+    private List<Company> companies =  new ArrayList<>();;
 
     public Industry(String name) {
         this.name = name;
     }
-
     public Industry() {
 
     }
-
     public Long getId() {
         return id;
     }
@@ -38,4 +35,13 @@ public class Industry {
     public void setName(String name) {
         this.name = name;
     }
+    public void addCompany(Company company) {
+        companies.add(company);
+        company.setIndustry(this);
+    }
+    public void removeCompany(Company company) {
+        companies.remove(company);
+        company.setIndustry(null);
+    }
+
 }

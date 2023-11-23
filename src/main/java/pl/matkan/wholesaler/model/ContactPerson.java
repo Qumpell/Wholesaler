@@ -1,15 +1,12 @@
 package pl.matkan.wholesaler.model;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "contact_persons")
-//@SQLDelete(sql = "UPDATE contact_persons SET is_deleted = true WHERE id=?")
-@SQLDelete(sql = "UPDATE  contact_persons SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
-//@Where(clause = "is_deleted=false")
+//@SQLDelete(sql = "UPDATE  contact_persons SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
 public class ContactPerson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,29 +16,21 @@ public class ContactPerson {
     private String phoneNumber;
     private String mail;
     private String position;
-
-    @ManyToOne
+    private boolean isDeleted;
+    @ManyToOne()
     @JoinColumn(name = "company_id")
     private Company company;
-
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    private boolean isDeleted;
-
     public ContactPerson() {
     }
-
-    public ContactPerson(String name, String surname, String phoneNumber, String mail, String position, Company company, User user) {
+    public ContactPerson(String name, String surname, String phoneNumber, String mail, String position) {
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.mail = mail;
         this.position = position;
-        this.company = company;
-        this.user = user;
     }
 
     public Long getId() {
@@ -115,4 +104,5 @@ public class ContactPerson {
     public void setUser(User user) {
         this.user = user;
     }
+
 }

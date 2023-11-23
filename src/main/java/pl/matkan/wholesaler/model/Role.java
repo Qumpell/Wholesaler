@@ -12,9 +12,8 @@ public class Role {
     private Long id;
     private String name;
 
-    @OneToMany(
-            mappedBy = "role")
-    private List<User> users = new ArrayList<>();
+    @OneToMany(mappedBy = "role")
+    private List<User> users;
     public Role() {
     }
 
@@ -37,4 +36,5 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
 }
