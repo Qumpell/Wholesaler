@@ -13,6 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.matkan.wholesaler.model.*;
 import pl.matkan.wholesaler.repo.*;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 //@ExtendWith(MockitoExtension.class)
@@ -103,12 +105,34 @@ class CompanyServiceTest {
         tradeNoteRepository.save(tradeNote1);
         userRepository.save(user);
         userRepository.save(user1);
-        System.out.println(industryRepository.findAll());
-        System.out.println(roleRepository.findAll());
-        System.out.println(userRepository.findAll());
+//        System.out.println(industryRepository.findAll());
+//        System.out.println(roleRepository.findAll());
+//        System.out.println(userRepository.findAll());
+//        System.out.println(companyRepository.findAll());
+//        System.out.println(tradeNoteRepository.findAll());
+//        System.out.println(contactPersonRepository.findAll());
+        System.out.println("PO");
+
+        List<Company> companies1 = companyRepository.findAll();
+//        System.out.println(companies1.get(0).getContactPersonList().size());
+//        System.out.println("WHOT");
+        company.removeContactPerson(contactPerson);
+//        company.removeTradeNote(tradeNote);
+        contactPersonRepository.save(contactPerson);
+//        tradeNoteRepository.save(tradeNote);
+//        companyRepository.save(company);
+//        companyRepository.deleteById(company.getId());
+
+//        contactPersonRepository.deleteById(contactPerson.getId());
+
+//        System.out.println(companyRepository.findAll());
+//        companyRepository.findAll().forEach(t ->
+//                System.out.println(t.getContactPersonList()));
         System.out.println(companyRepository.findAll());
-        System.out.println(tradeNoteRepository.findAll());
-        System.out.println(contactPersonRepository.findAll());
+//        System.out.println(companies.get(0).getCity());
+
+//        System.out.println(tradeNoteRepository.findAll());
+//        System.out.println(contactPersonRepository.findAll());
 //        companyRepository.deleteById(company.getId());
 //        System.out.println(contactPersonRepository.findAll());
     }

@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
@@ -22,11 +23,14 @@ public class User {
     private String password;
     private boolean isDeleted = Boolean.FALSE;
     @OneToMany(mappedBy = "user")
-    private List<Company> companies = new ArrayList<>();;
+    @JsonManagedReference
+    private List<Company> companies = new ArrayList<>();
     @OneToMany(mappedBy = "user")
-    private List<ContactPerson> contactPersonList =  new ArrayList<>();;
+    @JsonManagedReference
+    private List<ContactPerson> contactPersonList =  new ArrayList<>();
     @OneToMany(mappedBy = "user")
-    private List<TradeNote> tradeNotes =  new ArrayList<>();;
+    @JsonManagedReference
+    private List<TradeNote> tradeNotes =  new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
@@ -106,6 +110,39 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public List<Company> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
+    }
+
+    public List<ContactPerson> getContactPersonList() {
+        return contactPersonList;
+    }
+
+    public void setContactPersonList(List<ContactPerson> contactPersonList) {
+        this.contactPersonList = contactPersonList;
+    }
+
+    public List<TradeNote> getTradeNotes() {
+        return tradeNotes;
+    }
+
+    public void setTradeNotes(List<TradeNote> tradeNotes) {
+        this.tradeNotes = tradeNotes;
+    }
+
     public void addCompany(Company company) {
         companies.add(company);
         company.setUser(this);

@@ -1,5 +1,7 @@
 package pl.matkan.wholesaler.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
@@ -22,13 +24,18 @@ public class Company {
     @ManyToOne
     @JoinColumn(name = "industry_id")
     private Industry industry;
-    @OneToMany(mappedBy = "company")
-    private List<ContactPerson> contactPersonList = new ArrayList<>();;
+//    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ContactPerson> contactPersonList = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
-    @OneToMany(mappedBy = "company")
-    private List<TradeNote> tradeNotes =  new ArrayList<>();;
+//    @OneToMany(mappedBy = "company",  cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<TradeNote> tradeNotes =  new ArrayList<>();
 
 
     public Company() {
@@ -127,7 +134,7 @@ public class Company {
         contactPersonList.remove(contactPerson);
         contactPerson.setCompany(null);
     }
-    public void addTradeNotes(TradeNote tradeNote) {
+    public void addTradeNote(TradeNote tradeNote) {
         tradeNotes.add(tradeNote);
         tradeNote.setCompany(this);
     }
