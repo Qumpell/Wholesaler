@@ -1,7 +1,9 @@
 package pl.matkan.wholesaler.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.model.Company;
 import pl.matkan.wholesaler.model.Industry;
+import pl.matkan.wholesaler.repo.CompanyRepository;
 import pl.matkan.wholesaler.repo.IndustryRepository;
 import pl.matkan.wholesaler.service.IndustryService;
 
@@ -13,9 +15,12 @@ public class IndustryServiceImpl implements IndustryService {
 
 
     private final IndustryRepository industryRepo;
+    private final CompanyRepository companyRepository;
 
-    public IndustryServiceImpl(IndustryRepository industryRepo) {
+    public IndustryServiceImpl(IndustryRepository industryRepo,
+                               CompanyRepository companyRepository) {
         this.industryRepo = industryRepo;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -41,6 +46,18 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public void deleteById(Long id) {
+
+        Optional<Industry> industryOptional = findById(id);
+        if (industryOptional.isPresent()){
+            Industry industry = industryOptional.get();
+            List<Company> companies = industry.getCompanies();
+            if(companies != null){
+                for(Company company : companies){
+                    company.setIndustry(null);
+                }
+                companyRepository.saveAll(companies);
+            }
+        }
         industryRepo.deleteById(id);
     }
 

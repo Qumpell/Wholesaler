@@ -19,7 +19,6 @@ public class IndustryController {
         this.industryService = industryService;
     }
 
-    /* READ */
     @GetMapping("/{id}")
     public ResponseEntity<Industry> getOne(@PathVariable("id") Long id) {
         Optional<Industry> one = industryService.findById(id);
@@ -31,14 +30,12 @@ public class IndustryController {
         return industryService.findAll();
     }
 
-    /* CREATE */
     @PostMapping()
     public ResponseEntity<Industry> createOne(@RequestBody Industry one) {
         Industry industryOne = industryService.create(one);
         return new ResponseEntity<>(industryOne, HttpStatus.CREATED);
     }
 
-    /* UPDATE */
     @PutMapping("/{id}")
     public ResponseEntity<Industry> updateOne(@PathVariable("id") Long id, @RequestBody Industry one) {
         if (industryService.existsById(id)) {
@@ -48,7 +45,6 @@ public class IndustryController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    /* DELETE */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {

@@ -50,7 +50,6 @@ public class RoleServiceImpl implements RoleService {
             List<User> users = role.getUsers();
             if(users != null){
                 for(User user : users){
-//                    role.removeUser(user);
                     user.setRole(null);
                 }
                 userRepository.saveAll(users);
