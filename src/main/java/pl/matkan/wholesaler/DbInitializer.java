@@ -34,14 +34,12 @@ public class DbInitializer implements CommandLineRunner {
         Role role = new Role("USER");
         Role role1 = new Role("ADMIN");
         Role role2 = new Role("MODERATOR");
-        roleRepository.save(role);
-        roleRepository.save(role1);
-        roleRepository.save(role2);
+        roleRepository.saveAll(List.of(role1, role2, role));
 
         User user = new User("Test", "Test", "2000-03-05", "test","123" ,role);
-        userRepository.save(user);
+//        userRepository.save(user);
         User user1 = new User("Adam", "Moanre", "1988-01-04", "adamMon","123" ,role1);
-        userRepository.save(user1);
+//        userRepository.save(user1);
 
         Industry industry = new Industry("it");
         Industry industry1 = new Industry("construction");
@@ -70,11 +68,13 @@ public class DbInitializer implements CommandLineRunner {
         user1.addCompany(company1);
         user.addContactPerson(contactPerson);
         user1.addContactPerson(contactPerson1);
+        industry.addCompany(company);
+        industry1.addCompany(company1);
 
-        companyRepository.save(company);
-//        company.removeTradeNote(tradeNote);
-        companyRepository.save(company1);
-//        companyRepository.save(company1);
+
+
+        industryRepository.saveAll(List.of(industry1,industry));
+
         userRepository.saveAll(List.of(user, user1));
 
     }

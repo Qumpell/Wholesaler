@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
@@ -20,11 +21,11 @@ public class ContactPerson {
     private boolean isDeleted;
     @ManyToOne
     @JoinColumn(name = "company_id")
-    @JsonBackReference
+    @JsonBackReference(value = "contactPersonsCompany")
     private Company company;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonBackReference(value = "contactPersonsUser")
     private User user;
     public ContactPerson() {
     }

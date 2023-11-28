@@ -16,11 +16,11 @@ public class TradeNote {
     private boolean isDeleted = Boolean.FALSE;
     @ManyToOne
     @JoinColumn(name = "company_id")
-    @JsonBackReference
+    @JsonBackReference(value = "tradeNotesCompany")
     private Company company;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonBackReference(value = "tradeNotesUser")
     private User user;
 
     public TradeNote() {

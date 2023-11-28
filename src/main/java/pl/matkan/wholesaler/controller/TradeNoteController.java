@@ -20,7 +20,6 @@ public class TradeNoteController {
         this.tradeNoteService = tradeNoteService;
     }
 
-    /* READ */
     @GetMapping("/{id}")
     public ResponseEntity<TradeNote> getOne(@PathVariable("id") Long id) {
         Optional<TradeNote> one = tradeNoteService.findById(id);
@@ -32,14 +31,12 @@ public class TradeNoteController {
         return tradeNoteService.findAll();
     }
 
-    /* CREATE */
     @PostMapping()
     public ResponseEntity<TradeNote> createOne(@RequestBody TradeNote one) {
         TradeNote tradeNoteOne = tradeNoteService.create(one);
         return new ResponseEntity<>(tradeNoteOne, HttpStatus.CREATED);
     }
 
-    /* UPDATE */
     @PutMapping("/{id}")
     public ResponseEntity<TradeNote> updateOne(@PathVariable("id") Long id, @RequestBody TradeNote one) {
         if (tradeNoteService.existsById(id)) {
@@ -49,7 +46,6 @@ public class TradeNoteController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    /* DELETE */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {

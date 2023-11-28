@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "companies")
-//@SQLDelete(sql = "UPDATE  companies SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
 public class Company {
 
     @Id
@@ -23,18 +22,17 @@ public class Company {
     private boolean isDeleted = Boolean.FALSE;
     @ManyToOne
     @JoinColumn(name = "industry_id")
+    @JsonBackReference(value = "companiesIndustry")
     private Industry industry;
-//    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "contactPersonsCompany")
     private List<ContactPerson> contactPersonList = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonBackReference(value = "companiesUser")
     private User user;
-//    @OneToMany(mappedBy = "company",  cascade = CascadeType.PERSIST)
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "tradeNotesCompany")
     private List<TradeNote> tradeNotes =  new ArrayList<>();
 
 

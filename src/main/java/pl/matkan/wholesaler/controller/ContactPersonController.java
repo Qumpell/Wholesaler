@@ -20,7 +20,6 @@ public class ContactPersonController {
         this.contactPersonService = contactPersonService;
     }
 
-    /* READ */
     @GetMapping("/{id}")
     public ResponseEntity<ContactPerson> getOne(@PathVariable("id") Long id) {
         Optional<ContactPerson> one = contactPersonService.findById(id);
@@ -32,14 +31,12 @@ public class ContactPersonController {
         return contactPersonService.findAll();
     }
 
-    /* CREATE */
     @PostMapping()
     public ResponseEntity<ContactPerson> createOne(@RequestBody ContactPerson one) {
         ContactPerson contactPersonOne = contactPersonService.create(one);
         return new ResponseEntity<>(contactPersonOne, HttpStatus.CREATED);
     }
 
-    /* UPDATE */
     @PutMapping("/{id}")
     public ResponseEntity<ContactPerson> updateOne(@PathVariable("id") Long id, @RequestBody ContactPerson one) {
         if (contactPersonService.existsById(id)) {
@@ -48,8 +45,6 @@ public class ContactPersonController {
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-
-    /* DELETE */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {

@@ -1,7 +1,7 @@
 package pl.matkan.wholesaler.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,17 +22,18 @@ public class User {
     private String login;
     private String password;
     private boolean isDeleted = Boolean.FALSE;
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "companiesUser")
     private List<Company> companies = new ArrayList<>();
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "contactPersonsUser")
     private List<ContactPerson> contactPersonList =  new ArrayList<>();
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "tradeNotesUser")
     private List<TradeNote> tradeNotes =  new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "role_id")
+    @JsonBackReference(value = "usersRole")
     private Role role;
 
     public User() {
