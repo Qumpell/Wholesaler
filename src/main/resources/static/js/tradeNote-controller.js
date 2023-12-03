@@ -84,7 +84,13 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
                 }
             );
     };
-
+    // Function to handle auto-resize of textarea
+    $scope.resizeTextarea = function () {
+        console.log('resizeTextarea called');
+        var textarea = document.getElementById('content');
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    };
 
     // AKCJA wywoluje dany scope
 
@@ -103,7 +109,7 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
        // $scope.getAll; // wykonaj akcje i zwróc wszystkie
         $scope.formSubmit = function () { // formSubmit ng-submit
             $scope.createOne($scope.tradeNote);
-        }
+        };
     }
     // UPDATE ONE
     if (action === 'update') {
@@ -114,7 +120,7 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
             $log.debug('update one: role');
             $log.debug($scope.tradeNote);
             $scope.updateOne($scope.tradeNote.id, $scope.tradeNote);
-        }
+        };
     }
     // DELETE ONE
     if (action === 'delete') {

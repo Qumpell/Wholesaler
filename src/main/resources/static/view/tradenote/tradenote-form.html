@@ -20,7 +20,7 @@
             <tr>
                 <td class="bold"><label for="content">Content</label></td>
                 <!--                <td><input type="text" id="content" ng-model="company.name"/></td>-->
-                <td><textarea id="content" name="content" rows="4" cols="50" ng-model="tradeNote.content"></textarea></td>
+                <td><textarea id="content" name="content" rows="1" cols="10"  ng-model="tradeNote.content" ng-change="resizeTextarea()"></textarea></td>
                 <td class="error">{{ formErrors['Content'] }}</td>
             </tr>
 
