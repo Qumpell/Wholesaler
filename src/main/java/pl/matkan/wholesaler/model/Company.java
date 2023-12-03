@@ -26,6 +26,8 @@ public class Company {
     private Industry industry;
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "contactPersonsCompany")
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "contact_person_id")
     private List<ContactPerson> contactPersonList = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "user_id")

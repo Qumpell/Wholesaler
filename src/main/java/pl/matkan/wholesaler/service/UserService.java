@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.service;
 
+import pl.matkan.wholesaler.dto.UserDto;
 import pl.matkan.wholesaler.model.User;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface UserService {
 
     void deleteById(Long id);
 
-    List<User> findAll();
+    List<UserDto> findAll();
 }

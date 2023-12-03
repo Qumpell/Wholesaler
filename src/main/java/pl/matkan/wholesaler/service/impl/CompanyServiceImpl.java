@@ -62,10 +62,10 @@ public class CompanyServiceImpl implements CompanyService {
 
         companyOptional.ifPresent(company -> {
             User user = company.getUser();
-
-            user.removeCompany(company);
-
-            userRepository.save(user);
+            if(user != null) {
+                user.removeCompany(company);
+                userRepository.save(user);
+            }
         });
 
         companyRepository.deleteById(id);

@@ -20,11 +20,11 @@
         <tbody>
         <tr ng-repeat="usr in users"    ng-cloak data-ng-class="usr.isDeleted && 'strikethrough' || 'null'">
             <td >{{ usr.id }}</td>
-            <td><a ng-href="#/users/one/{{usr.id}}">{{ usr.name }}</a></td>
+            <td><a ng-href="#/users/one/{{usr.id}}">{{ usr.firstname }}</a></td>
             <td>{{ usr.surname }}</td>
             <td>{{ usr.dateOfBirth }}</td>
             <td>{{ usr.login }}</td>
-            <td>{{ usr.role.name }}</td>
+            <td>{{ usr.roleName }}</td>
             <td>{{ usr.isDeleted ? "inactive" : "active" }}</td>
             <td><a  type="button" class="btn btn-info" ng-href="#/users/update/{{usr.id}}">Edit</a></td>
             <td><a  type="button" class="btn btn-danger" ng-href="#/users/delete/{{usr.id}}">{{ usr.isDeleted ? "Activate" : "Deactivate" }}</a>

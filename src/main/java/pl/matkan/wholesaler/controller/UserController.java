@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.matkan.wholesaler.dto.UserDto;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.service.impl.UserServiceImpl;
 
@@ -25,7 +26,7 @@ public class UserController {
         return one.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
     @GetMapping()
-    public List<User> getAll() {
+    public List<UserDto> getAll() {
         return userSrv.findAll();
     }
 
