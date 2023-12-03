@@ -1,0 +1,40 @@
+app:
+  db-init: true
+logging:
+  level:
+    org:
+      springframework:
+        web: TRACE
+spring:
+  profiles:
+    active: dev
+  datasource:
+    password: root
+    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernates:
+        show:
+          sql: true
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+##rsa.private-key=classpath:certs/private.pem
+##rsa.public-key=classpath:certs/public.pem
+#
+##spring.security.user.password=123
+#
+##spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+##spring.jpa.show-sql: true
+#spring.jpa.hibernate.ddl-auto=create-drop
+#spring.datasource.url=jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+#spring.datasource.username=root
+#spring.datasource.password=root
+#spring.jpa.properties.hibernates.show.sql=true
+#logging.level.org.springframework.web=TRACE
+#app.db-init=false

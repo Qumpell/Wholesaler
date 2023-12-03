@@ -1,6 +1,5 @@
 package pl.matkan.wholesaler.service.impl;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.model.ContactPerson;
 import pl.matkan.wholesaler.repo.ContactPersonRepository;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("contactPersonService")
-@Repository
 public class ContactPersonServiceImpl implements ContactPersonService {
 
     private final ContactPersonRepository contactPersonRepository;
@@ -21,25 +19,18 @@ public class ContactPersonServiceImpl implements ContactPersonService {
 
     @Override
     public ContactPerson create(ContactPerson one) {
-        ContactPerson savedOne = contactPersonRepository.save(one);
-        return savedOne;
+        return contactPersonRepository.save(one);
     }
 
     @Override
     public ContactPerson update(Long id, ContactPerson one) {
-
         one.setId(id);
-        ContactPerson savedOne = contactPersonRepository.save(one);
-        return savedOne;
+        return contactPersonRepository.save(one);
     }
 
     @Override
     public Optional<ContactPerson> findById(Long id) {
-        Optional<ContactPerson> one = contactPersonRepository.findById(id);
-        if (one.isPresent()) {
-            return one;
-        } else
-            return Optional.empty();
+        return contactPersonRepository.findById(id);
     }
 
     @Override
@@ -54,7 +45,6 @@ public class ContactPersonServiceImpl implements ContactPersonService {
 
     @Override
     public List<ContactPerson> findAll() {
-        List<ContactPerson> all = contactPersonRepository.findAll();
-        return all;
+        return contactPersonRepository.findAll();
     }
 }

@@ -1,58 +1,49 @@
 package pl.matkan.wholesaler.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "companies")
-//@SQLDelete(sql = "UPDATE companies SET is_deleted = true WHERE id=?")
-@SQLDelete(sql = "UPDATE  companies SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
-//@Where(clause = "is_deleted=false")
 public class Company {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String nip;
-
-    @ManyToOne
-    @JoinColumn(name = "industry_id")
-    private Industry industry;
     private String address;
     private String city;
-
-    @OneToMany(mappedBy = "company")
-    private List<ContactPerson> contactPerson = new ArrayList<>();
+    private boolean isDeleted = Boolean.FALSE;
+    @ManyToOne
+    @JoinColumn(name = "industry_id")
+    @JsonBackReference(value = "companiesIndustry")
+    private Industry industry;
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "contactPersonsCompany")
+    private List<ContactPerson> contactPersonList = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "companiesUser")
     private User user;
-//    @ManyToMany
-//    @JoinTable(name = "companies_trade_notes",
-//            joinColumns = @JoinColumn(name = "company_id"),
-//            inverseJoinColumns = @JoinColumn(name = "trade_note_id"))
-//    private Set<TradeNote> tradeNotes = new HashSet<>();
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "tradeNotesCompany")
+    private List<TradeNote> tradeNotes =  new ArrayList<>();
 
-    @OneToMany(mappedBy = "company")
-    private List<TradeNote> tradeNotes = new ArrayList<>();
-
-    private boolean isDeleted = Boolean.FALSE;
 
     public Company() {
     }
 
-    public Company(String name, String nip, String address, String city, Industry industry, User user) {
+    public Company(String name, String nip, String address, String city) {
         this.name = name;
         this.nip = nip;
         this.address = address;
-        this.industry = industry;
         this.city = city;
-        this.user = user;
     }
 
     public String getName() {
@@ -86,23 +77,6 @@ public class Company {
     public void setAddress(String address) {
         this.address = address;
     }
-
-//    public List<ContactPerson> getContactPerson() {
-//        return contactPerson;
-//    }
-//
-//    public void setContactPerson(List<ContactPerson> contactPerson) {
-//        this.contactPerson = contactPerson;
-//    }
-//
-//    public List<TradeNote> getTradeNotes() {
-//        return tradeNotes;
-//    }
-//
-//    public void setTradeNotes(List<TradeNote> tradeNotes) {
-//        this.tradeNotes = tradeNotes;
-//    }
-
     public Long getId() {
         return id;
     }
@@ -126,12 +100,44 @@ public class Company {
     public void setUser(User user) {
         this.user = user;
     }
-
-    public boolean getIsDeleted() {
+    public boolean isDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(boolean isDeleted) {
-        this.isDeleted = isDeleted;
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public List<ContactPerson> getContactPersonList() {
+        return contactPersonList;
+    }
+
+    public void setContactPersonList(List<ContactPerson> contactPersonList) {
+        this.contactPersonList = contactPersonList;
+    }
+
+    public List<TradeNote> getTradeNotes() {
+        return tradeNotes;
+    }
+
+    public void setTradeNotes(List<TradeNote> tradeNotes) {
+        this.tradeNotes = tradeNotes;
+    }
+
+    public void addContactPerson(ContactPerson contactPerson) {
+        contactPersonList.add(contactPerson);
+        contactPerson.setCompany(this);
+    }
+    public void removeContactPerson(ContactPerson contactPerson) {
+        contactPersonList.remove(contactPerson);
+        contactPerson.setCompany(null);
+    }
+    public void addTradeNote(TradeNote tradeNote) {
+        tradeNotes.add(tradeNote);
+        tradeNote.setCompany(this);
+    }
+    public void removeTradeNote(TradeNote tradeNote) {
+        tradeNotes.remove(tradeNote);
+        tradeNote.setCompany(null);
     }
 }

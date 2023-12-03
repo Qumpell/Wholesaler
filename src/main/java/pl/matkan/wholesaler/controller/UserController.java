@@ -19,28 +19,22 @@ public class UserController {
     public UserController(@Qualifier("userService") UserServiceImpl userSrv) {
         this.userSrv = userSrv;
     }
-
-    /* READ */
     @GetMapping("/{id}")
     public ResponseEntity<User> getOne(@PathVariable("id") Long id) {
         Optional<User> one = userSrv.findById(id);
         return one.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
-
     @GetMapping()
     public List<User> getAll() {
         return userSrv.findAll();
     }
 
-    /* CREATE */
     @PostMapping()
     public ResponseEntity<User> createOne(@RequestBody User one) {
-        //System.out.println("co przyszlo:" + one.toString());
         User carOne = userSrv.create(one);
         return new ResponseEntity<>(carOne, HttpStatus.CREATED);
     }
 
-    /* UPDATE */
     @PutMapping("/{id}")
     public ResponseEntity<User> updateOne(@PathVariable("id") Long id, @RequestBody User one) {
         if (userSrv.existsById(id)) {
@@ -49,8 +43,6 @@ public class UserController {
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-
-    /* DELETE */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {
@@ -60,7 +52,6 @@ public class UserController {
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
 
     }
 }

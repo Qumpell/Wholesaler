@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,18 +14,16 @@ public class Industry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
     @OneToMany(mappedBy = "industry")
-    private List<Company> companies = new ArrayList<>();
+    @JsonManagedReference(value = "companiesIndustry")
+    private List<Company> companies =  new ArrayList<>();
 
     public Industry(String name) {
         this.name = name;
     }
-
     public Industry() {
 
     }
-
     public Long getId() {
         return id;
     }
@@ -38,4 +39,22 @@ public class Industry {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<Company> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
+    }
+
+    public void addCompany(Company company) {
+        companies.add(company);
+        company.setIndustry(this);
+    }
+    public void removeCompany(Company company) {
+        companies.remove(company);
+        company.setIndustry(null);
+    }
+
 }

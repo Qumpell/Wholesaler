@@ -1,6 +1,5 @@
 package pl.matkan.wholesaler.service.impl;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.model.TradeNote;
 import pl.matkan.wholesaler.repo.TradeNoteRepository;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("tradeNoteService")
-@Repository
 public class TradeNoteServiceImpl implements TradeNoteService {
 
     private final TradeNoteRepository tradeNoteRepo;
@@ -21,25 +19,18 @@ public class TradeNoteServiceImpl implements TradeNoteService {
 
     @Override
     public TradeNote create(TradeNote one) {
-        TradeNote savedOne = tradeNoteRepo.save(one);
-        return savedOne;
+        return tradeNoteRepo.save(one);
     }
 
     @Override
     public TradeNote update(Long id, TradeNote one) {
-
         one.setId(id);
-        TradeNote savedOne = tradeNoteRepo.save(one);
-        return savedOne;
+        return tradeNoteRepo.save(one);
     }
 
     @Override
     public Optional<TradeNote> findById(Long id) {
-        Optional<TradeNote> one = tradeNoteRepo.findById(id);
-        if (one.isPresent()) {
-            return one;
-        } else
-            return Optional.empty();
+        return tradeNoteRepo.findById(id);
     }
 
     @Override
@@ -54,7 +45,6 @@ public class TradeNoteServiceImpl implements TradeNoteService {
 
     @Override
     public List<TradeNote> findAll() {
-        List<TradeNote> all = tradeNoteRepo.findAll();
-        return all;
+        return tradeNoteRepo.findAll();
     }
 }

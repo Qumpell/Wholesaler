@@ -19,7 +19,6 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    /* READ */
     @GetMapping("/{id}")
     public ResponseEntity<Company> getOne(@PathVariable("id") Long id) {
         Optional<Company> one = companyService.findById(id);
@@ -31,14 +30,12 @@ public class CompanyController {
         return companyService.findAll();
     }
 
-    /* CREATE */
     @PostMapping()
     public ResponseEntity<Company> createOne(@RequestBody Company one) {
         Company companyOne = companyService.create(one);
         return new ResponseEntity<>(companyOne, HttpStatus.CREATED);
     }
 
-    /* UPDATE */
     @PutMapping("/{id}")
     public ResponseEntity<Company> updateOne(@PathVariable("id") Long id, @RequestBody Company one) {
         if (companyService.existsById(id)) {
@@ -47,8 +44,6 @@ public class CompanyController {
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-
-    /* DELETE */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {

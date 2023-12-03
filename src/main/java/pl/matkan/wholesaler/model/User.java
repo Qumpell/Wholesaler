@@ -1,8 +1,7 @@
 package pl.matkan.wholesaler.model;
 
-import org.hibernate.annotations.Loader;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 //@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
-@SQLDelete(sql = "UPDATE  users SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
+//@SQLDelete(sql = "UPDATE  users SET is_deleted = IF(is_deleted = false, true, false) WHERE id = ?")
 //@Where(clause = "is_deleted=false")
 public class User {
     @Id
@@ -21,27 +20,21 @@ public class User {
     private String surname;
     private String dateOfBirth;
     private String login;
-
     private String password;
-    @OneToMany(
-            mappedBy = "user"
-
-    )
+    private boolean isDeleted = Boolean.FALSE;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "companiesUser")
     private List<Company> companies = new ArrayList<>();
-
-    @OneToMany(
-            mappedBy = "user"
-
-    )
-    private List<ContactPerson> contactPeople = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<TradeNote> tradeNotes = new ArrayList<>();
-
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "contactPersonsUser")
+    private List<ContactPerson> contactPersonList =  new ArrayList<>();
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "tradeNotesUser")
+    private List<TradeNote> tradeNotes =  new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "role_id")
+    @JsonBackReference(value = "usersRole")
     private Role role;
-    private boolean isDeleted = Boolean.FALSE;
 
     public User() {
     }
@@ -118,4 +111,62 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public List<Company> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
+    }
+
+    public List<ContactPerson> getContactPersonList() {
+        return contactPersonList;
+    }
+
+    public void setContactPersonList(List<ContactPerson> contactPersonList) {
+        this.contactPersonList = contactPersonList;
+    }
+
+    public List<TradeNote> getTradeNotes() {
+        return tradeNotes;
+    }
+
+    public void setTradeNotes(List<TradeNote> tradeNotes) {
+        this.tradeNotes = tradeNotes;
+    }
+
+    public void addCompany(Company company) {
+        companies.add(company);
+        company.setUser(this);
+    }
+    public void removeCompany(Company company) {
+        companies.remove(company);
+        company.setUser(null);
+    }
+    public void addContactPerson(ContactPerson contactPerson) {
+        contactPersonList.add(contactPerson);
+        contactPerson.setUser(this);
+    }
+    public void removeContactPerson(ContactPerson contactPerson) {
+        contactPersonList.remove(contactPerson);
+        contactPerson.setUser(null);
+    }
+    public void addTradeNotes(TradeNote tradeNote) {
+        tradeNotes.add(tradeNote);
+        tradeNote.setUser(this);
+    }
+    public void removeTradeNote(TradeNote tradeNote) {
+        tradeNotes.remove(tradeNote);
+        tradeNote.setUser(null);
+    }
 }
+
