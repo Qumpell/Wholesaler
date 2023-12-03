@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class User {
     private Long id;
     private String name;
     private String surname;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String login;
     private String password;
     private boolean isDeleted = Boolean.FALSE;
@@ -39,7 +40,7 @@ public class User {
     public User() {
     }
 
-    public User(String name, String surname, String dateOfBirth, String login, String password, Role role) {
+    public User(String name, String surname, LocalDate dateOfBirth, String login, String password, Role role) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
@@ -72,11 +73,11 @@ public class User {
         this.surname = surname;
     }
 
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
