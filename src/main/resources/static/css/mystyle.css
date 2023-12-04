@@ -46,3 +46,15 @@
 .centered-items{
     text-align: center;
 }
+#view-404-error {
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+}
+
+#view-404-error h1 {
+    color: #333;
+}
+
+#view-404-error p {
+    color: #666;
+}

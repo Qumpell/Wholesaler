@@ -31,6 +31,10 @@ hrApp.controller('ContactPersonController', function ($scope, $http, $log, $rout
                 function error(response) {
                     $log.error('GET: /contactPersons/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };

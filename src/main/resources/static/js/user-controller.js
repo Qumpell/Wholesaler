@@ -31,6 +31,10 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
                 function error(response) {
                     $log.error('GET: /users/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };

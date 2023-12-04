@@ -31,6 +31,10 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
                 function error(response) {
                     $log.error('GET: /companies/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };

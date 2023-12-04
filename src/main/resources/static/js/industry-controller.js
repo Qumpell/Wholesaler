@@ -31,6 +31,10 @@ hrApp.controller('IndustryController', function ($scope, $http, $log, $routePara
                 function error(response) {
                     $log.error('GET: /industries/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };
