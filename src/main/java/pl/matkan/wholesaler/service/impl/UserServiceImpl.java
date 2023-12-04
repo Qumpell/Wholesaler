@@ -3,6 +3,7 @@ package pl.matkan.wholesaler.service.impl;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.dto.UserDto;
 import pl.matkan.wholesaler.dto.mapper.UserMapper;
+import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.repo.UserRepository;
 import pl.matkan.wholesaler.service.UserService;
