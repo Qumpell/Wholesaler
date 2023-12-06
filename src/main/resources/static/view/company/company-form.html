@@ -55,10 +55,19 @@
                 <td class="error">{{ formErrors['city'] }}</td>
             </tr>
             <!-- OWNER ID -->
+<!--            <tr>-->
+<!--                <td class="bold"><label for="owner_id">Owner ID</label></td>-->
+<!--                <td>{{ company.user.id }}</td>-->
+<!--                <td><input type="hidden" id="owner_id" ng-model="company.user.id"/>2</td>-->
+<!--            </tr>-->
             <tr>
                 <td class="bold"><label for="owner_id">Owner ID</label></td>
-                <td>{{ company.user.id }}</td>
-                <td><input type="hidden" id="owner_id" ng-model="company.user.id"/>2</td>
+                <td>
+                    <select id="owner_id" ng-model="company.user.id"
+                            ng-options="usr.id as usr.name for usr in users"></select>
+
+                </td>
+                <td class="error">{{ formErrors['ownerId'] }}</td>
             </tr>
 
             <!-- SUBMIT -->

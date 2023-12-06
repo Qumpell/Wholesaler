@@ -1,6 +1,8 @@
 package pl.matkan.wholesaler.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.dto.CompanyDto;
+import pl.matkan.wholesaler.dto.mapper.CompanyMapper;
 import pl.matkan.wholesaler.model.Company;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.repo.CompanyRepository;
@@ -9,16 +11,19 @@ import pl.matkan.wholesaler.service.CompanyService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("companyService")
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final CompanyMapper companyMapper;
 
-    public CompanyServiceImpl(CompanyRepository companyRepo, UserRepository userRepository) {
+    public CompanyServiceImpl(CompanyRepository companyRepo, UserRepository userRepository, CompanyMapper companyMapper) {
         this.companyRepository = companyRepo;
         this.userRepository = userRepository;
+        this.companyMapper = companyMapper;
     }
 
     @Override
@@ -72,7 +77,10 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<Company> findAll() {
-        return companyRepository.findAll();
+    public List<CompanyDto> findAll() {
+        List<Company> companies  = companyRepository.findAll();
+        return companies.stream()
+                .map(companyMapper::companyToCompanyDto)
+                .collect(Collectors.toList());
     }
 }

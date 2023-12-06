@@ -1,20 +1,24 @@
 package pl.matkan.wholesaler.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.dto.TradeNoteDto;
+import pl.matkan.wholesaler.dto.mapper.TradeNoteMapper;
 import pl.matkan.wholesaler.model.TradeNote;
 import pl.matkan.wholesaler.repo.TradeNoteRepository;
 import pl.matkan.wholesaler.service.TradeNoteService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("tradeNoteService")
 public class TradeNoteServiceImpl implements TradeNoteService {
 
     private final TradeNoteRepository tradeNoteRepo;
-
-    public TradeNoteServiceImpl(TradeNoteRepository tradeNoteRepo) {
+    private final TradeNoteMapper tradeNoteMapper;
+    public TradeNoteServiceImpl(TradeNoteRepository tradeNoteRepo, TradeNoteMapper tradeNoteMapper) {
         this.tradeNoteRepo = tradeNoteRepo;
+        this.tradeNoteMapper = tradeNoteMapper;
     }
 
     @Override
@@ -44,7 +48,10 @@ public class TradeNoteServiceImpl implements TradeNoteService {
     }
 
     @Override
-    public List<TradeNote> findAll() {
-        return tradeNoteRepo.findAll();
+    public List<TradeNoteDto> findAll() {
+        List<TradeNote> tradeNotes = tradeNoteRepo.findAll();
+        return tradeNotes.stream()
+                .map(tradeNoteMapper::tradeNoteToTradeNoteDto)
+                .collect(Collectors.toList());
     }
 }

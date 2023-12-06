@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.service;
 
+import pl.matkan.wholesaler.dto.TradeNoteDto;
 import pl.matkan.wholesaler.model.TradeNote;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface TradeNoteService {
 
     void deleteById(Long id);
 
-    public List<TradeNote> findAll();
+    public List<TradeNoteDto> findAll();
 }

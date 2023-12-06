@@ -3,6 +3,7 @@ package pl.matkan.wholesaler.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.matkan.wholesaler.dto.TradeNoteDto;
 import pl.matkan.wholesaler.model.TradeNote;
 import pl.matkan.wholesaler.service.impl.TradeNoteServiceImpl;
 
@@ -27,7 +28,7 @@ public class TradeNoteController {
     }
 
     @GetMapping()
-    public List<TradeNote> getAll() {
+    public List<TradeNoteDto> getAll() {
         return tradeNoteService.findAll();
     }
 

@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.service;
 
+import pl.matkan.wholesaler.dto.CompanyDto;
 import pl.matkan.wholesaler.model.Company;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface CompanyService {
 
     void deleteById(Long id);
 
-    public List<Company> findAll();
+    public List<CompanyDto> findAll();
 }
