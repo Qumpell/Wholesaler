@@ -3,6 +3,7 @@ package pl.matkan.wholesaler.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.matkan.wholesaler.dto.ContactPersonDto;
 import pl.matkan.wholesaler.model.ContactPerson;
 import pl.matkan.wholesaler.service.impl.ContactPersonServiceImpl;
 
@@ -27,7 +28,7 @@ public class ContactPersonController {
     }
 
     @GetMapping()
-    public List<ContactPerson> getAll() {
+    public List<ContactPersonDto> getAll() {
         return contactPersonService.findAll();
     }
 

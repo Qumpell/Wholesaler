@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.service;
 
+import pl.matkan.wholesaler.dto.ContactPersonDto;
 import pl.matkan.wholesaler.model.ContactPerson;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface ContactPersonService {
 
     void deleteById(Long id);
 
-    public List<ContactPerson> findAll();
+    public List<ContactPersonDto> findAll();
 }
