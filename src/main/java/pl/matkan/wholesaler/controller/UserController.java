@@ -21,9 +21,11 @@ public class UserController {
         this.userSrv = userSrv;
     }
     @GetMapping("/{id}")
-    public ResponseEntity<User> getOne(@PathVariable("id") Long id) {
-        Optional<User> one = userSrv.findById(id);
-        return one.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    public ResponseEntity<UserDto> getOne(@PathVariable("id") Long id) {
+//        Optional<User> one = userSrv.findById(id);
+        UserDto userDto = userSrv.findById(id);
+//        return one.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
     @GetMapping()
     public List<UserDto> getAll() {

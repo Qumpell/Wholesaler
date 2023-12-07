@@ -11,7 +11,7 @@ public interface UserService {
 
     User update(Long id, User one);
 
-    Optional<User> findById(Long id);
+    UserDto findById(Long id);
 
     boolean existsById(Long id);
 

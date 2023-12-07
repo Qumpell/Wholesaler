@@ -1,6 +1,9 @@
 package pl.matkan.wholesaler.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.dto.RoleDto;
+import pl.matkan.wholesaler.dto.mapper.RoleMapper;
+import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.Role;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.repo.RoleRepository;
@@ -9,16 +12,19 @@ import pl.matkan.wholesaler.service.RoleService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("roleService")
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepo;
     private final UserRepository userRepository;
+    private final RoleMapper roleMapper;
 
-    public RoleServiceImpl(RoleRepository roleRepo, UserRepository userRepository) {
+    public RoleServiceImpl(RoleRepository roleRepo, UserRepository userRepository, RoleMapper roleMapper) {
         this.roleRepo = roleRepo;
         this.userRepository = userRepository;
+        this.roleMapper = roleMapper;
     }
 
     @Override
@@ -33,8 +39,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<Role> findById(Long id) {
-        return roleRepo.findById(id);
+    public RoleDto findById(Long id) {
+        return roleMapper.roleToRoleDto(
+                roleRepo.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Role not found ", "with given id:= " + id.toString()))
+        );
     }
 
     @Override
@@ -44,7 +53,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteById(Long id) {
-        Optional<Role> roleOptional = findById(id);
+//        Optional<Role> roleOptional = findById(id);
+        Optional<Role> roleOptional = roleRepo.findById(id);
         if (roleOptional.isPresent()){
             Role role = roleOptional.get();
             List<User> users = role.getUsers();
@@ -59,7 +69,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findAll() {
-        return roleRepo.findAll();
+    public List<RoleDto> findAll() {
+       List<Role> roles = roleRepo.findAll();
+       return roles.stream()
+               .map(roleMapper::roleToRoleDto)
+               .collect(Collectors.toList());
     }
 }
