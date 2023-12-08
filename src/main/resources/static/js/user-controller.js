@@ -27,6 +27,7 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
                     $scope.user = response.data;
                     $log.debug('GET: /users/' + id);
                     $log.debug(response);
+                    console.log($scope.user);
                 },
                 function error(response) {
                     $log.error('GET: /users/' + id);
@@ -129,6 +130,7 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
     if (action === 'update') {
         var id = $routeParams['id'];
         $scope.getOne(id);
+
         //$scope.getAll();
         $scope.getAllRoles();
         $scope.formSubmit = function () {

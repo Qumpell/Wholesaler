@@ -11,9 +11,9 @@ public class UserDto {
     private String roleName;
     private Long id;
 
-    public UserDto(Long id, String name, String surname, LocalDate dateOfBirth, String login, String password, String roleName) {
+    public UserDto(Long id, String firstname, String surname, LocalDate dateOfBirth, String login, String password, String roleName) {
         this.id = id;
-        this.firstname = name;
+        this.firstname = firstname;
         this.login = login;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;

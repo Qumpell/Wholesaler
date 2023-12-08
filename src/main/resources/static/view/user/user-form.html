@@ -18,16 +18,16 @@
 
             <!--  NAME -->
             <tr>
-                <td class="bold"><label for="name">Name</label></td>
-                <td><input type="text" id="name" ng-model="user.name"/></td>
-                <td class="error">{{ formErrors['firstName'] }}</td>
+                <td class="bold"><label for="firstname">Name</label></td>
+                <td><input type="text" id="firstname" ng-model="user.firstname"/></td>
+                <td class="error">{{ formErrors['firstname'] }}</td>
             </tr>
 
             <!-- SURNAME -->
             <tr>
                 <td class="bold"><label for="surname">Surname</label></td>
                 <td><input type="text" id="surname" ng-model="user.surname"/></td>
-                <td class="error">{{ formErrors['surName'] }}</td>
+                <td class="error">{{ formErrors['surname'] }}</td>
             </tr>
 
             <!-- date of birth -->
@@ -45,13 +45,13 @@
 
             <!-- ROLE LIST -->
             <tr>
-                <td class="bold"><label for="role">Role</label></td>
+                <td class="bold"><label for="roleName">Role</label></td>
                 <td>
-                    <select id="role" ng-model="user.role.id"
+                    <select id="roleName" ng-model="user.roleName"
                             ng-options="rol.id as rol.name  for rol in roles"></select>
 
                 </td>
-                <td class="error">{{ formErrors['role'] }}</td>
+                <td class="error">{{ formErrors['roleName'] }}</td>
             </tr>
 
 
