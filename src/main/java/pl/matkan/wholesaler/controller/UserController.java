@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateOne(@PathVariable("id") Long id, @RequestBody User one) {
+    public ResponseEntity<User> updateOne(@PathVariable("id") Long id, @RequestBody UserDto one) {
         if (userSrv.existsById(id)) {
             User updatedOne = userSrv.update(id, one);
             return new ResponseEntity<>(updatedOne, HttpStatus.OK);

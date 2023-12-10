@@ -6,6 +6,7 @@ import pl.matkan.wholesaler.dto.mapper.UserMapper;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.repo.UserRepository;
+import pl.matkan.wholesaler.service.RoleService;
 import pl.matkan.wholesaler.service.UserService;
 
 import java.util.List;
@@ -16,10 +17,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
     private final UserMapper userMapper;
+    private final RoleService roleService;
 
-    public UserServiceImpl(UserRepository userRepo, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepo, UserMapper userMapper, RoleService roleService) {
         this.userRepo = userRepo;
         this.userMapper = userMapper;
+        this.roleService = roleService;
     }
 
     @Override
@@ -28,9 +31,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(Long id, User one) {
-        one.setId(id);
-        return userRepo.save(one);
+    public User update(Long id, UserDto one) {
+        User user = userMapper.userDtoToUser(one);
+        user.setId(id);
+        user.setRole(roleService.findByName(one.getRoleName()));
+        return userRepo.save(user);
     }
 
     @Override

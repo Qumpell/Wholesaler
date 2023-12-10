@@ -75,4 +75,12 @@ public class RoleServiceImpl implements RoleService {
                .map(roleMapper::roleToRoleDto)
                .collect(Collectors.toList());
     }
+
+    @Override
+    public Role findByName(String name) {
+        return roleRepo.findByName(name)
+                        .orElseThrow(
+                                () -> new EntityNotFoundException("Role not found ", "with given name:= " + name)
+                        );
+    }
 }

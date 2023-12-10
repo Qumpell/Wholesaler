@@ -22,4 +22,11 @@ public interface UserMapper {
     @Mapping(source = "dateOfBirth",target = "dateOfBirth")
     @Mapping(source = "role.name",target = "roleName")
     UserDto userToUserDto(User user);
+
+    @Mapping(source = "id",target = "id")
+    @Mapping(source = "firstname",target = "name")
+    @Mapping(source = "surname",target = "surname")
+    @Mapping(source = "login",target = "login")
+    @Mapping(source = "dateOfBirth",target = "dateOfBirth")
+    User userDtoToUser(UserDto userDto);
 }

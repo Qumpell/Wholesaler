@@ -11,14 +11,15 @@ public class UserDto {
     private String roleName;
     private Long id;
 
-    public UserDto(Long id, String firstname, String surname, LocalDate dateOfBirth, String login, String password, String roleName) {
-        this.id = id;
+    public UserDto(String firstname, String surname, LocalDate dateOfBirth, String login, String roleName, Long id) {
         this.firstname = firstname;
-        this.login = login;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
+        this.login = login;
         this.roleName = roleName;
+        this.id = id;
     }
+
 
     public String getRoleName() {
         return roleName;
@@ -67,4 +68,5 @@ public class UserDto {
     public void setId(Long id) {
         this.id = id;
     }
+
 }

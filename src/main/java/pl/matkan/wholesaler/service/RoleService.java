@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoleService {
-    public Role create(Role one);
+    Role create(Role one);
 
-    public Role update(Long id, Role one);
+    Role update(Long id, Role one);
 
     RoleDto findById(Long id);
 
@@ -17,5 +17,7 @@ public interface RoleService {
 
     void deleteById(Long id);
 
-    public List<RoleDto> findAll();
+    List<RoleDto> findAll();
+
+    Role findByName(String name);
 }
