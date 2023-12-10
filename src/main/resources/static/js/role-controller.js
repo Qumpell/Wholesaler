@@ -52,6 +52,11 @@ hrApp.controller('RoleController', function ($scope, $http, $log, $routeParams, 
                     $log.error('POST: /roles/');
                     $log.error(response);
                     $scope.formErrors = response.data.fieldErrors;
+                    if (response.status === 409) {
+                        $scope.errorMessage = 'Role with such name already exists.';
+                    } else {
+                        $scope.errorMessage = 'There was an error while creating new role.';
+                    }
                 }
             );
     };
@@ -69,6 +74,11 @@ hrApp.controller('RoleController', function ($scope, $http, $log, $routeParams, 
                     $log.error('PUT: /roles/');
                     $log.error(response);
                     $scope.formErrors = response.data.fieldErrors;
+                    if (response.status === 409) {
+                        $scope.errorMessage = 'Role with such name already exists.';
+                    } else {
+                        $scope.errorMessage = 'There was an error while updating the role.';
+                    }
                 }
             );
     };
