@@ -70,6 +70,10 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
                     $log.error('PUT: /users/');
                     $log.error(response);
                     $scope.formErrors = response.data.fieldErrors;
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };
@@ -86,6 +90,10 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
                 function error(response) {
                     $log.error('DELETE: /users/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };

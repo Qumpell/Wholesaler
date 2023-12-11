@@ -10,7 +10,6 @@ import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.service.impl.UserServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -22,9 +21,7 @@ public class UserController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getOne(@PathVariable("id") Long id) {
-//        Optional<User> one = userSrv.findById(id);
         UserDto userDto = userSrv.findById(id);
-//        return one.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
     @GetMapping()

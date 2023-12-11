@@ -34,8 +34,8 @@
             <tr>
                 <td class="bold"><label for="industry">Industry</label></td>
                 <td>
-                    <select id="industry" ng-model="company.industry.id"
-                            ng-options="ind.id as ind.name  for ind in industries"></select>
+                    <select id="industry" ng-model="company.industryName"
+                            ng-options="ind.name as ind.name  for ind in industries"></select>
 
                 </td>
                 <td class="error">{{ formErrors['industry'] }}</td>
@@ -58,7 +58,7 @@
             <tr>
                 <td class="bold"><label for="owner_id">Owner ID</label></td>
                 <td>
-                    <select id="owner_id" ng-model="company.user.id"
+                    <select id="owner_id" ng-model="company.ownerId"
                             ng-options="usr.id as (usr.firstname + ' ' + usr.surname) for usr in users"></select>
 
                 </td>

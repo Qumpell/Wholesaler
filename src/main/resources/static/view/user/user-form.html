@@ -47,8 +47,8 @@
             <tr>
                 <td class="bold"><label for="roleName">Role</label></td>
                 <td>
-                    <select id="roleName" ng-model="user.roleId"
-                            ng-options="rol.id as rol.name for rol in roles"></select>
+                    <select id="roleName" ng-model="user.roleName"
+                            ng-options="rol.name as rol.name for rol in roles"></select>
 
                 </td>
                 <td class="error">{{ formErrors['roleName'] }}</td>

@@ -42,7 +42,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleDto findById(Long id) {
         return roleMapper.roleToRoleDto(
                 roleRepo.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Role not found ", "with given id:= " + id.toString()))
+                        .orElseThrow(() -> new EntityNotFoundException("Role not found ", "with given id:= " + id))
         );
     }
 
