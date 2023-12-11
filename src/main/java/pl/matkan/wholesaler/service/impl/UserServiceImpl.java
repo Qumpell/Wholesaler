@@ -32,10 +32,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(Long id, UserDto one) {
-        User user = userMapper.userDtoToUser(one);
-        user.setId(id);
-        user.setRole(roleService.findByName(one.getRoleName()));
-        return userRepo.save(user);
+        User userDataToUpdate = userMapper.userDtoToUser(one);
+        User clientFetched = getExistingClient(id);
+
+        clientFetched.setName(userDataToUpdate.getName());
+        clientFetched.setSurname(userDataToUpdate.getName());
+        clientFetched.setLogin(userDataToUpdate.getLogin());
+        clientFetched.setDateOfBirth(userDataToUpdate.getDateOfBirth());
+        clientFetched.setRole(roleService.findByName(one.getRoleName()));
+
+        return userRepo.save(clientFetched);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserDto(
                 userRepo
                         .findById(id)
-                        .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id.toString())))
+                        .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id)))
         );
     }
 
@@ -63,5 +69,10 @@ public class UserServiceImpl implements UserService {
         return users.stream()
                                         .map(userMapper::userToUserDto)
                                         .collect(Collectors.toList());
+    }
+    public User getExistingClient(Long id) {
+        return userRepo.findById(id)
+                             .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id))
+        );
     }
 }
