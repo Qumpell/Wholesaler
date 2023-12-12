@@ -23,4 +23,11 @@ public interface CompanyMapper {
     @Mapping(source = "industry.name",target = "industryName")
     @Mapping(source = "user.id",target = "ownerId")
     CompanyDto companyToCompanyDto(Company company);
+
+    @Mapping(source = "id",target = "id")
+    @Mapping(source = "name",target = "name")
+    @Mapping(source = "nip",target = "nip")
+    @Mapping(source = "address",target = "address")
+    @Mapping(source = "city",target = "city")
+    Company companyDtoToCompany(CompanyDto companyDto);
 }

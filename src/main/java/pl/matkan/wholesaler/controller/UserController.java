@@ -25,8 +25,8 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
     @GetMapping()
-    public List<UserDto> getAll() {
-        return userSrv.findAll();
+    public ResponseEntity<List<UserDto>> getAll() {
+        return new ResponseEntity<>(userSrv.findAll(), HttpStatus.OK);
     }
 
     @PostMapping()

@@ -10,7 +10,6 @@ import pl.matkan.wholesaler.service.RoleService;
 import pl.matkan.wholesaler.service.UserService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("userService")
@@ -33,10 +32,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(Long id, UserDto one) {
         User userDataToUpdate = userMapper.userDtoToUser(one);
-        User clientFetched = getExistingClient(id);
+        User clientFetched = getOneUserById(id);
 
         clientFetched.setName(userDataToUpdate.getName());
-        clientFetched.setSurname(userDataToUpdate.getName());
+        clientFetched.setSurname(userDataToUpdate.getSurname());
         clientFetched.setLogin(userDataToUpdate.getLogin());
         clientFetched.setDateOfBirth(userDataToUpdate.getDateOfBirth());
         clientFetched.setRole(roleService.findByName(one.getRoleName()));
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService {
                                         .map(userMapper::userToUserDto)
                                         .collect(Collectors.toList());
     }
-    public User getExistingClient(Long id) {
+    public User getOneUserById(Long id) {
         return userRepo.findById(id)
                              .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id))
         );
