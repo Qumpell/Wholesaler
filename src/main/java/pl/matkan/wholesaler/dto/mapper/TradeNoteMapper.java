@@ -18,5 +18,10 @@ public interface TradeNoteMapper {
     @Mapping(source = "content",target = "content")
     @Mapping(source = "user.id",target = "ownerId")
     @Mapping(source = "company.name",target = "companyName")
+    @Mapping(source = "company.id",target = "companyId")
     TradeNoteDto tradeNoteToTradeNoteDto(TradeNote tradeNote);
+
+    @Mapping(source = "id",target = "id")
+    @Mapping(source = "content",target = "content")
+    TradeNote tradeNoteDtoToTradeNote(TradeNoteDto tradeNoteDto);
 }

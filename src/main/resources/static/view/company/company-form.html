@@ -56,11 +56,10 @@
             </tr>
             <!-- OWNER ID -->
             <tr>
-                <td class="bold"><label for="owner_id">Owner ID</label></td>
+                <td class="bold"><label for="owner_id">Owner</label></td>
                 <td>
                     <select id="owner_id" ng-model="company.ownerId"
                             ng-options="usr.id as (usr.firstname + ' ' + usr.surname) for usr in users"></select>
-
                 </td>
                 <td class="error">{{ formErrors['ownerId'] }}</td>
             </tr>

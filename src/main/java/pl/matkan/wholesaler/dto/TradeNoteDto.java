@@ -5,12 +5,14 @@ public class TradeNoteDto {
     private String content;
     private Long ownerId;
     private String companyName;
+    private Long companyId;
 
-    public TradeNoteDto(Long id, String content, Long ownerId, String companyName) {
+    public TradeNoteDto(Long id, String content, Long ownerId, String companyName, Long companyId) {
         this.id = id;
         this.content = content;
         this.ownerId = ownerId;
         this.companyName = companyName;
+        this.companyId = companyId;
     }
 
     public Long getId() {
@@ -43,5 +45,13 @@ public class TradeNoteDto {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 }

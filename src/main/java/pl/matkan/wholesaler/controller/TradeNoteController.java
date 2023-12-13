@@ -8,7 +8,6 @@ import pl.matkan.wholesaler.model.TradeNote;
 import pl.matkan.wholesaler.service.impl.TradeNoteServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/tradeNotes")
@@ -22,24 +21,24 @@ public class TradeNoteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TradeNote> getOne(@PathVariable("id") Long id) {
-        Optional<TradeNote> one = tradeNoteService.findById(id);
-        return one.map(tradeNote -> new ResponseEntity<>(tradeNote, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    public ResponseEntity<TradeNoteDto> getOne(@PathVariable("id") Long id) {
+        TradeNoteDto tradeNoteDto = tradeNoteService.findById(id);
+        return new ResponseEntity<>(tradeNoteDto, HttpStatus.OK);
     }
 
     @GetMapping()
-    public List<TradeNoteDto> getAll() {
-        return tradeNoteService.findAll();
+    public ResponseEntity<List<TradeNoteDto>> getAll() {
+        return new ResponseEntity<>(tradeNoteService.findAll(),HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<TradeNote> createOne(@RequestBody TradeNote one) {
+    public ResponseEntity<TradeNote> createOne(@RequestBody TradeNoteDto one) {
         TradeNote tradeNoteOne = tradeNoteService.create(one);
         return new ResponseEntity<>(tradeNoteOne, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TradeNote> updateOne(@PathVariable("id") Long id, @RequestBody TradeNote one) {
+    public ResponseEntity<TradeNote> updateOne(@PathVariable("id") Long id, @RequestBody TradeNoteDto one) {
         if (tradeNoteService.existsById(id)) {
             TradeNote updatedOne = tradeNoteService.update(id, one);
             return new ResponseEntity<>(updatedOne, HttpStatus.OK);

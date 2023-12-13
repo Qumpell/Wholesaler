@@ -20,15 +20,13 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDto> getOne(@PathVariable("id") Long id) {
-//        Optional<Company> one = companyService.findById(id);
         CompanyDto companyDto = companyService.findById(id);
-//        return one.map(role -> new ResponseEntity<>(role, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
         return new ResponseEntity<>(companyDto, HttpStatus.OK);
     }
 
     @GetMapping()
-    public List<CompanyDto> getAll() {
-        return companyService.findAll();
+    public ResponseEntity<List<CompanyDto>> getAll() {
+        return new ResponseEntity<>(companyService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping()

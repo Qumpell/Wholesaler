@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<User> createOne(@RequestBody User one) {
+    public ResponseEntity<User> createOne(@RequestBody UserDto one) {
         User carOne = userSrv.create(one);
         return new ResponseEntity<>(carOne, HttpStatus.CREATED);
     }

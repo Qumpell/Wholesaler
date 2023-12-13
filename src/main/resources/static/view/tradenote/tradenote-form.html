@@ -19,22 +19,27 @@
             <!--  CONTENT -->
             <tr>
                 <td class="bold"><label for="content">Content</label></td>
-                <!--                <td><input type="text" id="content" ng-model="company.name"/></td>-->
                 <td><textarea id="content" name="content" rows="1" cols="10"  ng-model="tradeNote.content" ng-change="resizeTextarea()"></textarea></td>
-                <td class="error">{{ formErrors['Content'] }}</td>
+                <td class="error">{{ formErrors['content'] }}</td>
             </tr>
 
-            <!-- COMPANY ID -->
+            <!--COMPANY ID -->
             <tr>
-                <td class="bold"><label for="company_id">Company ID</label></td>
-                <td><input type="text" id="company_id" ng-model="tradeNote.company.id"/></td>
-                <td class="error">{{ formErrors['Company id'] }}</td>
+                <td class="bold"><label for="companyName">Company</label></td>
+                <td>
+                    <select id="companyName" ng-model="tradeNote.companyId"
+                            ng-options="comp.id as comp.name for comp in companies"></select>
+                </td>
+                <td class="error">{{ formErrors['companyName'] }}</td>
             </tr>
             <!-- OWNER ID -->
             <tr>
-                <td class="bold"><label for="owner_id">Owner ID</label></td>
-                <td>{{ tradeNote.user.id }}</td>
-                <td><input type="hidden" id="owner_id" ng-model="tradeNote.user.id"/>2</td>
+                <td class="bold"><label for="owner_id">Owner</label></td>
+                <td>
+                    <select id="owner_id" ng-model="tradeNote.ownerId"
+                            ng-options="usr.id as (usr.firstname + ' ' + usr.surname) for usr in users"></select>
+                </td>
+                <td class="error">{{ formErrors['ownerId'] }}</td>
             </tr>
 
             <!-- SUBMIT -->

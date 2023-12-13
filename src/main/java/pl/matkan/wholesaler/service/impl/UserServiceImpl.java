@@ -25,8 +25,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User one) {
-        return userRepo.save(one);
+    public User create(UserDto one) {
+        User userToCreate = userMapper.userDtoToUser(one);
+        userToCreate.setRole(roleService.findByName(one.getRoleName()));
+
+        return userRepo.save(userToCreate);
     }
 
     @Override

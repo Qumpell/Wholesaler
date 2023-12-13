@@ -96,6 +96,36 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
         textarea.style.height = textarea.scrollHeight + 'px';
     };
 
+
+    $scope.getAllCompanies = function () {  //  scope dla wywołania getall
+        $http.get('/companies')
+            .then(
+                function success(response) {
+                    $scope.companies = response.data;
+                    $log.debug('GET: /companies');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /companies');
+                    $log.error(response);
+                }
+            );
+    };
+    $scope.getAllUsers = function () {  //  scope dla wywołania getall
+        $http.get('/users')
+            .then(
+                function success(response) {
+                    $scope.users = response.data;
+                    $log.debug('GET: /users');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /users');
+                    $log.error(response);
+                }
+            );
+    };
+
     // AKCJA wywoluje dany scope
 
     // GET ONE
@@ -111,6 +141,8 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
     if (action === 'add') {
         $scope.tradeNote = {}; // utworz pusty obiekt
        // $scope.getAll; // wykonaj akcje i zwróc wszystkie
+        $scope.getAllCompanies();
+        $scope.getAllUsers();
         $scope.formSubmit = function () { // formSubmit ng-submit
             $scope.createOne($scope.tradeNote);
         };
@@ -120,6 +152,8 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
         var id = $routeParams['id'];
         $scope.getOne(id);
         //$scope.getAll();
+        $scope.getAllCompanies();
+        $scope.getAllUsers();
         $scope.formSubmit = function () {
             $log.debug('update one: role');
             $log.debug($scope.tradeNote);
