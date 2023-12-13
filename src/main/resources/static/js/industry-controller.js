@@ -52,6 +52,11 @@ hrApp.controller('IndustryController', function ($scope, $http, $log, $routePara
                     $log.error('POST: /industries/');
                     $log.error(response);
                     $scope.formErrors = response.data.fieldErrors;
+                    if (response.status === 409) {
+                        $scope.errorMessage = 'Industry with such name already exists.';
+                    } else {
+                        $scope.errorMessage = 'There was an error while creating new industry.';
+                    }
                 }
             );
     };
@@ -69,6 +74,11 @@ hrApp.controller('IndustryController', function ($scope, $http, $log, $routePara
                     $log.error('PUT: /industries/');
                     $log.error(response);
                     $scope.formErrors = response.data.fieldErrors;
+                    if (response.status === 409) {
+                        $scope.errorMessage = 'Industry with such name already exists.';
+                    } else {
+                        $scope.errorMessage = 'There was an error while creating new industry.';
+                    }
                 }
             );
     };
