@@ -89,12 +89,39 @@ hrApp.controller('ContactPersonController', function ($scope, $http, $log, $rout
             );
     };
 
-
+    $scope.getAllCompanies = function () {  //  scope dla wywołania getall
+        $http.get('/companies')
+            .then(
+                function success(response) {
+                    $scope.companies = response.data;
+                    $log.debug('GET: /companies');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /companies');
+                    $log.error(response);
+                }
+            );
+    };
+    $scope.getAllUsers = function () {  //  scope dla wywołania getall
+        $http.get('/users')
+            .then(
+                function success(response) {
+                    $scope.users = response.data;
+                    $log.debug('GET: /users');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /users');
+                    $log.error(response);
+                }
+            );
+    };
     // AKCJA wywoluje dany scope
 
     // GET ONE
     if (action === 'one') {
-        var id = $routeParams['id'];  // $routeParams service wbudowany
+        var id = $routeParams['id'];
         $scope.getOne(id);
     }
     // GET ALL
@@ -103,8 +130,9 @@ hrApp.controller('ContactPersonController', function ($scope, $http, $log, $rout
     }
     // CREATE ONE
     if (action === 'add') {
-        $scope.contactPerson = {}; // utworz pusty obiekt
-        // $scope.getAll; // wykonaj akcje i zwróc wszystkie
+        $scope.contactPerson = {};
+        $scope.getAllCompanies();
+        $scope.getAllUsers();
         $scope.formSubmit = function () { // formSubmit ng-submit
             $scope.createOne($scope.contactPerson);
         }
@@ -113,7 +141,8 @@ hrApp.controller('ContactPersonController', function ($scope, $http, $log, $rout
     if (action === 'update') {
         var id = $routeParams['id'];
         $scope.getOne(id);
-        //$scope.getAll();
+        $scope.getAllCompanies();
+        $scope.getAllUsers();
         $scope.formSubmit = function () {
             $log.debug('update one: contactPerson');
             $log.debug($scope.contactPerson);

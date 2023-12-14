@@ -37,9 +37,8 @@ public class TradeNoteServiceImpl implements TradeNoteService {
     @Override
     public TradeNote update(Long id, TradeNoteDto one) {
         TradeNote tradeNoteUpdated = tradeNoteMapper.tradeNoteDtoToTradeNote(one);
-        TradeNote tradeNoteFetched = getOneTradeNoteById(id);
 
-        tradeNoteUpdated.setId(tradeNoteFetched.getId());
+        tradeNoteUpdated.setId(id);
         tradeNoteUpdated.setUser(userService.getOneUserById(one.getOwnerId()));
         tradeNoteUpdated.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
 
@@ -72,8 +71,4 @@ public class TradeNoteServiceImpl implements TradeNoteService {
                 .collect(Collectors.toList());
     }
 
-   TradeNote getOneTradeNoteById(Long id) {
-      return tradeNoteRepo.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Trade note was not found", "with given id:= " + id));
-    }
 }

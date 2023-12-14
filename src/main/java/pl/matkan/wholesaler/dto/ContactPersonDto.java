@@ -9,8 +9,9 @@ public class ContactPersonDto {
     private String position;
     private Long ownerId;
     private String companyName;
+    private Long companyId;
 
-    public ContactPersonDto(Long id, String firstname, String surname, String phoneNumber, String mail, String position, Long ownerId, String companyName) {
+    public ContactPersonDto(Long id, String firstname, String surname, String phoneNumber, String mail, String position, Long ownerId, String companyName, Long companyId) {
         this.id = id;
         this.firstname = firstname;
         this.surname = surname;
@@ -19,6 +20,7 @@ public class ContactPersonDto {
         this.position = position;
         this.ownerId = ownerId;
         this.companyName = companyName;
+        this.companyId = companyId;
     }
 
     public Long getId() {
@@ -29,12 +31,12 @@ public class ContactPersonDto {
         this.id = id;
     }
 
-    public String getName() {
+    public String getFirstname() {
         return firstname;
     }
 
-    public void setName(String name) {
-        this.firstname = name;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
     public String getSurname() {
@@ -83,5 +85,13 @@ public class ContactPersonDto {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 }

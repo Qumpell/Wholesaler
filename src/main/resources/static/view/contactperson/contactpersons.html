@@ -21,7 +21,7 @@
         <tbody>
         <tr ng-repeat="conp in contactPersons" ng-cloak data-ng-class="conp.isDeleted && 'strikethrough' || 'null'">
             <td>{{ conp.id }}</td>
-            <td><a ng-href="#/contactPersons/one/{{conp.id}}">{{ conp.name }}</a></td>
+            <td><a ng-href="#/contactPersons/one/{{conp.id}}">{{ conp.firstname }}</a></td>
             <td>{{ conp.surname }}</td>
             <td>{{ conp.phoneNumber }}</td>
             <td>{{ conp.mail }}</td>

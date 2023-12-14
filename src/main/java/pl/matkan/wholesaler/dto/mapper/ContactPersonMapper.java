@@ -21,5 +21,14 @@ public interface ContactPersonMapper {
     @Mapping(source = "position",target = "position")
     @Mapping(source = "user.id",target = "ownerId")
     @Mapping(source = "company.name",target = "companyName")
+    @Mapping(source = "company.id",target = "companyId")
     ContactPersonDto contactPersonToContactPersonDto(ContactPerson contactPerson);
+
+    @Mapping(source = "id",target = "id")
+    @Mapping(source = "firstname",target = "name")
+    @Mapping(source = "surname",target = "surname")
+    @Mapping(source = "phoneNumber",target = "phoneNumber")
+    @Mapping(source = "mail",target = "mail")
+    @Mapping(source = "position",target = "position")
+    ContactPerson contactPersonDtoToContactPerson(ContactPersonDto contactPersonDto);
 }

@@ -22,24 +22,25 @@ public class ContactPersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContactPerson> getOne(@PathVariable("id") Long id) {
-        Optional<ContactPerson> one = contactPersonService.findById(id);
-        return one.map(contactPerson -> new ResponseEntity<>(contactPerson, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    public ResponseEntity<ContactPersonDto> getOne(@PathVariable("id") Long id) {
+        ContactPersonDto contactPersonDto = contactPersonService.findById(id);
+
+        return new ResponseEntity<>(contactPersonDto, HttpStatus.OK);
     }
 
     @GetMapping()
-    public List<ContactPersonDto> getAll() {
-        return contactPersonService.findAll();
+    public ResponseEntity<List<ContactPersonDto>> getAll() {
+        return new ResponseEntity<>(contactPersonService.findAll(),HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<ContactPerson> createOne(@RequestBody ContactPerson one) {
+    public ResponseEntity<ContactPerson> createOne(@RequestBody ContactPersonDto one) {
         ContactPerson contactPersonOne = contactPersonService.create(one);
         return new ResponseEntity<>(contactPersonOne, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ContactPerson> updateOne(@PathVariable("id") Long id, @RequestBody ContactPerson one) {
+    public ResponseEntity<ContactPerson> updateOne(@PathVariable("id") Long id, @RequestBody ContactPersonDto one) {
         if (contactPersonService.existsById(id)) {
             ContactPerson updatedOne = contactPersonService.update(id, one);
             return new ResponseEntity<>(updatedOne, HttpStatus.OK);

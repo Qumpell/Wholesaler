@@ -130,7 +130,7 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
 
     // GET ONE
     if (action === 'one') {
-        var id = $routeParams['id'];  // $routeParams service wbudowany
+        var id = $routeParams['id'];
         $scope.getOne(id);
     }
     // GET ALL
@@ -140,7 +140,6 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
     // CREATE ONE
     if (action === 'add') {
         $scope.tradeNote = {}; // utworz pusty obiekt
-       // $scope.getAll; // wykonaj akcje i zwróc wszystkie
         $scope.getAllCompanies();
         $scope.getAllUsers();
         $scope.formSubmit = function () { // formSubmit ng-submit
