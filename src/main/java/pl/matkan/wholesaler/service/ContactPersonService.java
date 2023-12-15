@@ -1,20 +1,20 @@
 package pl.matkan.wholesaler.service;
 
+import pl.matkan.wholesaler.dto.ContactPersonDto;
 import pl.matkan.wholesaler.model.ContactPerson;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ContactPersonService {
-    public ContactPerson create(ContactPerson one);
+    ContactPerson create(ContactPersonDto one);
 
-    public ContactPerson update(Long id, ContactPerson one);
+    ContactPerson update(Long id, ContactPersonDto one);
 
-    Optional<ContactPerson> findById(Long id);
+    ContactPersonDto findById(Long id);
 
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
-    public List<ContactPerson> findAll();
+    List<ContactPersonDto> findAll();
 }

@@ -31,6 +31,10 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
                 function error(response) {
                     $log.error('GET: /tradeNotes/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };
@@ -84,13 +88,49 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
                 }
             );
     };
+    // Function to handle auto-resize of textarea
+    $scope.resizeTextarea = function () {
+        console.log('resizeTextarea called');
+        var textarea = document.getElementById('content');
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    };
 
+
+    $scope.getAllCompanies = function () {  //  scope dla wywołania getall
+        $http.get('/companies')
+            .then(
+                function success(response) {
+                    $scope.companies = response.data;
+                    $log.debug('GET: /companies');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /companies');
+                    $log.error(response);
+                }
+            );
+    };
+    $scope.getAllUsers = function () {  //  scope dla wywołania getall
+        $http.get('/users')
+            .then(
+                function success(response) {
+                    $scope.users = response.data;
+                    $log.debug('GET: /users');
+                    $log.debug(response);
+                },
+                function error(response) {
+                    $log.error('GET: /users');
+                    $log.error(response);
+                }
+            );
+    };
 
     // AKCJA wywoluje dany scope
 
     // GET ONE
     if (action === 'one') {
-        var id = $routeParams['id'];  // $routeParams service wbudowany
+        var id = $routeParams['id'];
         $scope.getOne(id);
     }
     // GET ALL
@@ -100,21 +140,24 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
     // CREATE ONE
     if (action === 'add') {
         $scope.tradeNote = {}; // utworz pusty obiekt
-       // $scope.getAll; // wykonaj akcje i zwróc wszystkie
+        $scope.getAllCompanies();
+        $scope.getAllUsers();
         $scope.formSubmit = function () { // formSubmit ng-submit
             $scope.createOne($scope.tradeNote);
-        }
+        };
     }
     // UPDATE ONE
     if (action === 'update') {
         var id = $routeParams['id'];
         $scope.getOne(id);
         //$scope.getAll();
+        $scope.getAllCompanies();
+        $scope.getAllUsers();
         $scope.formSubmit = function () {
             $log.debug('update one: role');
             $log.debug($scope.tradeNote);
             $scope.updateOne($scope.tradeNote.id, $scope.tradeNote);
-        }
+        };
     }
     // DELETE ONE
     if (action === 'delete') {

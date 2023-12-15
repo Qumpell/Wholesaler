@@ -7,16 +7,16 @@
             <td>{{ tradeNote.id }}</td>
         </tr>
         <tr>
-            <td class="bold">Content</td>
-            <td><textarea id="content" name="content" rows="4" cols="50" ng-model="tradeNote.content" readonly></textarea></td>
+            <td class="bold">Content <label for="content">Content</label></td>
+            <td><textarea id="content" name="content" rows="4" cols="10" ng-model="tradeNote.content" readonly></textarea></td>
         </tr>
         <tr>
-            <td class="bold">Company ID</td>
-            <td>{{ tradeNote.company.id }}</td>
+            <td class="bold">Company</td>
+            <td>{{ tradeNote.companyName }}</td>
         </tr>
         <tr>
             <td class="bold">Owner ID</td>
-            <td>{{ tradeNote.user.id }}</td>
+            <td>{{ tradeNote.ownerId }}</td>
         </tr>
     </table>
 </div>

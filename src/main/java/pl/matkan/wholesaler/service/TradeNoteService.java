@@ -1,20 +1,20 @@
 package pl.matkan.wholesaler.service;
 
+import pl.matkan.wholesaler.dto.TradeNoteDto;
 import pl.matkan.wholesaler.model.TradeNote;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TradeNoteService {
-    public TradeNote create(TradeNote one);
+    TradeNote create(TradeNoteDto one);
 
-    public TradeNote update(Long id, TradeNote one);
+    TradeNote update(Long id, TradeNoteDto one);
 
-    Optional<TradeNote> findById(Long id);
+    TradeNoteDto findById(Long id);
 
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
-    public List<TradeNote> findAll();
+    List<TradeNoteDto> findAll();
 }

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import pl.matkan.wholesaler.model.*;
 import pl.matkan.wholesaler.repo.*;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 
@@ -36,9 +38,9 @@ public class DbInitializer implements CommandLineRunner {
         Role role2 = new Role("MODERATOR");
         roleRepository.saveAll(List.of(role1, role2, role));
 
-        User user = new User("Test", "Test", "2000-03-05", "test","123" ,role);
+        User user = new User("Test", "Test", LocalDate.of(2000, Month.AUGUST,22), "test","123" ,role);
 //        userRepository.save(user);
-        User user1 = new User("Adam", "Moanre", "1988-01-04", "adamMon","123" ,role1);
+        User user1 = new User("Adam", "Moanre", LocalDate.of(1998, Month.MAY,1), "adamMon","123" ,role1);
 //        userRepository.save(user1);
 
         Industry industry = new Industry("it");
@@ -46,8 +48,8 @@ public class DbInitializer implements CommandLineRunner {
         industryRepository.save(industry);
         industryRepository.save(industry1);
 
-        Company company = new Company("test", "123456", "14-0895", "Poznan");
-        Company company1 = new Company("mcdonald", "9194915", "14151-020", "Warszawaa");
+        Company company = new Company("Test", "123456789", "14-048", "Poznan");
+        Company company1 = new Company("Als", "919491584", "11-020", "Warsaw");
 
         ContactPerson contactPerson = new ContactPerson("Marek", "Kowalski", "111-222-333", "test@gmail.com", "support");
         ContactPerson contactPerson1 = new ContactPerson("Adam", "Monek", "111-222-333", "adam@gmail.com", "consultant");

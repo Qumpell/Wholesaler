@@ -21,13 +21,13 @@
         <tbody>
         <tr ng-repeat="conp in contactPersons" ng-cloak data-ng-class="conp.isDeleted && 'strikethrough' || 'null'">
             <td>{{ conp.id }}</td>
-            <td><a ng-href="#/contactPersons/one/{{conp.id}}">{{ conp.name }}</a></td>
+            <td><a ng-href="#/contactPersons/one/{{conp.id}}">{{ conp.firstname }}</a></td>
             <td>{{ conp.surname }}</td>
             <td>{{ conp.phoneNumber }}</td>
             <td>{{ conp.mail }}</td>
             <td>{{ conp.position }}</td>
-            <td>{{ conp.company.id }}</td>
-            <td>{{ conp.user.id }}</td>
+            <td>{{ conp.companyName }}</td>
+            <td>{{ conp.ownerId }}</td>
             <td>{{ conp.isDeleted ? "inactive" : "active" }}</td>
             <td><a  type="button" class="btn btn-info" ng-href="#/contactPersons/update/{{conp.id}}">Edit</a></td>
             <td><a type="button" class="btn btn-danger" ng-href="#/contactPersons/delete/{{conp.id}}">{{ conp.isDeleted ? "Activate" : "Deactivate" }}</a></td>

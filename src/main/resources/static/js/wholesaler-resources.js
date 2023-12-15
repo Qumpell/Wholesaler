@@ -328,5 +328,8 @@ hrApp.config(function ($routeProvider, $locationProvider) {
             },
         })
 
+        .when('/notFound', {
+            templateUrl: '/view/error-forms/not-found-view.html'
+        });
 
 });

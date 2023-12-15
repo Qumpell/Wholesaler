@@ -1,20 +1,21 @@
 package pl.matkan.wholesaler.service;
 
+import pl.matkan.wholesaler.dto.UserDto;
 import pl.matkan.wholesaler.model.User;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    User create(User one);
+    User create(UserDto one);
 
-    User update(Long id, User one);
+    User update(Long id, UserDto one);
 
-    Optional<User> findById(Long id);
+    UserDto findById(Long id);
 
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
-    List<User> findAll();
+    List<UserDto> findAll();
 }

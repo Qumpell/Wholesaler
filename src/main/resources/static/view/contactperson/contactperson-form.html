@@ -18,7 +18,7 @@
             <!-- NAME -->
             <tr>
                 <td class="bold"><label for="name">Name</label></td>
-                <td><input type="text" id="name" ng-model="contactPerson.name"/></td>
+                <td><input type="text" id="name" ng-model="contactPerson.firstname"/></td>
                 <td class="error">{{ formErrors['name'] }}</td>
             </tr>
             <!-- SURNAME -->
@@ -45,18 +45,23 @@
                 <td><input type="text" id="position" ng-model="contactPerson.position"/></td>
                 <td class="error">{{ formErrors['position'] }}</td>
             </tr>
-
-            <!-- COMPANY ID -->
+            <!--COMPANY ID -->
             <tr>
-                <td class="bold"><label for="company_id">Company ID</label></td>
-                <td><input type="text" id="company_id" ng-model="contactPerson.company.id"/></td>
-                <td class="error">{{ formErrors['Company id'] }}</td>
+                <td class="bold"><label for="companyName">Company</label></td>
+                <td>
+                    <select id="companyName" ng-model="contactPerson.companyId"
+                            ng-options="comp.id as comp.name for comp in companies"></select>
+                </td>
+                <td class="error">{{ formErrors['companyName'] }}</td>
             </tr>
             <!-- OWNER ID -->
             <tr>
-                <td class="bold"><label for="owner_id">Owner ID</label></td>
-                <td>{{ contactPerson.user.id }}</td>
-                <td><input type="hidden" id="owner_id" ng-model="contactPerson.user.id"/>2</td>
+                <td class="bold"><label for="owner_id">Owner</label></td>
+                <td>
+                    <select id="owner_id" ng-model="contactPerson.ownerId"
+                            ng-options="usr.id as (usr.firstname + ' ' + usr.surname) for usr in users"></select>
+                </td>
+                <td class="error">{{ formErrors['ownerId'] }}</td>
             </tr>
 
             <!-- SUBMIT -->

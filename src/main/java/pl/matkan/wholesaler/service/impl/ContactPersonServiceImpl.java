@@ -1,36 +1,58 @@
 package pl.matkan.wholesaler.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.dto.ContactPersonDto;
+import pl.matkan.wholesaler.dto.mapper.ContactPersonMapper;
+import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.ContactPerson;
 import pl.matkan.wholesaler.repo.ContactPersonRepository;
 import pl.matkan.wholesaler.service.ContactPersonService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("contactPersonService")
 public class ContactPersonServiceImpl implements ContactPersonService {
 
     private final ContactPersonRepository contactPersonRepository;
+    private final ContactPersonMapper contactPersonMapper;
+    private final CompanyServiceImpl companyService;
+    private final UserServiceImpl userService;
 
-    public ContactPersonServiceImpl(ContactPersonRepository contactPersonRepository) {
+    public ContactPersonServiceImpl(ContactPersonRepository contactPersonRepository, ContactPersonMapper contactPersonMapper, CompanyServiceImpl companyService, UserServiceImpl userService) {
         this.contactPersonRepository = contactPersonRepository;
+        this.contactPersonMapper = contactPersonMapper;
+        this.companyService = companyService;
+        this.userService = userService;
     }
 
     @Override
-    public ContactPerson create(ContactPerson one) {
-        return contactPersonRepository.save(one);
+    public ContactPerson create(ContactPersonDto one) {
+        ContactPerson contactPersonToCreate = contactPersonMapper.contactPersonDtoToContactPerson(one);
+
+        contactPersonToCreate.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
+        contactPersonToCreate.setUser(userService.getOneUserById(one.getOwnerId()));
+
+        return contactPersonRepository.save(contactPersonToCreate);
     }
 
     @Override
-    public ContactPerson update(Long id, ContactPerson one) {
-        one.setId(id);
-        return contactPersonRepository.save(one);
-    }
+    public ContactPerson update(Long id, ContactPersonDto one) {
+        ContactPerson contactPersonUpdated = contactPersonMapper.contactPersonDtoToContactPerson(one);
 
+        contactPersonUpdated.setId(id);
+        contactPersonUpdated.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
+        contactPersonUpdated.setUser(userService.getOneUserById(one.getOwnerId()));
+
+        return contactPersonRepository.save(contactPersonUpdated);
+    }
     @Override
-    public Optional<ContactPerson> findById(Long id) {
-        return contactPersonRepository.findById(id);
+    public ContactPersonDto findById(Long id) {
+        return contactPersonMapper.contactPersonToContactPersonDto(
+                contactPersonRepository.findById(id).
+                        orElseThrow(()->new EntityNotFoundException("Contact person was not found", "with given id:= " + id))
+        );
     }
 
     @Override
@@ -44,7 +66,10 @@ public class ContactPersonServiceImpl implements ContactPersonService {
     }
 
     @Override
-    public List<ContactPerson> findAll() {
-        return contactPersonRepository.findAll();
+    public List<ContactPersonDto> findAll() {
+        List<ContactPerson> contactPeople = contactPersonRepository.findAll();
+        return contactPeople.stream()
+                .map(contactPersonMapper::contactPersonToContactPersonDto)
+                .collect(Collectors.toList());
     }
 }

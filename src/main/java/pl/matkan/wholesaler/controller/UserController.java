@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.matkan.wholesaler.dto.UserDto;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.service.impl.UserServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -20,23 +20,23 @@ public class UserController {
         this.userSrv = userSrv;
     }
     @GetMapping("/{id}")
-    public ResponseEntity<User> getOne(@PathVariable("id") Long id) {
-        Optional<User> one = userSrv.findById(id);
-        return one.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    public ResponseEntity<UserDto> getOne(@PathVariable("id") Long id) {
+        UserDto userDto = userSrv.findById(id);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
     @GetMapping()
-    public List<User> getAll() {
-        return userSrv.findAll();
+    public ResponseEntity<List<UserDto>> getAll() {
+        return new ResponseEntity<>(userSrv.findAll(), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<User> createOne(@RequestBody User one) {
+    public ResponseEntity<User> createOne(@RequestBody UserDto one) {
         User carOne = userSrv.create(one);
         return new ResponseEntity<>(carOne, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateOne(@PathVariable("id") Long id, @RequestBody User one) {
+    public ResponseEntity<User> updateOne(@PathVariable("id") Long id, @RequestBody UserDto one) {
         if (userSrv.existsById(id)) {
             User updatedOne = userSrv.update(id, one);
             return new ResponseEntity<>(updatedOne, HttpStatus.OK);

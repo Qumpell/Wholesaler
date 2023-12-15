@@ -31,6 +31,10 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
                 function error(response) {
                     $log.error('GET: /companies/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };
@@ -100,7 +104,18 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
             );
     };
 
-
+    $scope.getAllUsers = function () {
+        $http.get('/users')
+            .then(
+                function success(response) {
+                    $scope.users = response.data;
+                    // console.log($scope.users); // Sprawdź dane użytkowników po pobraniu
+                },
+                function error(response) {
+                    console.error('Error getting users', response);
+                }
+            );
+    };
 
     // AKCJA wywoluje dany scope
 
@@ -118,6 +133,7 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
         $scope.company = {}; // utworz pusty obiekt
         //$scope.getAll(); // wykonaj akcje i zwróc wszystkie
         $scope.getAllIndustries();
+        $scope.getAllUsers();
         $scope.formSubmit = function () { // formSubmit ng-submit
             $scope.createOne($scope.company);
         }
@@ -128,6 +144,7 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
         $scope.getOne(id);
         //$scope.getAll();
         $scope.getAllIndustries();
+        $scope.getAllUsers();
         $scope.formSubmit = function () {
             $log.debug('update one: company');
             $log.debug($scope.company);

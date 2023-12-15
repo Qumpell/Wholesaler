@@ -27,10 +27,15 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
                     $scope.user = response.data;
                     $log.debug('GET: /users/' + id);
                     $log.debug(response);
+                    console.log($scope.user);
                 },
                 function error(response) {
                     $log.error('GET: /users/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };
@@ -65,6 +70,10 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
                     $log.error('PUT: /users/');
                     $log.error(response);
                     $scope.formErrors = response.data.fieldErrors;
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };
@@ -81,6 +90,10 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
                 function error(response) {
                     $log.error('DELETE: /users/' + id);
                     $log.error(response);
+                    if (response.status === 404) {
+                        // Handle 404 error (resource not found)
+                        $location.path('/notFound'); // Redirect to a not-found page
+                    }
                 }
             );
     };
@@ -125,6 +138,7 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
     if (action === 'update') {
         var id = $routeParams['id'];
         $scope.getOne(id);
+
         //$scope.getAll();
         $scope.getAllRoles();
         $scope.formSubmit = function () {

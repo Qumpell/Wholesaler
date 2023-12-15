@@ -23,10 +23,10 @@
             <td>{{ com.id }}</td>
             <td><a ng-href="#/companies/one/{{com.id}}">{{ com.name }}</a></td>
             <td>{{ com.nip }}</td>
-            <td>{{ com.industry.name }}</td>
+            <td>{{ com.industryName }}</td>
             <td>{{ com.address }}</td>
             <td>{{ com.city }}</td>
-            <td>{{ com.user.id }}</td>
+            <td>{{ com.ownerId }}</td>
             <td>{{ com.isDeleted ? "inactive" : "active" }}</td>
             <td><a type="button" class="btn btn-info" ng-href="#/companies/update/{{com.id}}">Edit</a></td>
             <td><a type="button" class="btn btn-danger" ng-href="#/companies/delete/{{com.id}}">{{ com.isDeleted ? "Activate" : "Deactivate" }}</a></td>

@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.Company;
 import pl.matkan.wholesaler.model.Industry;
 import pl.matkan.wholesaler.repo.CompanyRepository;
@@ -66,5 +67,12 @@ public class IndustryServiceImpl implements IndustryService {
         List<Industry> all = industryRepo.findAll();
         System.out.println("company service:=" + industryRepo.findAll());
         return all;
+    }
+
+    public Industry getOneIndustryByName(String industryName) {
+        return industryRepo.findByName(industryName)
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Industry was not found ", "with given name:= " + industryName)
+                );
     }
 }

@@ -1,35 +1,58 @@
 package pl.matkan.wholesaler.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.dto.UserDto;
+import pl.matkan.wholesaler.dto.mapper.UserMapper;
+import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.repo.UserRepository;
+import pl.matkan.wholesaler.service.RoleService;
 import pl.matkan.wholesaler.service.UserService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
+    private final UserMapper userMapper;
+    private final RoleService roleService;
 
-    public UserServiceImpl(UserRepository userRepo) {
+    public UserServiceImpl(UserRepository userRepo, UserMapper userMapper, RoleService roleService) {
         this.userRepo = userRepo;
+        this.userMapper = userMapper;
+        this.roleService = roleService;
     }
 
     @Override
-    public User create(User one) {
-        return userRepo.save(one);
+    public User create(UserDto one) {
+        User userToCreate = userMapper.userDtoToUser(one);
+        userToCreate.setRole(roleService.findByName(one.getRoleName()));
+
+        return userRepo.save(userToCreate);
     }
 
     @Override
-    public User update(Long id, User one) {
-        one.setId(id);
-        return userRepo.save(one);
+    public User update(Long id, UserDto one) {
+        User userDataToUpdate = userMapper.userDtoToUser(one);
+        User clientFetched = getOneUserById(id);
+
+        clientFetched.setName(userDataToUpdate.getName());
+        clientFetched.setSurname(userDataToUpdate.getSurname());
+        clientFetched.setLogin(userDataToUpdate.getLogin());
+        clientFetched.setDateOfBirth(userDataToUpdate.getDateOfBirth());
+        clientFetched.setRole(roleService.findByName(one.getRoleName()));
+
+        return userRepo.save(clientFetched);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userRepo.findById(id);
+    public UserDto findById(Long id) {
+        return userMapper.userToUserDto(
+                userRepo
+                        .findById(id)
+                        .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id)))
+        );
     }
 
     @Override
@@ -43,7 +66,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepo.findAll();
+    public List<UserDto> findAll() {
+        List<User> users = userRepo.findAll();
+        return users.stream()
+                                        .map(userMapper::userToUserDto)
+                                        .collect(Collectors.toList());
+    }
+    public User getOneUserById(Long id) {
+        return userRepo.findById(id)
+                             .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id))
+        );
     }
 }

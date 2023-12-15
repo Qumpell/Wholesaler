@@ -8,7 +8,7 @@
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Content</th>
-            <th scope="col">Company ID</th>
+            <th scope="col">Company</th>
             <th scope="col">Owner ID</th>
             <th scope="col">Status</th>
         </tr>
@@ -18,8 +18,8 @@
         <tr ng-repeat="trn in tradeNotes" ng-cloak data-ng-class="trn.isDeleted && 'strikethrough' || 'null'">
             <td>{{ trn.id }}</td>
             <td><a ng-href="#/tradeNotes/one/{{trn.id}}">view details</a></td>
-            <td>{{ trn.company.id }}</td>
-            <td>{{ trn.user.id }}</td>
+            <td>{{ trn.companyName }}</td>
+            <td>{{ trn.ownerId }}</td>
             <td>{{ trn.isDeleted ? "inactive" : "active" }}</td>
             <td><a type="button" class="btn btn-info" ng-href="#/tradeNotes/update/{{trn.id}}">Edit</a></td>
             <td><a type="button" class="btn btn-danger" ng-href="#/tradeNotes/delete/{{trn.id}}">{{ trn.isDeleted ? "Activate" : "Deactivate" }}</a></td>
@@ -29,5 +29,3 @@
 </div>
 
 <br>
-
-

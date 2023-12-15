@@ -3,6 +3,7 @@ package pl.matkan.wholesaler.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.matkan.wholesaler.dto.RoleDto;
 import pl.matkan.wholesaler.model.Role;
 import pl.matkan.wholesaler.repo.UserRepository;
 import pl.matkan.wholesaler.service.impl.RoleServiceImpl;
@@ -20,12 +21,14 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Role> getOne(@PathVariable("id") Long id) {
-        Optional<Role> one = roleService.findById(id);
-        return one.map(role -> new ResponseEntity<>(role, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    public ResponseEntity<RoleDto> getOne(@PathVariable("id") Long id) {
+//        Optional<Role> one = roleService.findById(id);
+        RoleDto roleDto = roleService.findById(id);
+//        return one.map(role -> new ResponseEntity<>(role, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(roleDto, HttpStatus.OK);
     }
     @GetMapping()
-    public List<Role> getAll() {
+    public List<RoleDto> getAll() {
         return roleService.findAll();
     }
 
