@@ -48,8 +48,8 @@ public class DbInitializer implements CommandLineRunner {
         industryRepository.save(industry);
         industryRepository.save(industry1);
 
-        Company company = new Company("test", "123456", "14-0895", "Poznan");
-        Company company1 = new Company("mcdonald", "9194915", "14151-020", "Warszawaa");
+        Company company = new Company("Test", "123456789", "14-048", "Poznan");
+        Company company1 = new Company("Als", "919491584", "11-020", "Warsaw");
 
         ContactPerson contactPerson = new ContactPerson("Marek", "Kowalski", "111-222-333", "test@gmail.com", "support");
         ContactPerson contactPerson1 = new ContactPerson("Adam", "Monek", "111-222-333", "adam@gmail.com", "consultant");
