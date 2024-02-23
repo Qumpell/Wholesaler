@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.dto.CompanyDto;
 import pl.matkan.wholesaler.dto.mapper.CompanyMapper;
@@ -90,6 +93,21 @@ public class CompanyServiceImpl implements CompanyService {
         return companies.stream()
                 .map(companyMapper::companyToCompanyDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<CompanyDto> findCompaniesWithSorting(String field) {
+        List<Company> companies  = companyRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+        return companies.stream()
+                .map(companyMapper::companyToCompanyDto)
+                .collect(Collectors.toList());
+    }
+    public Page<CompanyDto> findCompaniesWithPagination(int offset, int pageSize) {
+        Page<Company> companiesPage  = companyRepository.findAll(PageRequest.of(offset, pageSize));
+        return companiesPage.map(companyMapper::companyToCompanyDto);
+    }
+    public Page<CompanyDto> findCompaniesWithPaginationAndSort(int offset, int pageSize, String field) {
+        Page<Company> companies  = companyRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(field)));
+        return companies.map(companyMapper::companyToCompanyDto);
     }
 
     public Company getOneCompanyById(Long id) {
