@@ -4,12 +4,31 @@
 hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParams, $location, action) {
     $log.debug('CompanyController');
     $log.debug('action = ' + action); //logowanie akcji
+
+    $scope.offset = 0;
+    $scope.pageSize = 10;
+    $scope.field = 'id';
+    $scope.currentPage = 0;
+    $scope.totalPages = 0;
+
+
     //READ-ALL
     $scope.getAll = function () {  //  scope dla wywołania getall
+        var params = {
+            offset: $scope.offset,
+            pageSize: $scope.pageSize,
+            field: $scope.field
+        };
+
         $http.get('/companies')
             .then(
                 function success(response) {
-                    $scope.companies = response.data;
+                    $scope.companies = response.data.content;
+                    // $log.error(response);
+                    console.log(response);
+                    $scope.totalItems = response.data.totalElements;
+                    $scope.totalPages = response.data.totalPages;
+                    console.log($scope.totalPages)
                     $log.debug('GET: /companies');
                     $log.debug(response);
                 },
@@ -19,6 +38,13 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
                 }
             );
     };
+    $scope.changePage = function(pageChange) {
+
+        $scope.offset += pageChange * $scope.pageSize;
+        $scope.currentPage += pageChange;
+        $scope.getAll();
+    };
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/companies/' + id)
