@@ -105,8 +105,8 @@ public class CompanyServiceImpl implements CompanyService {
         Page<Company> companiesPage  = companyRepository.findAll(PageRequest.of(offset, pageSize));
         return companiesPage.map(companyMapper::companyToCompanyDto);
     }
-    public Page<CompanyDto> findCompaniesWithPaginationAndSort(int offset, int pageSize, String field) {
-        Page<Company> companies  = companyRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(field)));
+    public Page<CompanyDto> findCompaniesWithPaginationAndSort(int offset, int pageSize, String field, String order) {
+        Page<Company> companies  = companyRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field)));
         return companies.map(companyMapper::companyToCompanyDto);
     }
 

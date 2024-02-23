@@ -42,9 +42,10 @@ public class CompanyController {
 //            @PathVariable int offset, @PathVariable int pageSize, @PathVariable String field
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
     ) {
-        return new ResponseEntity<>(companyService.findCompaniesWithPaginationAndSort(offset, pageSize, sortBy), HttpStatus.OK);
+        return new ResponseEntity<>(companyService.findCompaniesWithPaginationAndSort(offset, pageSize, field, order), HttpStatus.OK);
     }
 
 
