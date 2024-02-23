@@ -7,14 +7,14 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Nip</th>
-            <th scope="col">Industry</th>
-            <th scope="col">Address</th>
-            <th scope="col">City</th>
-            <th scope="col">Owner id</th>
-            <th scope="col">Status</th>
+            <th scope="col" ng-click="sortByColumn('id')">ID</th>
+            <th scope="col" ng-click="sortByColumn('name')">Name</th>
+            <th scope="col" ng-click="sortByColumn('nip')">NIP</th>
+            <th scope="col" ng-click="sortByColumn('industryName')">Industry</th>
+            <th scope="col" ng-click="sortByColumn('address')">Address</th>
+            <th scope="col" ng-click="sortByColumn('city')">City</th>
+            <th scope="col" ng-click="sortByColumn('user.id')">Owner ID</th>
+            <th scope="col" ng-click="sortByColumn('isDeleted')">Status</th>
         </tr>
         </thead>
 

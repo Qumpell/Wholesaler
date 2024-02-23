@@ -6,29 +6,28 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
     $log.debug('action = ' + action); //logowanie akcji
 
     $scope.offset = 0;
-    $scope.pageSize = 10;
+    $scope.pageSize = 1;
     $scope.field = 'id';
     $scope.currentPage = 0;
     $scope.totalPages = 0;
-
+    $scope.order = "asc";
 
     //READ-ALL
     $scope.getAll = function () {  //  scope dla wywołania getall
         var params = {
             offset: $scope.offset,
             pageSize: $scope.pageSize,
-            field: $scope.field
+            field: $scope.field,
+            order: $scope.order
         };
 
-        $http.get('/companies')
+        $http.get('/companies',{params: params})
             .then(
                 function success(response) {
+
                     $scope.companies = response.data.content;
-                    // $log.error(response);
-                    console.log(response);
                     $scope.totalItems = response.data.totalElements;
                     $scope.totalPages = response.data.totalPages;
-                    console.log($scope.totalPages)
                     $log.debug('GET: /companies');
                     $log.debug(response);
                 },
@@ -42,6 +41,18 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
 
         $scope.offset += pageChange * $scope.pageSize;
         $scope.currentPage += pageChange;
+        $scope.getAll();
+    };
+
+    $scope.sortByColumn = function(column) {
+        if ($scope.field === column) {
+            $scope.order = ($scope.order === 'asc') ? 'desc' : 'asc';
+        } else {
+
+            $scope.field = column;
+            $scope.order = 'asc';
+        }
+
         $scope.getAll();
     };
 
