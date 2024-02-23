@@ -8,8 +8,6 @@ import pl.matkan.wholesaler.dto.CompanyDto;
 import pl.matkan.wholesaler.model.Company;
 import pl.matkan.wholesaler.service.impl.CompanyServiceImpl;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/companies")
 public class CompanyController {
@@ -29,17 +27,9 @@ public class CompanyController {
 //    public ResponseEntity<List<CompanyDto>> getAll() {
 //        return new ResponseEntity<>(companyService.findAll(), HttpStatus.OK);
 //    }
-    @GetMapping("/pagination/{offset}/{pageSize}")
-    public ResponseEntity<Page<CompanyDto>> getCompaniesWithPagination(
-            @PathVariable int offset, @PathVariable int pageSize
-    ) {
-        return new ResponseEntity<>(companyService.findCompaniesWithPagination(offset, pageSize), HttpStatus.OK);
-    }
-//    @GetMapping("/pagination/{offset}/{pageSize}/{field}")
+
     @GetMapping()
-//    public ResponseEntity<Page<CompanyDto>> getCompaniesWithPaginationAndSort(
     public ResponseEntity<Page<CompanyDto>> getAll(
-//            @PathVariable int offset, @PathVariable int pageSize, @PathVariable String field
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,

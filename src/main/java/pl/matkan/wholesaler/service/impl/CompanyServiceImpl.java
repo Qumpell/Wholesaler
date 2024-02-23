@@ -9,11 +9,9 @@ import pl.matkan.wholesaler.dto.mapper.CompanyMapper;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.Company;
 import pl.matkan.wholesaler.repo.CompanyRepository;
-import pl.matkan.wholesaler.repo.UserRepository;
 import pl.matkan.wholesaler.service.CompanyService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("companyService")
@@ -21,15 +19,13 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final UserServiceImpl userService;
-    private final UserRepository userRepository;
     private final CompanyMapper companyMapper;
 
     private final IndustryServiceImpl industryService;
 
-    public CompanyServiceImpl(CompanyRepository companyRepo, UserServiceImpl userService, UserRepository userRepository, CompanyMapper companyMapper, IndustryServiceImpl industryService) {
+    public CompanyServiceImpl(CompanyRepository companyRepo, UserServiceImpl userService, CompanyMapper companyMapper, IndustryServiceImpl industryService) {
         this.companyRepository = companyRepo;
         this.userService = userService;
-        this.userRepository = userRepository;
         this.companyMapper = companyMapper;
         this.industryService = industryService;
     }
@@ -74,16 +70,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void deleteById(Long id) {
-        Optional<Company> companyOptional = companyRepository.findById(id);
-
-//        companyOptional.ifPresent(company -> {
-//            User user = company.getUser();
-//            if(user != null) {
-//                user.removeCompany(company);
-//                userRepository.save(user);
-//            }
-//        });
-
         companyRepository.deleteById(id);
     }
 
@@ -93,17 +79,6 @@ public class CompanyServiceImpl implements CompanyService {
         return companies.stream()
                 .map(companyMapper::companyToCompanyDto)
                 .collect(Collectors.toList());
-    }
-
-    public List<CompanyDto> findCompaniesWithSorting(String field) {
-        List<Company> companies  = companyRepository.findAll(Sort.by(Sort.Direction.ASC,field));
-        return companies.stream()
-                .map(companyMapper::companyToCompanyDto)
-                .collect(Collectors.toList());
-    }
-    public Page<CompanyDto> findCompaniesWithPagination(int offset, int pageSize) {
-        Page<Company> companiesPage  = companyRepository.findAll(PageRequest.of(offset, pageSize));
-        return companiesPage.map(companyMapper::companyToCompanyDto);
     }
     public Page<CompanyDto> findCompaniesWithPaginationAndSort(int offset, int pageSize, String field, String order) {
         Page<Company> companies  = companyRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field)));

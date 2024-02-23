@@ -6,7 +6,7 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
     $log.debug('action = ' + action); //logowanie akcji
 
     $scope.offset = 0;
-    $scope.pageSize = 1;
+    $scope.pageSize = 10;
     $scope.field = 'id';
     $scope.currentPage = 0;
     $scope.totalPages = 0;
