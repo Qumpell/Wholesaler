@@ -1,24 +1,25 @@
 //*********************************************************************************************************
 //USER CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('UserController', function ($scope, $controller, $http, $log, $routeParams, $location, action) {
     $log.debug('UserController');
     $log.debug('action = ' + action); //logowanie akcji
+    $controller('GetAllController', {$scope: $scope, $log: $log});
+
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        $http.get('/users')
-            .then(
-                function success(response) {
-                    $scope.users = response.data;
-                    $log.debug('GET: /users');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /users');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllUsers = function () {  //  scope dla wywołania getall
+         $scope.getAll("/users");
     };
+
+    $scope.changeUsersPage = function(pageChange) {
+
+        $scope.changePage(pageChange, "/users");
+    };
+
+    $scope.sortUsersByColumn = function(column) {
+        $scope.sortByColumn(column, "/users");
+    };
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/users/' + id)
@@ -123,7 +124,7 @@ hrApp.controller('UserController', function ($scope, $http, $log, $routeParams, 
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllUsers();
     }
     // CREATE ONE
     if (action === 'add') {

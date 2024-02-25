@@ -7,18 +7,18 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Surname</th>
-            <th scope="col">Date of birth</th>
-            <th scope="col">Login</th>
-            <th scope="col">Role</th>
-            <th scope="col">Status</th>
+            <th scope="col" ng-click="sortUsersByColumn('id')">ID</th>
+            <th scope="col" ng-click="sortUsersByColumn('name')">Firstname</th>
+            <th scope="col" ng-click="sortUsersByColumn('surname')">Surname</th>
+            <th scope="col" ng-click="sortUsersByColumn('dateOfBirth')">Date of birth</th>
+            <th scope="col" ng-click="sortUsersByColumn('login')">Login</th>
+            <th scope="col" ng-click="sortUsersByColumn('role.name')">Role</th>
+            <th scope="col" ng-click="sortUsersByColumn('isDeleted')">Status</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr ng-repeat="usr in users"    ng-cloak data-ng-class="usr.isDeleted && 'strikethrough' || 'null'">
+        <tr ng-repeat="usr in items"    ng-cloak data-ng-class="usr.isDeleted && 'strikethrough' || 'null'">
             <td >{{ usr.id }}</td>
             <td><a ng-href="#/users/one/{{usr.id}}">{{ usr.firstname }}</a></td>
             <td>{{ usr.surname }}</td>
@@ -33,6 +33,11 @@
         </tr>
         </tbody>
     </table>
+    <div>
+        <button ng-click="changeUsersPage(-1)" ng-disabled="offset === 0">Prev</button>
+        Page {{ currentPage + 1 }} of {{ totalPages }}
+        <button ng-click="changeUsersPage(1)" ng-disabled="offset + pageSize >= totalItems">Next</button>
+    </div>
 </div>
 
 <br>
