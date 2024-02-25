@@ -7,19 +7,19 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col" ng-click="sortByColumn('id')">ID</th>
-            <th scope="col" ng-click="sortByColumn('name')">Name</th>
-            <th scope="col" ng-click="sortByColumn('nip')">NIP</th>
-            <th scope="col" ng-click="sortByColumn('industryName')">Industry</th>
-            <th scope="col" ng-click="sortByColumn('address')">Address</th>
-            <th scope="col" ng-click="sortByColumn('city')">City</th>
-            <th scope="col" ng-click="sortByColumn('user.id')">Owner ID</th>
-            <th scope="col" ng-click="sortByColumn('isDeleted')">Status</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('id')">ID</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('name')">Name</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('nip')">NIP</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('industryName')">Industry</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('address')">Address</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('city')">City</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('user.id')">Owner ID</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('isDeleted')">Status</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr ng-repeat="com in companies" ng-cloak data-ng-class="com.isDeleted && 'strikethrough' || 'null'">
+        <tr ng-repeat="com in items" ng-cloak data-ng-class="com.isDeleted && 'strikethrough' || 'null'">
             <td>{{ com.id }}</td>
             <td><a ng-href="#/companies/one/{{com.id}}">{{ com.name }}</a></td>
             <td>{{ com.nip }}</td>
@@ -34,9 +34,9 @@
         </tbody>
     </table>
     <div>
-        <button ng-click="changePage(-1)" ng-disabled="offset === 0">Prev</button>
+        <button ng-click="changeCompaniesPage(-1)" ng-disabled="offset === 0">Prev</button>
         Page {{ currentPage + 1 }} of {{ totalPages }}
-        <button ng-click="changePage(1)" ng-disabled="offset + pageSize >= totalItems">Next</button>
+        <button ng-click="changeCompaniesPage(1)" ng-disabled="offset + pageSize >= totalItems">Next</button>
     </div>
 </div>
 

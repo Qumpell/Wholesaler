@@ -1,59 +1,22 @@
 //*********************************************************************************************************
 //COMPANY CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('CompanyController', function ($scope,  $controller, $http, $log, $routeParams, $location, action) {
     $log.debug('CompanyController');
     $log.debug('action = ' + action); //logowanie akcji
-
-    $scope.offset = 0;
-    $scope.pageSize = 10;
-    $scope.field = 'id';
-    $scope.currentPage = 0;
-    $scope.totalPages = 0;
-    $scope.order = "asc";
+    $controller('GetAllController', {$scope: $scope, $log: $log});
 
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        var params = {
-            offset: $scope.offset,
-            pageSize: $scope.pageSize,
-            field: $scope.field,
-            order: $scope.order
-        };
-
-        $http.get('/companies',{params: params})
-            .then(
-                function success(response) {
-
-                    $scope.companies = response.data.content;
-                    $scope.totalItems = response.data.totalElements;
-                    $scope.totalPages = response.data.totalPages;
-                    $log.debug('GET: /companies');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /companies');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllCompanies = function () {  //  scope dla wywołania getall
+        $scope.getAll("/companies");
     };
-    $scope.changePage = function(pageChange) {
+    $scope.changeCompaniesPage = function(pageChange) {
 
-        $scope.offset += pageChange * $scope.pageSize;
-        $scope.currentPage += pageChange;
-        $scope.getAll();
+        $scope.changePage(pageChange, "/companies");
     };
 
-    $scope.sortByColumn = function(column) {
-        if ($scope.field === column) {
-            $scope.order = ($scope.order === 'asc') ? 'desc' : 'asc';
-        } else {
-
-            $scope.field = column;
-            $scope.order = 'asc';
-        }
-
-        $scope.getAll();
+    $scope.sortCompaniesByColumn = function(column) {
+        $scope.sortByColumn(column, "/companies");
     };
 
     // READ-ONE
@@ -146,7 +109,6 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
             .then(
                 function success(response) {
                     $scope.users = response.data;
-                    // console.log($scope.users); // Sprawdź dane użytkowników po pobraniu
                 },
                 function error(response) {
                     console.error('Error getting users', response);
@@ -163,7 +125,7 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllCompanies();
     }
     // CREATE ONE
     if (action === 'add') {

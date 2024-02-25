@@ -18,7 +18,7 @@
         </thead>
 
         <tbody>
-        <tr ng-repeat="usr in items"    ng-cloak data-ng-class="usr.isDeleted && 'strikethrough' || 'null'">
+        <tr ng-repeat="usr in items" ng-cloak data-ng-class="usr.isDeleted && 'strikethrough' || 'null'">
             <td >{{ usr.id }}</td>
             <td><a ng-href="#/users/one/{{usr.id}}">{{ usr.firstname }}</a></td>
             <td>{{ usr.surname }}</td>

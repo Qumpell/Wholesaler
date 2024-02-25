@@ -22,7 +22,7 @@ hrApp.controller('GetAllController', function ($scope, $http, $log) {
                     $scope.items = response.data.content;
                     $scope.totalItems = response.data.totalElements;
                     $scope.totalPages = response.data.totalPages;
-                    console.log(response);
+                    // console.log(response);
                     $log.debug('GET: ' + url);
                     $log.debug(response);
                 },
