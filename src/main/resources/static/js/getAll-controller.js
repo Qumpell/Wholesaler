@@ -1,7 +1,6 @@
 hrApp.controller('GetAllController', function ($scope, $http, $log) {
     $log.debug('GetAllController');
 
-    $scope.offset = 0;
     $scope.pageSize = 10;
     $scope.field = 'id';
     $scope.currentPage = 0;
@@ -10,19 +9,18 @@ hrApp.controller('GetAllController', function ($scope, $http, $log) {
 
     $scope.getAll = function (url) {
         var params = {
-            offset: $scope.offset,
+            pageNumber: $scope.currentPage,
             pageSize: $scope.pageSize,
             field: $scope.field,
             order: $scope.order
         };
-
         $http.get(url, { params: params })
             .then(
                 function success(response) {
                     $scope.items = response.data.content;
                     $scope.totalItems = response.data.totalElements;
                     $scope.totalPages = response.data.totalPages;
-                    // console.log(response);
+                    console.log(response);
                     $log.debug('GET: ' + url);
                     $log.debug(response);
                 },
@@ -34,7 +32,6 @@ hrApp.controller('GetAllController', function ($scope, $http, $log) {
     };
 
     $scope.changePage = function (pageChange, url) {
-        $scope.offset += pageChange * $scope.pageSize;
         $scope.currentPage += pageChange;
         $scope.getAll(url);
     };
