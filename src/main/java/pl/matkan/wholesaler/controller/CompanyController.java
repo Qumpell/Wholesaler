@@ -30,12 +30,15 @@ public class CompanyController {
 
     @GetMapping()
     public ResponseEntity<Page<CompanyDto>> getAll(
-            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order
     ) {
-        return new ResponseEntity<>(companyService.findCompaniesWithPaginationAndSort(offset, pageSize, field, order), HttpStatus.OK);
+        return new ResponseEntity<>(
+                companyService.findCompaniesWithPaginationAndSort(pageNumber, pageSize, field, order),
+                HttpStatus.OK
+        );
     }
 
 

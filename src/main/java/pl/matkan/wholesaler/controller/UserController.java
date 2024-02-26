@@ -25,12 +25,12 @@ public class UserController {
     }
     @GetMapping()
     public ResponseEntity<Page<UserDto>> getAll(
-            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order
     ) {
-        return new ResponseEntity<>(userSrv.findAllUsers(offset, pageSize, field, order), HttpStatus.OK);
+        return new ResponseEntity<>(userSrv.findAllUsers(pageNumber, pageSize, field, order), HttpStatus.OK);
     }
     @PostMapping()
     public ResponseEntity<User> createOne(@RequestBody UserDto one) {

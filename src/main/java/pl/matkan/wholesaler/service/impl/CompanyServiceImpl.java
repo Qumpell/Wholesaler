@@ -80,8 +80,11 @@ public class CompanyServiceImpl implements CompanyService {
                 .map(companyMapper::companyToCompanyDto)
                 .collect(Collectors.toList());
     }
-    public Page<CompanyDto> findCompaniesWithPaginationAndSort(int offset, int pageSize, String field, String order) {
-        Page<Company> companies  = companyRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field)));
+    public Page<CompanyDto> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order)
+    {
+        Page<Company> companies  = companyRepository.findAll(
+                PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
+        );
         return companies.map(companyMapper::companyToCompanyDto);
     }
 

@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.Company;
@@ -72,7 +75,14 @@ public class IndustryServiceImpl implements IndustryService {
     public Industry getOneIndustryByName(String industryName) {
         return industryRepo.findByName(industryName)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Industry was not found ", "with given name:= " + industryName)
+                        () -> new EntityNotFoundException("Industry was not found ",
+                                "with given name:= " + industryName)
                 );
+    }
+
+    public Page<Industry> findIndustriesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
+        return industryRepo.findAll(
+                PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
+        );
     }
 }
