@@ -34,9 +34,9 @@
         </tbody>
     </table>
     <div>
-        <button ng-click="changeCompaniesPage(-1)" ng-disabled="offset === 0">Prev</button>
+        <button ng-click="changeCompaniesPage(-1)" ng-disabled="currentPage === 0">Prev</button>
         Page {{ currentPage + 1 }} of {{ totalPages }}
-        <button ng-click="changeCompaniesPage(1)" ng-disabled="offset + pageSize >= totalItems">Next</button>
+        <button ng-click="changeCompaniesPage(1)" ng-disabled="currentPage + 1 >= totalPages">Next</button>
     </div>
 </div>
 

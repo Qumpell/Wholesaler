@@ -33,6 +33,7 @@ hrApp.controller('GetAllController', function ($scope, $http, $log) {
 
     $scope.changePage = function (pageChange, url) {
         $scope.currentPage += pageChange;
+
         $scope.getAll(url);
     };
 

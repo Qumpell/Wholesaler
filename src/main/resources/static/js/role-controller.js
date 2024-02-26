@@ -1,24 +1,24 @@
 //*********************************************************************************************************
 //ROLE CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('RoleController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('RoleController', function ($scope, $controller, $http, $log, $routeParams, $location, action) {
     $log.debug('RoleController');
     $log.debug('action = ' + action); //logowanie akcji
+    $controller('GetAllController', {$scope: $scope, $log: $log});
+
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        $http.get('/roles')
-            .then(
-                function success(response) {
-                    $scope.roles = response.data;
-                    $log.debug('GET: /roles');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /roles');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllRoles = function () {  //  scope dla wywołania getall
+        $scope.getAll("/roles");
     };
+    $scope.changeRolesPage = function(pageChange) {
+
+        $scope.changePage(pageChange, "/roles");
+    };
+
+    $scope.sortRolesByColumn = function(column) {
+        $scope.sortByColumn(column, "/roles");
+    };
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/roles/' + id)
@@ -109,12 +109,11 @@ hrApp.controller('RoleController', function ($scope, $http, $log, $routeParams, 
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllRoles();
     }
     // CREATE ONE
     if (action === 'add') {
         $scope.role = {}; // utworz pusty obiekt
-        $scope.getAll; // wykonaj akcje i zwróc wszystkie
         $scope.formSubmit = function () { // formSubmit ng-submit
             $scope.createOne($scope.role);
         }
@@ -123,7 +122,6 @@ hrApp.controller('RoleController', function ($scope, $http, $log, $routeParams, 
     if (action === 'update') {
         var id = $routeParams['id'];
         $scope.getOne(id);
-        $scope.getAll();
         $scope.formSubmit = function () {
             $log.debug('update one: role');
             $log.debug($scope.role);
