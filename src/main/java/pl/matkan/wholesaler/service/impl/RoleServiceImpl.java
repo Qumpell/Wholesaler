@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.dto.RoleDto;
 import pl.matkan.wholesaler.dto.mapper.RoleMapper;
@@ -82,5 +85,12 @@ public class RoleServiceImpl implements RoleService {
                         .orElseThrow(
                                 () -> new EntityNotFoundException("Role not found ", "with given name:= " + name)
                         );
+    }
+
+    public Page<RoleDto> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
+        Page<Role> roles = roleRepo.findAll(
+                PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
+        );
+        return roles.map(roleMapper::roleToRoleDto);
     }
 }
