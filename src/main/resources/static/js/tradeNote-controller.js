@@ -1,24 +1,24 @@
 //*********************************************************************************************************
 //TRADE NOTE CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('TradeNoteController', function ($scope, $controller, $http, $log, $routeParams, $location, action) {
     $log.debug('TradeNote');
     $log.debug('action = ' + action); //logowanie akcji
+    $controller('GetAllController', {$scope: $scope, $log: $log});
+
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        $http.get('/tradeNotes')
-            .then(
-                function success(response) {
-                    $scope.tradeNotes = response.data;
-                    $log.debug('GET: /tradeNotes');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /tradeNotes');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllTradeNotes = function () {  //  scope dla wywołania getall
+        $scope.getAll("/tradeNotes");
     };
+
+    $scope.changeTradeNotesPage = function(pageChange) {
+        $scope.changePage(pageChange, "/tradeNotes");
+    };
+
+    $scope.sortTradeNotesByColumn = function(column) {
+        $scope.sortByColumn(column, "/tradeNotes");
+    };
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/tradeNotes/' + id)
@@ -135,7 +135,7 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllTradeNotes();
     }
     // CREATE ONE
     if (action === 'add') {
