@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.dto.ContactPersonDto;
 import pl.matkan.wholesaler.dto.mapper.ContactPersonMapper;
@@ -71,5 +74,12 @@ public class ContactPersonServiceImpl implements ContactPersonService {
         return contactPeople.stream()
                 .map(contactPersonMapper::contactPersonToContactPersonDto)
                 .collect(Collectors.toList());
+    }
+
+    public Page<ContactPersonDto> findContactPeopleWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
+        Page<ContactPerson> contactPeople = contactPersonRepository.findAll(
+                PageRequest.of(pageNumber, pageSize).withSort(Sort.Direction.fromString(order), field)
+        );
+        return contactPeople.map(contactPersonMapper::contactPersonToContactPersonDto);
     }
 }

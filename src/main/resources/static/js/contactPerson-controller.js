@@ -1,24 +1,24 @@
 //*********************************************************************************************************
 //CONTACT PERSON CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('ContactPersonController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('ContactPersonController', function ($scope, $controller, $http, $log, $routeParams, $location, action) {
     $log.debug('ContactPerson');
     $log.debug('action = ' + action); //logowanie akcji
+    $controller('GetAllController', {$scope: $scope, $log: $log});
+
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        $http.get('/contactPersons')
-            .then(
-                function success(response) {
-                    $scope.contactPersons = response.data;
-                    $log.debug('GET: /contactPersons');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /contactPersons');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllContactPeople = function () {  //  scope dla wywołania getall
+        $scope.getAll("/contactPersons");
     };
+
+    $scope.changeContactPeoplePage = function(pageChange) {
+        $scope.changePage(pageChange, "/contactPersons");
+    };
+
+    $scope.sortContactPeopleByColumn = function(column) {
+        $scope.sortByColumn(column, "/contactPersons");
+    };
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/contactPersons/' + id)
@@ -126,7 +126,7 @@ hrApp.controller('ContactPersonController', function ($scope, $http, $log, $rout
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllContactPeople();
     }
     // CREATE ONE
     if (action === 'add') {

@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +29,20 @@ public class ContactPersonController {
         return new ResponseEntity<>(contactPersonDto, HttpStatus.OK);
     }
 
+//    @GetMapping()
+//    public ResponseEntity<List<ContactPersonDto>> getAll() {
+//        return new ResponseEntity<>(contactPersonService.findAll(),HttpStatus.OK);
+//    }
     @GetMapping()
-    public ResponseEntity<List<ContactPersonDto>> getAll() {
-        return new ResponseEntity<>(contactPersonService.findAll(),HttpStatus.OK);
+    public ResponseEntity<Page<ContactPersonDto>> getAll(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return new ResponseEntity<>(
+                contactPersonService.findContactPeopleWithPaginationAndSort(pageNumber, pageSize, field, order),
+                HttpStatus.OK);
     }
 
     @PostMapping()
