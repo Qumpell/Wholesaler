@@ -100,18 +100,12 @@ hrApp.controller('UserController', function ($scope, $controller, $http, $log, $
     };
 
     $scope.getAllRoles = function () {  //  scope dla wywołania getall
-        $http.get('/roles')
-            .then(
-                function success(response) {
-                    $scope.roles = response.data;
-                    $log.debug('GET: /roles');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /roles');
-                    $log.error(response);
-                }
-            );
+           $scope.getAll("/roles");
+    };
+
+    $scope.changeRolesFormPage = function(pageChange) {
+
+        $scope.changePage(pageChange, "/roles");
     };
 
 
@@ -130,9 +124,11 @@ hrApp.controller('UserController', function ($scope, $controller, $http, $log, $
     if (action === 'add') {
         $scope.user = {}; // utworz pusty obiekt
 //        $scope.getAll(); // wykonaj akcje i zwróc wszystkie
-        $scope.getAllRoles();
+       $scope.getAllRoles();
         $scope.formSubmit = function () { // formSubmit ng-submit
+            console.log($scope.user);
             $scope.createOne($scope.user);
+
         }
     }
     // UPDATE ONE
@@ -153,7 +149,5 @@ hrApp.controller('UserController', function ($scope, $controller, $http, $log, $
         var id = $routeParams['id'];
         $scope.deleteUser(id);
     }
-
-
 });
 
