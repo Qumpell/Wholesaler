@@ -123,10 +123,9 @@ hrApp.controller('UserController', function ($scope, $controller, $http, $log, $
     // CREATE ONE
     if (action === 'add') {
         $scope.user = {}; // utworz pusty obiekt
-//        $scope.getAll(); // wykonaj akcje i zwróc wszystkie
+
        $scope.getAllRoles();
         $scope.formSubmit = function () { // formSubmit ng-submit
-            console.log($scope.user);
             $scope.createOne($scope.user);
 
         }
@@ -136,7 +135,7 @@ hrApp.controller('UserController', function ($scope, $controller, $http, $log, $
         var id = $routeParams['id'];
         $scope.getOne(id);
 
-        //$scope.getAll();
+
         $scope.getAllRoles();
         $scope.formSubmit = function () {
             $log.debug('update one: user');
