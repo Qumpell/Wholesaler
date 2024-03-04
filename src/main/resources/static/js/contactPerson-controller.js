@@ -90,32 +90,42 @@ hrApp.controller('ContactPersonController', function ($scope, $controller, $http
     };
 
     $scope.getAllCompanies = function () {  //  scope dla wywołania getall
-        $http.get('/companies')
+        $scope.getAll("/companies")
+    };
+    $scope.changeCompaniesFormPage = function(pageChange) {
+
+        $scope.changePage(pageChange, "/companies");
+    };
+    $scope.pageUserSize = 10;
+    $scope.currentUsersPage = 0;
+    $scope.totalUsersPages = 0;
+    $scope.getAllUsers = function () {
+        var params = {
+            pageNumber: $scope.currentPage,
+            pageSize: $scope.pageSize,
+            field: $scope.field,
+            order: $scope.order
+        };
+        var url = "/users"
+        $http.get(url, { params: params })
             .then(
                 function success(response) {
-                    $scope.companies = response.data;
-                    $log.debug('GET: /companies');
+                    $scope.users = response.data.content;
+                    $scope.totalUsersItems = response.data.totalElements;
+                    $scope.totalUsersPages = response.data.totalPages;
+                    $log.debug('GET: ' + url);
                     $log.debug(response);
                 },
                 function error(response) {
-                    $log.error('GET: /companies');
+                    $log.error('GET: ' + url);
                     $log.error(response);
                 }
             );
     };
-    $scope.getAllUsers = function () {  //  scope dla wywołania getall
-        $http.get('/users')
-            .then(
-                function success(response) {
-                    $scope.users = response.data;
-                    $log.debug('GET: /users');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /users');
-                    $log.error(response);
-                }
-            );
+    $scope.changeUsersFormPage = function(pageChange) {
+        $scope.currentUsersPage += pageChange;
+
+        $scope.getAllUsers();
     };
     // AKCJA wywoluje dany scope
 
