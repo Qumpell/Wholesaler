@@ -56,7 +56,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteById(Long id) {
-//        Optional<Role> roleOptional = findById(id);
         Optional<Role> roleOptional = roleRepo.findById(id);
         if (roleOptional.isPresent()){
             Role role = roleOptional.get();
@@ -87,7 +86,8 @@ public class RoleServiceImpl implements RoleService {
                         );
     }
 
-    public Page<RoleDto> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
+    @Override
+    public Page<RoleDto> findAll(int pageNumber, int pageSize, String field, String order) {
         Page<Role> roles = roleRepo.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
         );

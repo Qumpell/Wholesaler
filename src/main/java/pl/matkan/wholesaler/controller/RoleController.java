@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.matkan.wholesaler.dto.RoleDto;
 import pl.matkan.wholesaler.model.Role;
+import pl.matkan.wholesaler.service.RoleService;
 import pl.matkan.wholesaler.service.impl.RoleServiceImpl;
+
+
 
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
-    private final RoleServiceImpl roleService;
+    private final RoleService roleService;
     public RoleController(RoleServiceImpl roleService) {
         this.roleService = roleService;
     }
@@ -32,7 +35,7 @@ public class RoleController {
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order
     ){
-        return new ResponseEntity<>(roleService.findRolesWithPaginationAndSort(pageNumber, pageSize, field, order), HttpStatus.OK);
+        return new ResponseEntity<>(roleService.findAll(pageNumber, pageSize, field, order), HttpStatus.OK);
     }
 
     @PostMapping()
@@ -61,5 +64,12 @@ public class RoleController {
         }
 
     }
+
+//    @GetMapping("/user-with-role/{userId}")
+//    public ResponseEntity<UserWithRoleDto> getUserWithRole(@PathVariable Long userId) {
+//        UserDto user = userService.findById(userId);
+//        RoleDto role = roleService.findRoleForUser(userId);
+//        return new ResponseEntity<>(new UserWithRoleDto(user, role), HttpStatus.OK);
+//    }
 
 }
