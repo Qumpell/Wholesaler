@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +27,21 @@ public class TradeNoteController {
         return new ResponseEntity<>(tradeNoteDto, HttpStatus.OK);
     }
 
+//    @GetMapping()
+//    public ResponseEntity<List<TradeNoteDto>> getAll() {
+//        return new ResponseEntity<>(tradeNoteService.findAll(),HttpStatus.OK);
+//    }
     @GetMapping()
-    public ResponseEntity<List<TradeNoteDto>> getAll() {
-        return new ResponseEntity<>(tradeNoteService.findAll(),HttpStatus.OK);
+    public ResponseEntity<Page<TradeNoteDto>> getAll(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return new ResponseEntity<>(
+                tradeNoteService.findTradeNotesWithPaginationAndSort(pageNumber, pageSize, field, order),
+                HttpStatus.OK);
     }
-
     @PostMapping()
     public ResponseEntity<TradeNote> createOne(@RequestBody TradeNoteDto one) {
         TradeNote tradeNoteOne = tradeNoteService.create(one);

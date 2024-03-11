@@ -1,13 +1,12 @@
 package pl.matkan.wholesaler.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.matkan.wholesaler.dto.CompanyDto;
 import pl.matkan.wholesaler.model.Company;
 import pl.matkan.wholesaler.service.impl.CompanyServiceImpl;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/companies")
@@ -24,10 +23,24 @@ public class CompanyController {
         return new ResponseEntity<>(companyDto, HttpStatus.OK);
     }
 
+//    @GetMapping()
+//    public ResponseEntity<List<CompanyDto>> getAll() {
+//        return new ResponseEntity<>(companyService.findAll(), HttpStatus.OK);
+//    }
+
     @GetMapping()
-    public ResponseEntity<List<CompanyDto>> getAll() {
-        return new ResponseEntity<>(companyService.findAll(), HttpStatus.OK);
+    public ResponseEntity<Page<CompanyDto>> getAll(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return new ResponseEntity<>(
+                companyService.findCompaniesWithPaginationAndSort(pageNumber, pageSize, field, order),
+                HttpStatus.OK
+        );
     }
+
 
     @PostMapping()
     public ResponseEntity<Company> createOne(@RequestBody CompanyDto one) {

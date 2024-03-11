@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.dto.TradeNoteDto;
 import pl.matkan.wholesaler.dto.mapper.TradeNoteMapper;
@@ -71,4 +74,12 @@ public class TradeNoteServiceImpl implements TradeNoteService {
                 .collect(Collectors.toList());
     }
 
+    public Page<TradeNoteDto> findTradeNotesWithPaginationAndSort(
+            int pageNumber, int pageSize, String field, String order)
+    {
+        Page<TradeNote> tradeNotes = tradeNoteRepo.findAll(PageRequest.of(pageNumber, pageSize).
+                withSort(Sort.by(Sort.Direction.fromString(order), field))
+        );
+        return tradeNotes.map(tradeNoteMapper::tradeNoteToTradeNoteDto);
+    }
 }

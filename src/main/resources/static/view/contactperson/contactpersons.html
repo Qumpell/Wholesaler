@@ -6,20 +6,20 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Surname</th>
-            <th scope="col">Phone number</th>
-            <th scope="col">Mail</th>
-            <th scope="col">Position</th>
-            <th scope="col">Company ID</th>
-            <th scope="col">Owner ID</th>
-            <th scope="col">Status</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('id')">ID</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('name')">Name</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('surname')">Surname</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('phoneNumber')">Phone number</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('mail')">Mail</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('position')">Position</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('company.name')">Company name</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('user.id')">Owner ID</th>
+            <th scope="col" ng-click="sortContactPeopleByColumn('id')">Status</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr ng-repeat="conp in contactPersons" ng-cloak data-ng-class="conp.isDeleted && 'strikethrough' || 'null'">
+        <tr ng-repeat="conp in items" ng-cloak data-ng-class="conp.isDeleted && 'strikethrough' || 'null'">
             <td>{{ conp.id }}</td>
             <td><a ng-href="#/contactPersons/one/{{conp.id}}">{{ conp.firstname }}</a></td>
             <td>{{ conp.surname }}</td>
@@ -34,6 +34,11 @@
         </tr>
         </tbody>
     </table>
+    <div>
+        <button ng-click="changeContactPeoplePage(-1)" ng-disabled="currentPage === 0">Prev</button>
+        Page {{ currentPage + 1 }} of {{ totalPages }}
+        <button ng-click="changeContactPeoplePage(1)" ng-disabled="currentPage + 1 >= totalPages">Next</button>
+    </div>
 </div>
 
 <br>

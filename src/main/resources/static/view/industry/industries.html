@@ -6,13 +6,13 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
+            <th scope="col" ng-click="sortIndustriesByColumn('id')">ID</th>
+            <th scope="col"  ng-click="sortIndustriesByColumn('name')">Name</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr ng-repeat="ind in industries">
+        <tr ng-repeat="ind in items">
             <td>{{ ind.id }}</td>
             <td><a ng-href="#/industries/one/{{ind.id}}">{{ ind.name }}</a></td>
             <td><a class="btn btn-info" ng-href="#/industries/update/{{ind.id}}">Edit</a></td>
@@ -20,6 +20,11 @@
         </tr>
         </tbody>
     </table>
+    <div>
+        <button ng-click="changeIndustriesPage(-1)" ng-disabled="currentPage === 0">Prev</button>
+        Page {{ currentPage + 1 }} of {{ totalPages }}
+        <button ng-click="changeIndustriesPage(1)" ng-disabled="currentPage + 1 >= totalPages">Next</button>
+    </div>
 </div>
 
 <br>

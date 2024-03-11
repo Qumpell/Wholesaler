@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.service;
 
+import org.springframework.data.domain.Page;
 import pl.matkan.wholesaler.dto.RoleDto;
 import pl.matkan.wholesaler.model.Role;
 
@@ -17,6 +18,7 @@ public interface RoleService {
     void deleteById(Long id);
 
     List<RoleDto> findAll();
+    Page<RoleDto> findAll(int pageNumber, int pageSize, String field, String order);
 
     Role findByName(String name);
 }

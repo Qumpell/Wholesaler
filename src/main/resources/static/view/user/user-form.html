@@ -47,9 +47,22 @@
             <tr>
                 <td class="bold"><label for="roleName">Role</label></td>
                 <td>
-                    <select id="roleName" ng-model="user.roleName"
-                            ng-options="rol.name as rol.name for rol in roles"></select>
+<!--                    <select id="roleName" ng-model="user.roleName"-->
+<!--                            ng-options="rol.name as rol.name for rol in roles"></select>-->
 
+<!--                    <div id="roleSelectContainer" style="max-height: 150px; overflow-y: auto;">-->
+<!--&lt;!&ndash;                        <select id="roleName" ng-model="user.roleName">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <option ng-repeat="role in items" value="{{ role.name }}">{{ role.name }}</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </select>&ndash;&gt;-->
+<!--                       -->
+<!--                    </div>-->
+<!--                    <select id="roleName" ng-model="user.roleName" ng-options="role.name for role in items" required></select>-->
+                    <select id="roleName" ng-model="user.roleName" required>
+                        <option ng-repeat="role in items" value="{{ role.name }}">{{ role.name }}</option>
+                    </select>
+                    <input type="button" ng-click="changeRolesFormPage(-1)" ng-disabled="currentPage === 0" value="Prev">
+                    Page {{ currentPage + 1 }} of {{ totalPages }}
+                    <input type="button" ng-click="changeRolesFormPage(1)" ng-disabled="currentPage + 1 === totalPages" value="Next">
                 </td>
                 <td class="error">{{ formErrors['roleName'] }}</td>
             </tr>

@@ -1,24 +1,24 @@
 //*********************************************************************************************************
 //ROLE CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('IndustryController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('IndustryController', function ($scope, $controller,  $http, $log, $routeParams, $location, action) {
     $log.debug('IndustryController');
     $log.debug('action = ' + action); //logowanie akcji
+    $controller('GetAllController', {$scope: $scope, $log: $log});
+
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        $http.get('/industries')
-            .then(
-                function success(response) {
-                    $scope.industries = response.data;
-                    $log.debug('GET: /industries');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /industries');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllIndustries = function () {  //  scope dla wywołania getall
+        $scope.getAll("/industries");
     };
+    $scope.changeIndustriesPage = function(pageChange) {
+        $scope.changePage(pageChange, "/industries");
+    };
+
+    $scope.sortIndustriesByColumn = function(column) {
+        $scope.sortByColumn(column, "/industries");
+    };
+
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/industries/' + id)
@@ -40,7 +40,7 @@ hrApp.controller('IndustryController', function ($scope, $http, $log, $routePara
     };
     //CREATE
     $scope.createOne = function (data) {
-        $http.post('/industries/', data)
+        $http.post('/industries', data)
             .then(
                 function success(response) {
                     $scope.industry = response.data; // do obiektu user podstaw dane z odpowiedzi
@@ -109,12 +109,12 @@ hrApp.controller('IndustryController', function ($scope, $http, $log, $routePara
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllIndustries();
     }
     // CREATE ONE
     if (action === 'add') {
         $scope.industry = {}; // utworz pusty obiekt
-        $scope.getAll(); // wykonaj akcje i zwróc wszystkie
+        // $scope.getAllIndustries(); // wykonaj akcje i zwróc wszystkie
         $scope.formSubmit = function () { // formSubmit ng-submit
             $scope.createOne($scope.industry);
         }

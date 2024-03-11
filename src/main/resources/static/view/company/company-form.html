@@ -34,9 +34,12 @@
             <tr>
                 <td class="bold"><label for="industry">Industry</label></td>
                 <td>
-                    <select id="industry" ng-model="company.industryName"
-                            ng-options="ind.name as ind.name  for ind in industries"></select>
-
+                    <select id="industry" ng-model="company.industryName" required>
+                        <option ng-repeat="ind in items" value="{{ ind.name }}">{{ ind.name }}</option>
+                    </select>
+                    <input type="button" ng-click="changeIndustriesFormPage(-1)" ng-disabled="currentPage === 0" value="Prev">
+                    Page {{ currentPage + 1 }} of {{ totalPages }}
+                    <input type="button" ng-click="changeIndustriesFormPage(1)" ng-disabled="currentPage + 1 === totalPages" value="Next">
                 </td>
                 <td class="error">{{ formErrors['industry'] }}</td>
             </tr>
@@ -58,8 +61,12 @@
             <tr>
                 <td class="bold"><label for="owner_id">Owner</label></td>
                 <td>
-                    <select id="owner_id" ng-model="company.ownerId"
-                            ng-options="usr.id as (usr.firstname + ' ' + usr.surname) for usr in users"></select>
+                    <select id="owner_id" ng-model="company.ownerId" required>
+                        <option ng-repeat="user in users" value="{{ user.id }}">{{ user.firstname + ' ' + user.surname}}</option>
+                    </select>
+                    <input type="button" ng-click="changeUsersFormPage(-1)" ng-disabled="currentUsersPage === 0" value="Prev">
+                    Page {{ currentUsersPage + 1 }} of {{ totalUsersPages }}
+                    <input type="button" ng-click="changeUsersFormPage(1)" ng-disabled="currentUsersPage + 1 === totalUsersPages" value="Next">
                 </td>
                 <td class="error">{{ formErrors['ownerId'] }}</td>
             </tr>

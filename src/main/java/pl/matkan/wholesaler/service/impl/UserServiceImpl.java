@@ -1,5 +1,8 @@
 package pl.matkan.wholesaler.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.dto.UserDto;
 import pl.matkan.wholesaler.dto.mapper.UserMapper;
@@ -72,6 +75,12 @@ public class UserServiceImpl implements UserService {
                                         .map(userMapper::userToUserDto)
                                         .collect(Collectors.toList());
     }
+
+    public Page<UserDto> findAllUsers(int offset, int pageSize, String field, String order) {
+        Page<User> users  = userRepo.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field)));
+        return users.map(userMapper::userToUserDto);
+    }
+
     public User getOneUserById(Long id) {
         return userRepo.findById(id)
                              .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id))

@@ -1,24 +1,24 @@
 //*********************************************************************************************************
 //TRADE NOTE CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('TradeNoteController', function ($scope, $controller, $http, $log, $routeParams, $location, action) {
     $log.debug('TradeNote');
     $log.debug('action = ' + action); //logowanie akcji
+    $controller('GetAllController', {$scope: $scope, $log: $log});
+
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        $http.get('/tradeNotes')
-            .then(
-                function success(response) {
-                    $scope.tradeNotes = response.data;
-                    $log.debug('GET: /tradeNotes');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /tradeNotes');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllTradeNotes = function () {  //  scope dla wywołania getall
+        $scope.getAll("/tradeNotes");
     };
+
+    $scope.changeTradeNotesPage = function(pageChange) {
+        $scope.changePage(pageChange, "/tradeNotes");
+    };
+
+    $scope.sortTradeNotesByColumn = function(column) {
+        $scope.sortByColumn(column, "/tradeNotes");
+    };
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/tradeNotes/' + id)
@@ -98,32 +98,42 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
 
 
     $scope.getAllCompanies = function () {  //  scope dla wywołania getall
-        $http.get('/companies')
+      $scope.getAll("/companies")
+    };
+    $scope.changeCompaniesFormPage = function(pageChange) {
+
+        $scope.changePage(pageChange, "/companies");
+    };
+    $scope.pageUserSize = 10;
+    $scope.currentUsersPage = 0;
+    $scope.totalUsersPages = 0;
+    $scope.getAllUsers = function () {
+        var params = {
+            pageNumber: $scope.currentPage,
+            pageSize: $scope.pageSize,
+            field: $scope.field,
+            order: $scope.order
+        };
+        var url = "/users"
+        $http.get(url, { params: params })
             .then(
                 function success(response) {
-                    $scope.companies = response.data;
-                    $log.debug('GET: /companies');
+                    $scope.users = response.data.content;
+                    $scope.totalUsersItems = response.data.totalElements;
+                    $scope.totalUsersPages = response.data.totalPages;
+                    $log.debug('GET: ' + url);
                     $log.debug(response);
                 },
                 function error(response) {
-                    $log.error('GET: /companies');
+                    $log.error('GET: ' + url);
                     $log.error(response);
                 }
             );
     };
-    $scope.getAllUsers = function () {  //  scope dla wywołania getall
-        $http.get('/users')
-            .then(
-                function success(response) {
-                    $scope.users = response.data;
-                    $log.debug('GET: /users');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /users');
-                    $log.error(response);
-                }
-            );
+    $scope.changeUsersFormPage = function(pageChange) {
+        $scope.currentUsersPage += pageChange;
+
+        $scope.getAllUsers();
     };
 
     // AKCJA wywoluje dany scope
@@ -135,7 +145,7 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllTradeNotes();
     }
     // CREATE ONE
     if (action === 'add') {
@@ -150,7 +160,7 @@ hrApp.controller('TradeNoteController', function ($scope, $http, $log, $routePar
     if (action === 'update') {
         var id = $routeParams['id'];
         $scope.getOne(id);
-        //$scope.getAll();
+
         $scope.getAllCompanies();
         $scope.getAllUsers();
         $scope.formSubmit = function () {

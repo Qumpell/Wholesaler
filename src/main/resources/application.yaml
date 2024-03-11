@@ -19,6 +19,7 @@ spring:
       hibernates:
         show:
           sql: true
+
 ---
 spring:
   config:

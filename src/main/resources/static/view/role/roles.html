@@ -7,13 +7,13 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
+            <th scope="col" ng-click="sortRolesByColumn('id')">ID</th>
+            <th scope="col" ng-click="sortRolesByColumn('name')">Name</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr ng-repeat="rol in roles">
+        <tr ng-repeat="rol in items">
             <td>{{ rol.id }}</td>
             <td><a ng-href="#/roles/one/{{rol.id}}">{{ rol.name }}</a></td>
             <td><a class="btn btn-info" ng-href="#/roles/update/{{rol.id}}">Edit</a></td>
@@ -21,6 +21,11 @@
         </tr>
         </tbody>
     </table>
+    <div>
+        <button ng-click="changeRolesPage(-1)" ng-disabled="currentPage === 0">Prev</button>
+        Page {{ currentPage + 1 }} of {{ totalPages }}
+        <button ng-click="changeRolesPage(1)" ng-disabled="currentPage + 1 >= totalPages">Next</button>
+    </div>
 </div>
 
 <br>

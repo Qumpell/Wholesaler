@@ -1,35 +1,41 @@
 package pl.matkan.wholesaler.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.matkan.wholesaler.dto.RoleDto;
 import pl.matkan.wholesaler.model.Role;
-import pl.matkan.wholesaler.repo.UserRepository;
+import pl.matkan.wholesaler.service.RoleService;
 import pl.matkan.wholesaler.service.impl.RoleServiceImpl;
 
-import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
-    private final RoleServiceImpl roleService;
-    public RoleController(RoleServiceImpl roleService,
-                          UserRepository userRepository) {
+    private final RoleService roleService;
+    public RoleController(RoleServiceImpl roleService) {
         this.roleService = roleService;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RoleDto> getOne(@PathVariable("id") Long id) {
-//        Optional<Role> one = roleService.findById(id);
         RoleDto roleDto = roleService.findById(id);
-//        return one.map(role -> new ResponseEntity<>(role, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
         return new ResponseEntity<>(roleDto, HttpStatus.OK);
     }
+//    @GetMapping()
+//    public List<RoleDto> getAll() {
+//        return roleService.findAll();
+//    }
     @GetMapping()
-    public List<RoleDto> getAll() {
-        return roleService.findAll();
+    public ResponseEntity<Page<RoleDto>> getAll(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ){
+        return new ResponseEntity<>(roleService.findAll(pageNumber, pageSize, field, order), HttpStatus.OK);
     }
 
     @PostMapping()
@@ -58,5 +64,12 @@ public class RoleController {
         }
 
     }
+
+//    @GetMapping("/user-with-role/{userId}")
+//    public ResponseEntity<UserWithRoleDto> getUserWithRole(@PathVariable Long userId) {
+//        UserDto user = userService.findById(userId);
+//        RoleDto role = roleService.findRoleForUser(userId);
+//        return new ResponseEntity<>(new UserWithRoleDto(user, role), HttpStatus.OK);
+//    }
 
 }

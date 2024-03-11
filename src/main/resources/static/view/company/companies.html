@@ -7,19 +7,19 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Nip</th>
-            <th scope="col">Industry</th>
-            <th scope="col">Address</th>
-            <th scope="col">City</th>
-            <th scope="col">Owner id</th>
-            <th scope="col">Status</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('id')">ID</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('name')">Name</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('nip')">NIP</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('industryName')">Industry</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('address')">Address</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('city')">City</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('user.id')">Owner ID</th>
+            <th scope="col" ng-click="sortCompaniesByColumn('isDeleted')">Status</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr ng-repeat="com in companies" ng-cloak data-ng-class="com.isDeleted && 'strikethrough' || 'null'">
+        <tr ng-repeat="com in items" ng-cloak data-ng-class="com.isDeleted && 'strikethrough' || 'null'">
             <td>{{ com.id }}</td>
             <td><a ng-href="#/companies/one/{{com.id}}">{{ com.name }}</a></td>
             <td>{{ com.nip }}</td>
@@ -33,6 +33,11 @@
         </tr>
         </tbody>
     </table>
+    <div>
+        <button ng-click="changeCompaniesPage(-1)" ng-disabled="currentPage === 0">Prev</button>
+        Page {{ currentPage + 1 }} of {{ totalPages }}
+        <button ng-click="changeCompaniesPage(1)" ng-disabled="currentPage + 1 >= totalPages">Next</button>
+    </div>
 </div>
 
 <br>

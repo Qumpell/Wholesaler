@@ -2,14 +2,13 @@ package pl.matkan.wholesaler.controller;
 
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.matkan.wholesaler.dto.UserDto;
 import pl.matkan.wholesaler.model.User;
 import pl.matkan.wholesaler.service.impl.UserServiceImpl;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -25,10 +24,14 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
     @GetMapping()
-    public ResponseEntity<List<UserDto>> getAll() {
-        return new ResponseEntity<>(userSrv.findAll(), HttpStatus.OK);
+    public ResponseEntity<Page<UserDto>> getAll(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return new ResponseEntity<>(userSrv.findAllUsers(pageNumber, pageSize, field, order), HttpStatus.OK);
     }
-
     @PostMapping()
     public ResponseEntity<User> createOne(@RequestBody UserDto one) {
         User carOne = userSrv.create(one);

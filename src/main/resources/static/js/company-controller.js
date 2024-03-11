@@ -1,24 +1,24 @@
 //*********************************************************************************************************
 //COMPANY CONTROLLER
 //*********************************************************************************************************
-hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParams, $location, action) {
+hrApp.controller('CompanyController', function ($scope,  $controller, $http, $log, $routeParams, $location, action) {
     $log.debug('CompanyController');
     $log.debug('action = ' + action); //logowanie akcji
+    $controller('GetAllController', {$scope: $scope, $log: $log});
+
     //READ-ALL
-    $scope.getAll = function () {  //  scope dla wywołania getall
-        $http.get('/companies')
-            .then(
-                function success(response) {
-                    $scope.companies = response.data;
-                    $log.debug('GET: /companies');
-                    $log.debug(response);
-                },
-                function error(response) {
-                    $log.error('GET: /companies');
-                    $log.error(response);
-                }
-            );
+    $scope.getAllCompanies = function () {  //  scope dla wywołania getall
+        $scope.getAll("/companies");
     };
+    $scope.changeCompaniesPage = function(pageChange) {
+
+        $scope.changePage(pageChange, "/companies");
+    };
+
+    $scope.sortCompaniesByColumn = function(column) {
+        $scope.sortByColumn(column, "/companies");
+    };
+
     // READ-ONE
     $scope.getOne = function (id) {
         $http.get('/companies/' + id)
@@ -90,31 +90,42 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
     };
 
     $scope.getAllIndustries = function () {  //  scope dla wywołania getall
-        $http.get('/industries')
+        $scope.getAll("/industries");
+    };
+    $scope.changeIndustriesFormPage = function(pageChange) {
+
+        $scope.changePage(pageChange, "/industries");
+    };
+    $scope.pageUserSize = 10;
+    $scope.currentUsersPage = 0;
+    $scope.totalUsersPages = 0;
+    $scope.getAllUsers = function () {
+        var params = {
+            pageNumber: $scope.currentPage,
+            pageSize: $scope.pageSize,
+            field: $scope.field,
+            order: $scope.order
+        };
+        var url = "/users"
+        $http.get(url, { params: params })
             .then(
                 function success(response) {
-                    $scope.industries = response.data;
-                    $log.debug('GET: /industries');
+                    $scope.users = response.data.content;
+                    $scope.totalUsersItems = response.data.totalElements;
+                    $scope.totalUsersPages = response.data.totalPages;
+                    $log.debug('GET: ' + url);
                     $log.debug(response);
                 },
                 function error(response) {
-                    $log.error('GET: /industries');
+                    $log.error('GET: ' + url);
                     $log.error(response);
                 }
             );
     };
+    $scope.changeUsersFormPage = function(pageChange) {
+        $scope.currentUsersPage += pageChange;
 
-    $scope.getAllUsers = function () {
-        $http.get('/users')
-            .then(
-                function success(response) {
-                    $scope.users = response.data;
-                    // console.log($scope.users); // Sprawdź dane użytkowników po pobraniu
-                },
-                function error(response) {
-                    console.error('Error getting users', response);
-                }
-            );
+        $scope.getAllUsers();
     };
 
     // AKCJA wywoluje dany scope
@@ -126,12 +137,12 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
     }
     // GET ALL
     if (action === 'all') {
-        $scope.getAll();
+        $scope.getAllCompanies();
     }
     // CREATE ONE
     if (action === 'add') {
         $scope.company = {}; // utworz pusty obiekt
-        //$scope.getAll(); // wykonaj akcje i zwróc wszystkie
+
         $scope.getAllIndustries();
         $scope.getAllUsers();
         $scope.formSubmit = function () { // formSubmit ng-submit
@@ -142,7 +153,7 @@ hrApp.controller('CompanyController', function ($scope, $http, $log, $routeParam
     if (action === 'update') {
         var id = $routeParams['id'];
         $scope.getOne(id);
-        //$scope.getAll();
+
         $scope.getAllIndustries();
         $scope.getAllUsers();
         $scope.formSubmit = function () {

@@ -1,16 +1,17 @@
 package pl.matkan.wholesaler.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.dto.CompanyDto;
 import pl.matkan.wholesaler.dto.mapper.CompanyMapper;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.model.Company;
 import pl.matkan.wholesaler.repo.CompanyRepository;
-import pl.matkan.wholesaler.repo.UserRepository;
 import pl.matkan.wholesaler.service.CompanyService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("companyService")
@@ -18,15 +19,13 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final UserServiceImpl userService;
-    private final UserRepository userRepository;
     private final CompanyMapper companyMapper;
 
     private final IndustryServiceImpl industryService;
 
-    public CompanyServiceImpl(CompanyRepository companyRepo, UserServiceImpl userService, UserRepository userRepository, CompanyMapper companyMapper, IndustryServiceImpl industryService) {
+    public CompanyServiceImpl(CompanyRepository companyRepo, UserServiceImpl userService, CompanyMapper companyMapper, IndustryServiceImpl industryService) {
         this.companyRepository = companyRepo;
         this.userService = userService;
-        this.userRepository = userRepository;
         this.companyMapper = companyMapper;
         this.industryService = industryService;
     }
@@ -71,16 +70,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void deleteById(Long id) {
-        Optional<Company> companyOptional = companyRepository.findById(id);
-
-//        companyOptional.ifPresent(company -> {
-//            User user = company.getUser();
-//            if(user != null) {
-//                user.removeCompany(company);
-//                userRepository.save(user);
-//            }
-//        });
-
         companyRepository.deleteById(id);
     }
 
@@ -90,6 +79,13 @@ public class CompanyServiceImpl implements CompanyService {
         return companies.stream()
                 .map(companyMapper::companyToCompanyDto)
                 .collect(Collectors.toList());
+    }
+    public Page<CompanyDto> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order)
+    {
+        Page<Company> companies  = companyRepository.findAll(
+                PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
+        );
+        return companies.map(companyMapper::companyToCompanyDto);
     }
 
     public Company getOneCompanyById(Long id) {
