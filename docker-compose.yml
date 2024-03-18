@@ -9,9 +9,9 @@ services:
     depends_on:
       - mysql
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:8081/wholesaler
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wholesaler
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
 
   mysql:
     image: mysql:latest
@@ -19,7 +19,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wholesaler
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
     ports:
-      - "8081:3306"
+      - "3306:3306"

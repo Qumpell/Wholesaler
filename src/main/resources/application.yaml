@@ -9,10 +9,10 @@ spring:
   profiles:
     active: dev
   datasource:
-    password: root
+    password: test
 #    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
-    url: jdbc:mysql://mysql:8081/wholesaler
-    username: root
+    url: jdbc:mysql://mysql:3306/wholesaler
+    username: test
   jpa:
     hibernate:
       ddl-auto: create-drop
