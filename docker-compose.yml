@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  wholesaler-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:8081/wholesaler
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wholesaler
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "8081:3306"
