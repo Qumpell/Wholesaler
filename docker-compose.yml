@@ -1,21 +1,10 @@
-version: '3.7'
-services:
-  wholesaler-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mysql
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wholesaler
-      SPRING_DATASOURCE_USERNAME: test
-      SPRING_DATASOURCE_PASSWORD: test
+version: '3.8'
 
-  mysql:
+name: wholesaler-app
+services:
+  database-mysql:
     image: mysql:latest
-    container_name: mysql
+    container_name: database-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wholesaler
@@ -23,3 +12,18 @@ services:
       MYSQL_PASSWORD: test
     ports:
       - "3306:3306"
+  wholesaler-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database-mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database-mysql:3306/wholesaler
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+
