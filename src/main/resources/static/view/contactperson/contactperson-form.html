@@ -63,7 +63,8 @@
                 <td class="bold"><label for="owner_id">Owner</label></td>
                 <td>
                     <select id="owner_id" ng-model="contactPerson.ownerId" required>
-                        <option ng-repeat="user in users" value="{{ user.id }}">{{ user.firstname + ' ' + user.surname}}</option>
+<!--                        <option ng-repeat="user in users" value="{{ user.id }}">{{ user.firstname + ' ' + user.surname}}</option>-->
+                        <option ng-repeat="user in users" value="{{ user.id }}" ng-selected="user.id === contactPerson.ownerId">{{ user.firstname + ' ' + user.surname}}</option>
                     </select>
                     <input type="button" ng-click="changeUsersFormPage(-1)" ng-disabled="currentUsersPage === 0" value="Prev">
                     Page {{ currentUsersPage + 1 }} of {{ totalUsersPages }}

@@ -6,19 +6,24 @@ logging:
       springframework:
         web: TRACE
 spring:
-  profiles:
-    active: dev
+#  profiles:
+#    active: dev
   datasource:
-    password: root
-    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
+
+#    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://mysql:3306/wholesaler
+    url: jdbc:mysql://localhost:3306/wholesaler
+    username: test
+    password: test
   jpa:
     hibernate:
-      ddl-auto: create-drop
+#      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernates:
         show:
           sql: true
+    generate-ddl: true
 
 ---
 spring:
