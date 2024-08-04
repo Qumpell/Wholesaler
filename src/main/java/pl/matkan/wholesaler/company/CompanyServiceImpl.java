@@ -1,34 +1,26 @@
-package pl.matkan.wholesaler.service.impl;
+package pl.matkan.wholesaler.company;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import pl.matkan.wholesaler.dto.CompanyDto;
-import pl.matkan.wholesaler.dto.mapper.CompanyMapper;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.model.Company;
-import pl.matkan.wholesaler.repo.CompanyRepository;
-import pl.matkan.wholesaler.service.CompanyService;
+import pl.matkan.wholesaler.service.impl.IndustryServiceImpl;
+import pl.matkan.wholesaler.service.impl.UserServiceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service("companyService")
+@RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final UserServiceImpl userService;
     private final CompanyMapper companyMapper;
-
     private final IndustryServiceImpl industryService;
 
-    public CompanyServiceImpl(CompanyRepository companyRepo, UserServiceImpl userService, CompanyMapper companyMapper, IndustryServiceImpl industryService) {
-        this.companyRepository = companyRepo;
-        this.userService = userService;
-        this.companyMapper = companyMapper;
-        this.industryService = industryService;
-    }
 
     @Override
     public Company create(CompanyDto companyIn) {
@@ -41,18 +33,18 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company update(Long id, CompanyDto companyDto) {
-        Company companyDataToUpdate = companyMapper.companyDtoToCompany(companyDto);
-        Company companyFetched = getOneCompanyById(id);
+    public Company update(Long id, CompanyDto updatedCompanyDto) {
 
-        companyFetched.setName(companyDataToUpdate.getName());
-        companyFetched.setAddress(companyDataToUpdate.getAddress());
-        companyFetched.setCity(companyDataToUpdate.getCity());
-        companyFetched.setNip(companyDataToUpdate.getNip());
-        companyFetched.setUser(userService.getOneUserById(companyDto.getOwnerId()));
-        companyFetched.setIndustry(industryService.getOneIndustryByName(companyDto.getIndustryName()));
+        Company companyToBeUpdated = getOneCompanyById(id);
 
-        return companyRepository.save(companyFetched);
+        companyToBeUpdated.setName(updatedCompanyDto.getName());
+        companyToBeUpdated.setAddress(updatedCompanyDto.getAddress());
+        companyToBeUpdated.setCity(updatedCompanyDto.getCity());
+        companyToBeUpdated.setNip(updatedCompanyDto.getNip());
+        companyToBeUpdated.setUser(userService.getOneUserById(updatedCompanyDto.getOwnerId()));
+        companyToBeUpdated.setIndustry(industryService.getOneIndustryByName(updatedCompanyDto.getIndustryName()));
+
+        return companyRepository.save(companyToBeUpdated);
     }
 
     @Override
@@ -87,6 +79,7 @@ public class CompanyServiceImpl implements CompanyService {
         );
         return companies.map(companyMapper::companyToCompanyDto);
     }
+
 
     public Company getOneCompanyById(Long id) {
         return companyRepository.findById(id)

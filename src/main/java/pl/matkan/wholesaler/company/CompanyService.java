@@ -1,7 +1,6 @@
-package pl.matkan.wholesaler.service;
+package pl.matkan.wholesaler.company;
 
-import pl.matkan.wholesaler.dto.CompanyDto;
-import pl.matkan.wholesaler.model.Company;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,5 +16,7 @@ public interface CompanyService {
 
     void deleteById(Long id);
 
-   List<CompanyDto> findAll();
+    List<CompanyDto> findAll();
+
+    Page<CompanyDto> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
 }

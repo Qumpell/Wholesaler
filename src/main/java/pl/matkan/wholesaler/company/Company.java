@@ -1,8 +1,15 @@
-package pl.matkan.wholesaler.model;
+package pl.matkan.wholesaler.company;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.SQLDelete;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import pl.matkan.wholesaler.model.ContactPerson;
+import pl.matkan.wholesaler.model.Industry;
+import pl.matkan.wholesaler.model.TradeNote;
+import pl.matkan.wholesaler.model.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,120 +17,46 @@ import java.util.List;
 
 @Entity
 @Table(name = "companies")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String nip;
     private String address;
     private String city;
     private boolean isDeleted = Boolean.FALSE;
+
     @ManyToOne
     @JoinColumn(name = "industry_id")
     @JsonBackReference(value = "companiesIndustry")
     private Industry industry;
+
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "contactPersonsCompany")
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "contact_person_id")
     private List<ContactPerson> contactPersonList = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference(value = "companiesUser")
     private User user;
+
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "tradeNotesCompany")
     private List<TradeNote> tradeNotes =  new ArrayList<>();
 
-
-    public Company() {
-    }
 
     public Company(String name, String nip, String address, String city) {
         this.name = name;
         this.nip = nip;
         this.address = address;
         this.city = city;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNip() {
-        return nip;
-    }
-
-    public void setNip(String nip) {
-        this.nip = nip;
-    }
-
-    public Industry getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(Industry industry) {
-        this.industry = industry;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    public List<ContactPerson> getContactPersonList() {
-        return contactPersonList;
-    }
-
-    public void setContactPersonList(List<ContactPerson> contactPersonList) {
-        this.contactPersonList = contactPersonList;
-    }
-
-    public List<TradeNote> getTradeNotes() {
-        return tradeNotes;
-    }
-
-    public void setTradeNotes(List<TradeNote> tradeNotes) {
-        this.tradeNotes = tradeNotes;
     }
 
     public void addContactPerson(ContactPerson contactPerson) {
@@ -142,4 +75,5 @@ public class Company {
         tradeNotes.remove(tradeNote);
         tradeNote.setCompany(null);
     }
+
 }

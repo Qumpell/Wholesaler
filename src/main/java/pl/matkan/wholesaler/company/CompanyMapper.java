@@ -1,13 +1,10 @@
-package pl.matkan.wholesaler.dto.mapper;
+package pl.matkan.wholesaler.company;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import pl.matkan.wholesaler.dto.CompanyDto;
-import pl.matkan.wholesaler.model.Company;
-import pl.matkan.wholesaler.model.User;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
