@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.matkan.wholesaler.model.ContactPerson;
-import pl.matkan.wholesaler.model.Industry;
-import pl.matkan.wholesaler.model.TradeNote;
-import pl.matkan.wholesaler.model.User;
+import pl.matkan.wholesaler.contactperson.ContactPerson;
+import pl.matkan.wholesaler.industry.Industry;
+import pl.matkan.wholesaler.tradenote.TradeNote;
+import pl.matkan.wholesaler.user.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;

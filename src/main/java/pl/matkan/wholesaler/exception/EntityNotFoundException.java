@@ -1,25 +1,25 @@
 package pl.matkan.wholesaler.exception;
 
 
-import java.time.LocalDateTime;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.time.Instant;
 
 
 
+@ResponseStatus(HttpStatus.NOT_FOUND)
+@Getter
 public class EntityNotFoundException extends RuntimeException {
-    private final LocalDateTime errorTime;
+    private final Instant errorTime;
     private final String errorDetails;
 
     public EntityNotFoundException(String message, String errorDetails) {
         super(message);
-        this.errorTime = LocalDateTime.now();
+        this.errorTime = Instant.now();
         this.errorDetails = errorDetails;
     }
 
-    public LocalDateTime getErrorTime() {
-        return errorTime;
-    }
 
-    public String getErrorDetails() {
-        return errorDetails;
-    }
 }

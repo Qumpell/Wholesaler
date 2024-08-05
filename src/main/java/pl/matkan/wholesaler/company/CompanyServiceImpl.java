@@ -6,8 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.service.impl.IndustryServiceImpl;
-import pl.matkan.wholesaler.service.impl.UserServiceImpl;
+import pl.matkan.wholesaler.industry.IndustryServiceImpl;
+import pl.matkan.wholesaler.user.UserServiceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
