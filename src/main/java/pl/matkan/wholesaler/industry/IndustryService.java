@@ -11,7 +11,7 @@ public interface IndustryService {
 
     Industry update(Long id, Industry one);
 
-    Optional<Industry> findById(Long id);
+    Industry findById(Long id);
 
     boolean existsById(Long id);
 

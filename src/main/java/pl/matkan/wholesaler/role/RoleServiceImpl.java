@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.role;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,13 +24,23 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role create(Role one) {
-        return roleRepo.save(one);
+        try {
+            return roleRepo.save(one);
+        }catch (DataIntegrityViolationException ex) {
+            throw new DataIntegrityViolationException("Role with name:=" + one.getName() + " already exists");
+        }
+
     }
 
     @Override
     public Role update(Long id, Role one) {
-        one.setId(id);
-        return roleRepo.save(one);
+        try{
+            one.setId(id);
+            return roleRepo.save(one);
+        }
+        catch (DataIntegrityViolationException ex) {
+            throw new DataIntegrityViolationException("Role with name:=" + one.getName() + " already exists");
+        }
     }
 
     @Override
@@ -78,7 +89,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Page<RoleDto> findAll(int pageNumber, int pageSize, String field, String order) {
+    public Page<RoleDto> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
         Page<Role> roles = roleRepo.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
         );

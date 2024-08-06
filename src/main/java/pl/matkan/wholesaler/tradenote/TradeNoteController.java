@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/tradeNotes")
+@RequestMapping(value = "/trade-notes")
 public class TradeNoteController {
 
     private final TradeNoteService tradeNoteService;
@@ -47,14 +47,13 @@ public class TradeNoteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {
-        if (tradeNoteService.existsById(id)) {
-            tradeNoteService.deleteById(id);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteOne(@PathVariable("id") Long id) {
 
+        if (!tradeNoteService.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        tradeNoteService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

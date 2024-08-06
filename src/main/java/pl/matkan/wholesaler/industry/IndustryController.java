@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/industries")
@@ -19,8 +17,8 @@ public class IndustryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Industry> getOne(@PathVariable("id") Long id) {
-        Optional<Industry> one = industryService.findById(id);
-        return one.map(industry -> new ResponseEntity<>(industry, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+
+        return new ResponseEntity<>(industryService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping()
@@ -37,29 +35,27 @@ public class IndustryController {
     }
     @PostMapping()
     public ResponseEntity<Industry> createOne(@RequestBody Industry one) {
-        Industry industryOne = industryService.create(one);
-        return new ResponseEntity<>(industryOne, HttpStatus.CREATED);
+        return new ResponseEntity<>( industryService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Industry> updateOne(@PathVariable("id") Long id, @RequestBody Industry one) {
-        if (industryService.existsById(id)) {
-            Industry updatedOne = industryService.update(id, one);
-            return new ResponseEntity<>(updatedOne, HttpStatus.OK);
+
+        if (industryService.existsById(id))
+        {
+            return new ResponseEntity<>(industryService.update(id, one), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {
-        if (industryService.existsById(id)) {
-            industryService.deleteById(id);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteOne(@PathVariable("id") Long id) {
+        if (!industryService.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
+        industryService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/contactPersons")
+@RequestMapping(value = "/contact-persons")
 public class ContactPersonController {
 
     private final ContactPersonService contactPersonService;
@@ -29,34 +29,40 @@ public class ContactPersonController {
             @RequestParam(defaultValue = "asc") String order
     ) {
         return new ResponseEntity<>(
-                contactPersonService.findContactPeopleWithPaginationAndSort(pageNumber, pageSize, field, order),
+                contactPersonService.findContactPeopleWithPaginationAndSort(
+                        pageNumber,
+                        pageSize,
+                        field,
+                        order),
                 HttpStatus.OK);
     }
 
     @PostMapping()
     public ResponseEntity<ContactPerson> createOne(@RequestBody ContactPersonDto one) {
+
         ContactPerson contactPersonOne = contactPersonService.create(one);
         return new ResponseEntity<>(contactPersonOne, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus( HttpStatus.OK)
     public ResponseEntity<ContactPerson> updateOne(@PathVariable("id") Long id, @RequestBody ContactPersonDto one) {
-        if (contactPersonService.existsById(id)) {
-            ContactPerson updatedOne = contactPersonService.update(id, one);
-            return new ResponseEntity<>(updatedOne, HttpStatus.OK);
+
+        if (!contactPersonService.existsById(id)) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(contactPersonService.update(id, one), HttpStatus.OK);
+
     }
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {
-        if (contactPersonService.existsById(id)) {
-            contactPersonService.deleteById(id);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteOne(@PathVariable("id") Long id) {
 
+        if (!contactPersonService.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        contactPersonService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

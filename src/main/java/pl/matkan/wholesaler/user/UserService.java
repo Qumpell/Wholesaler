@@ -17,5 +17,5 @@ public interface UserService {
 
     List<UserDto> findAll();
 
-    Page<UserDto> findAllUsers(int pageNumber, int pageSize, String field, String order);
+    Page<UserDto> findUsersWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
 }

@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDto> findAllUsers(int offset, int pageSize, String field, String order) {
+    public Page<UserDto> findUsersWithPaginationAndSort(int offset, int pageSize, String field, String order) {
         Page<User> users  = userRepo.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field)));
         return users.map(userMapper::userToUserDto);
     }

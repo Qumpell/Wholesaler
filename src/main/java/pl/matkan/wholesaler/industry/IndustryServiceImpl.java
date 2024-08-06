@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.industry;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -10,6 +11,7 @@ import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service("industryService")
@@ -23,18 +25,33 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public Industry create(Industry one) {
-        return industryRepo.save(one);
+        try {
+            return industryRepo.save(one);
+        }catch (DataIntegrityViolationException exception) {
+            throw new DataIntegrityViolationException("Industry with name:=" + one.getName() + " already exists");
+        }
+
     }
 
     @Override
     public Industry update(Long id, Industry one) {
-        one.setId(id);
-        return industryRepo.save(one);
+        try {
+            Industry industry = findById(id);
+            industry.setName(one.getName());
+            industry.setCompanies(one.getCompanies());
+//            one.setId(id);
+            return industryRepo.save(industry);
+        }catch (DataIntegrityViolationException exception) {
+            throw new DataIntegrityViolationException("Industry with name:=" + one.getName() + " already exists");
+        }
+
     }
 
     @Override
-    public Optional<Industry> findById(Long id) {
-        return industryRepo.findById(id);
+    public Industry findById(Long id) {
+        return industryRepo.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Industry not found", "with id:=" + id)
+        );
     }
 
     @Override
@@ -45,7 +62,7 @@ public class IndustryServiceImpl implements IndustryService {
     @Override
     public void deleteById(Long id) {
 
-        Optional<Industry> industryOptional = findById(id);
+        Optional<Industry> industryOptional = industryRepo.findById(id);
         if (industryOptional.isPresent()){
             Industry industry = industryOptional.get();
             List<Company> companies = industry.getCompanies();

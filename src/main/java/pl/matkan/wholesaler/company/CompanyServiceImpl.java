@@ -35,6 +35,16 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company update(Long id, CompanyDto updatedCompanyDto) {
 
+
+//        companyRepository.findById(id).map(company -> {
+//
+//            company = companyMapper.companyDtoToCompany(updatedCompanyDto);
+//            company.setUser(userService.getOneUserById(updatedCompanyDto.getOwnerId()));
+//            company.setIndustry(industryService.getOneIndustryByName(updatedCompanyDto.getIndustryName()));
+//            return companyRepository.save(company);
+//
+//        });
+
         Company companyToBeUpdated = getOneCompanyById(id);
 
         companyToBeUpdated.setName(updatedCompanyDto.getName());

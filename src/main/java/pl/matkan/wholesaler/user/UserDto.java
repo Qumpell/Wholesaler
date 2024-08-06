@@ -9,10 +9,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class UserDto {
+    private Long id;
     private String firstname;
     private String surname;
     private LocalDate dateOfBirth;
     private String login;
     private String roleName;
-    private Long id;
+
 }

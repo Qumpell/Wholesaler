@@ -23,6 +23,7 @@ public class TradeNote {
     private Long id;
 
     private String content;
+
     private boolean isDeleted = Boolean.FALSE;
 
     @ManyToOne

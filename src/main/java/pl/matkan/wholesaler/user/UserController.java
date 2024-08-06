@@ -2,7 +2,6 @@ package pl.matkan.wholesaler.user;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,8 @@ public class UserController {
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order
     ) {
-        return new ResponseEntity<>(userSrv.findAllUsers(pageNumber, pageSize, field, order), HttpStatus.OK);
+        return new ResponseEntity<>(userSrv.findUsersWithPaginationAndSort(pageNumber, pageSize, field, order),
+                HttpStatus.OK);
     }
     @PostMapping()
     public ResponseEntity<User> createOne(@RequestBody UserDto one) {
@@ -43,15 +43,16 @@ public class UserController {
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {
-        if (userSrv.existsById(id)) {
-            userSrv.deleteById(id);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> deleteOne(@PathVariable("id") Long id) {
+
+        if (!userSrv.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        userSrv.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

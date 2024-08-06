@@ -16,7 +16,8 @@ public interface RoleService {
     void deleteById(Long id);
 
     List<RoleDto> findAll();
-    Page<RoleDto> findAll(int pageNumber, int pageSize, String field, String order);
+
+    Page<RoleDto> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
 
     Role findByName(String name);
 }

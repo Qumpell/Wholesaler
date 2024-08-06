@@ -28,7 +28,7 @@ public class RoleController {
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order
     ){
-        return new ResponseEntity<>(roleService.findAll(pageNumber, pageSize, field, order), HttpStatus.OK);
+        return new ResponseEntity<>(roleService.findRolesWithPaginationAndSort(pageNumber, pageSize, field, order), HttpStatus.OK);
     }
 
     @PostMapping()
@@ -48,21 +48,12 @@ public class RoleController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Long> deleteOne(@PathVariable("id") Long id) {
-        if (roleService.existsById(id)) {
-            roleService.deleteById(id);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> deleteOne(@PathVariable("id") Long id) {
+
+        if (!roleService.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
+        roleService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-//    @GetMapping("/user-with-role/{userId}")
-//    public ResponseEntity<UserWithRoleDto> getUserWithRole(@PathVariable Long userId) {
-//        UserDto user = userService.findById(userId);
-//        RoleDto role = roleService.findRoleForUser(userId);
-//        return new ResponseEntity<>(new UserWithRoleDto(user, role), HttpStatus.OK);
-//    }
-
 }
