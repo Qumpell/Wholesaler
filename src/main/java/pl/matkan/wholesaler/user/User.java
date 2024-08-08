@@ -2,6 +2,7 @@ package pl.matkan.wholesaler.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,6 @@ import pl.matkan.wholesaler.contactperson.ContactPerson;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.tradenote.TradeNote;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

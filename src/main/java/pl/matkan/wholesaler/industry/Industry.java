@@ -1,13 +1,14 @@
 package pl.matkan.wholesaler.industry;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.matkan.wholesaler.company.Company;
 
-import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 

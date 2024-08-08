@@ -3,7 +3,7 @@ version: '3.8'
 name: wholesaler-app
 services:
   database-mysql:
-    image: mysql:latest
+    image: mysql:9.0.1
     container_name: database-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
