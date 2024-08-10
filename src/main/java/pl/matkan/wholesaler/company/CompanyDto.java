@@ -15,5 +15,4 @@ public class CompanyDto {
     private String city;
     private String industryName;
     private Long ownerId;
-
 }

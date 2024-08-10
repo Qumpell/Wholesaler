@@ -11,12 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.matkan.wholesaler.company.Company;
-import pl.matkan.wholesaler.company.CompanyController;
-import pl.matkan.wholesaler.company.CompanyDto;
+import pl.matkan.wholesaler.company.*;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.industry.Industry;
-import pl.matkan.wholesaler.company.CompanyService;
 import pl.matkan.wholesaler.user.User;
 
 import java.util.ArrayList;
@@ -44,6 +41,7 @@ class CompanyControllerTest {
     private Page<CompanyDto> companiesPage;
     private Company company;
     private CompanyDto companyDto;
+    private CompanyRequest companyRequest;
 
     @BeforeEach
     void setUp() {
@@ -65,6 +63,14 @@ class CompanyControllerTest {
                 "Poznan",
                 "IT",
                 1L);
+         companyRequest = new CompanyRequest(
+                 companyDto.getName(),
+                 companyDto.getNip(),
+                 companyDto.getAddress(),
+                 companyDto.getCity(),
+                 companyDto.getIndustryName(),
+                 companyDto.getOwnerId()
+         );
        companiesPage = new PageImpl<>(List.of(companyDto));
     }
 
@@ -109,12 +115,12 @@ class CompanyControllerTest {
     @Test
     void shouldCreateCompany() throws Exception {
         //when //then
-        when(service.create(any(CompanyDto.class))).thenReturn(company);
+        when(service.create(any(CompanyRequest.class))).thenReturn(company);
 
         mockMvc.perform(post("/companies")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(companyDto)))
+                        .content(objectMapper.writeValueAsString(companyRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Test")))

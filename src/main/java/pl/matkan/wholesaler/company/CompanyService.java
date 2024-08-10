@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CompanyService {
 
-    Company create(CompanyDto one);
+    Company create(CompanyRequest one);
 
     Company update(Long id, CompanyDto one);
 

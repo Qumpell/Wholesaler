@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.exception.BadRequestException;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.industry.IndustryServiceImpl;
 import pl.matkan.wholesaler.user.UserServiceImpl;
@@ -19,15 +20,22 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final UserServiceImpl userService;
     private final CompanyMapper companyMapper;
+    private final CompanyRequestMapper companyRequestMapper;
     private final IndustryServiceImpl industryService;
 
 
     @Override
-    public Company create(CompanyDto companyIn) {
-        Company companyToCreate = companyMapper.companyDtoToCompany(companyIn);
+    public Company create(CompanyRequest companyIn) {
 
-        companyToCreate.setIndustry(industryService.getOneIndustryByName(companyIn.getIndustryName()));
-        companyToCreate.setUser(userService.getOneUserById(companyIn.getOwnerId()));
+        Company companyToCreate = companyRequestMapper.companyDtoToCompany(companyIn);
+
+        try {
+            companyToCreate.setIndustry(industryService.getOneIndustryByName(companyIn.industryName()));
+            companyToCreate.setUser(userService.getOneUserById(companyIn.ownerId()));
+        }catch (EntityNotFoundException e) {
+            throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
+        }
+
 
         return companyRepository.save(companyToCreate);
     }

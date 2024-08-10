@@ -33,7 +33,7 @@ public class CompanyController {
 
 
     @PostMapping()
-    public ResponseEntity<Company> createOne(@RequestBody CompanyDto one) {
+    public ResponseEntity<Company> createOne(@RequestBody CompanyRequest one) {
         return new ResponseEntity<>(companyService.create(one), HttpStatus.CREATED);
     }
 
