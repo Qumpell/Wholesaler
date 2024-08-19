@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import pl.matkan.wholesaler.company.CompanyServiceImpl;
+import pl.matkan.wholesaler.company.CompanyService;
+import pl.matkan.wholesaler.contactperson.mapper.ContactPersonRequestMapper;
+import pl.matkan.wholesaler.contactperson.mapper.ContactPersonResponseMapper;
+import pl.matkan.wholesaler.exception.BadRequestException;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.user.UserServiceImpl;
+import pl.matkan.wholesaler.user.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,34 +20,63 @@ import java.util.stream.Collectors;
 public class ContactPersonServiceImpl implements ContactPersonService {
 
     private final ContactPersonRepository contactPersonRepository;
-    private final ContactPersonMapper contactPersonMapper;
-    private final CompanyServiceImpl companyService;
-    private final UserServiceImpl userService;
+    private final ContactPersonResponseMapper responseMapper;
+    private final ContactPersonRequestMapper requestMapper;
+    private final UserService userService;
+    private final CompanyService companyService;
+
 
 
     @Override
-    public ContactPerson create(ContactPersonDto one) {
-        ContactPerson contactPersonToCreate = contactPersonMapper.contactPersonDtoToContactPerson(one);
+    public ContactPersonResponse create(ContactPersonRequest one) {
 
-        contactPersonToCreate.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
-        contactPersonToCreate.setUser(userService.getOneUserById(one.getOwnerId()));
+//
+//
+//        contactPersonToCreate.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
+//        contactPersonToCreate.setUser(userService.getOneUserById(one.getOwnerId()));
 
-        return contactPersonRepository.save(contactPersonToCreate);
+        try{
+            userService.existsByIdOrThrow(one.ownerId());
+            companyService.existsByNameOrThrow(one.companyName());
+
+        }catch (EntityNotFoundException e){
+            throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
+        }
+        ContactPerson contactPersonToCreate = requestMapper.contactPersonRequestToContactPerson(one);
+
+        return responseMapper.contactPersonToContactPersonResponse(contactPersonRepository.save(contactPersonToCreate));
     }
 
     @Override
-    public ContactPerson update(Long id, ContactPersonDto one) {
-        ContactPerson contactPersonUpdated = contactPersonMapper.contactPersonDtoToContactPerson(one);
+    public ContactPersonResponse update(Long id, ContactPersonRequest one) {
 
-        contactPersonUpdated.setId(id);
-        contactPersonUpdated.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
-        contactPersonUpdated.setUser(userService.getOneUserById(one.getOwnerId()));
 
-        return contactPersonRepository.save(contactPersonUpdated);
+//        contactPersonUpdated.setId(id);
+//        contactPersonUpdated.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
+//        contactPersonUpdated.setUser(userService.getOneUserById(one.getOwnerId()));
+
+      return contactPersonRepository.findById(id).map(cp ->{
+
+          try{
+              userService.existsByIdOrThrow(one.ownerId());
+              companyService.existsByNameOrThrow(one.companyName());
+
+          }catch (EntityNotFoundException e){
+              throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
+          }
+
+          ContactPerson contactPersonUpdated = requestMapper.contactPersonRequestToContactPerson(one);
+          ContactPerson updatedContactPerson = contactPersonRepository.save(contactPersonUpdated);
+
+          return responseMapper.contactPersonToContactPersonResponse(updatedContactPerson);
+
+      }).orElseThrow(() -> new EntityNotFoundException("Contact person was not found" ,"with id: " + id));
+
+
     }
     @Override
-    public ContactPersonDto findById(Long id) {
-        return contactPersonMapper.contactPersonToContactPersonDto(
+    public ContactPersonResponse findById(Long id) {
+        return responseMapper.contactPersonToContactPersonResponse(
                 contactPersonRepository.findById(id).
                         orElseThrow(()->new EntityNotFoundException("Contact person was not found", "with given id:= " + id))
         );
@@ -61,18 +93,18 @@ public class ContactPersonServiceImpl implements ContactPersonService {
     }
 
     @Override
-    public List<ContactPersonDto> findAll() {
+    public List<ContactPersonResponse> findAll() {
         List<ContactPerson> contactPeople = contactPersonRepository.findAll();
         return contactPeople.stream()
-                .map(contactPersonMapper::contactPersonToContactPersonDto)
+                .map(responseMapper::contactPersonToContactPersonResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Page<ContactPersonDto> findContactPeopleWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
+    public Page<ContactPersonResponse> findContactPeopleWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
         Page<ContactPerson> contactPeople = contactPersonRepository.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.Direction.fromString(order), field)
         );
-        return contactPeople.map(contactPersonMapper::contactPersonToContactPersonDto);
+        return contactPeople.map(responseMapper::contactPersonToContactPersonResponse);
     }
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CompanyDto {
+public class CompanyResponse {
     private Long id;
     private String name;
     private String nip;

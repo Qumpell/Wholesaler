@@ -5,17 +5,17 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface TradeNoteService {
-    TradeNote create(TradeNoteDto one);
+    TradeNoteResponse create(TradeNoteRequest one);
 
-    TradeNote update(Long id, TradeNoteDto one);
+    TradeNoteResponse update(Long id, TradeNoteRequest one);
 
-    TradeNoteDto findById(Long id);
+    TradeNoteResponse findById(Long id);
 
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
-    List<TradeNoteDto> findAll();
+    List<TradeNoteResponse> findAll();
 
-    Page<TradeNoteDto> findTradeNotesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<TradeNoteResponse> findTradeNotesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
 }

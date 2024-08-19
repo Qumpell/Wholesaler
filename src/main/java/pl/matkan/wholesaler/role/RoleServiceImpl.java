@@ -7,48 +7,58 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.user.User;
-import pl.matkan.wholesaler.user.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service("roleService")
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepo;
-    private final UserRepository userRepository;
-    private final RoleMapper roleMapper;
+//    private final UserRepository userRepository;
+    private final RoleRequestMapper roleRequestMapper;
 
     @Override
-    public Role create(Role one) {
+    public Role create(RoleRequest one) {
+        Role role = roleRequestMapper.roleRequestToRole(one);
         try {
-            return roleRepo.save(one);
+            return roleRepo.save(role);
         }catch (DataIntegrityViolationException ex) {
-            throw new DataIntegrityViolationException("Role with name:=" + one.getName() + " already exists");
+            throw new DataIntegrityViolationException("Role with name:=" + one.name() + " already exists");
         }
 
     }
 
     @Override
-    public Role update(Long id, Role one) {
-        try{
-            one.setId(id);
-            return roleRepo.save(one);
-        }
-        catch (DataIntegrityViolationException ex) {
-            throw new DataIntegrityViolationException("Role with name:=" + one.getName() + " already exists");
-        }
+    public Role update(Long id, RoleRequest one) {
+        return roleRepo.findById(id).map(role ->{
+
+            role = roleRequestMapper.roleRequestToRole(one);
+
+            try{
+
+                return roleRepo.save(role);
+
+            }catch (DataIntegrityViolationException ex) {
+                throw new DataIntegrityViolationException("Role with name:=" + one.name() + " already exists");
+            }
+
+        }).orElseThrow(() -> new EntityNotFoundException("Role was not found" ,"with id: " + id));
+//
+//        try{
+//            one.setId(id);
+//            return roleRepo.save(one);
+//        }
+//        catch (DataIntegrityViolationException ex) {
+//            throw new DataIntegrityViolationException("Role with name:=" + one.getName() + " already exists");
+//        }
     }
 
     @Override
-    public RoleDto findById(Long id) {
-        return roleMapper.roleToRoleDto(
-                roleRepo.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Role not found ", "with given id:= " + id))
-        );
+    public Role findById(Long id) {
+        return roleRepo.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Role not found ", "with given id:= " + id));
+
     }
 
     @Override
@@ -58,26 +68,27 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteById(Long id) {
-        Optional<Role> roleOptional = roleRepo.findById(id);
-        if (roleOptional.isPresent()){
-            Role role = roleOptional.get();
-            List<User> users = role.getUsers();
-            if(users != null){
-                for(User user : users){
-                    user.setRole(null);
-                }
-                userRepository.saveAll(users);
-            }
-        }
+//        Optional<Role> roleOptional = roleRepo.findById(id);
+//        if (roleOptional.isPresent()){
+//            Role role = roleOptional.get();
+//            List<User> users = role.getUsers();
+//            if(users != null){
+//                for(User user : users){
+//                    user.setRole(null);
+//                }
+//                userRepository.saveAll(users);
+//            }
+//        }
         roleRepo.deleteById(id);
     }
 
     @Override
-    public List<RoleDto> findAll() {
-       List<Role> roles = roleRepo.findAll();
-       return roles.stream()
-               .map(roleMapper::roleToRoleDto)
-               .collect(Collectors.toList());
+    public List<Role> findAll() {
+//       List<Role> roles = roleRepo.findAll();
+//       return roles.stream()
+//               .map(roleRequestMapper::roleToRoleDto)
+//               .collect(Collectors.toList());
+        return roleRepo.findAll();
     }
 
     @Override
@@ -89,10 +100,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Page<RoleDto> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
-        Page<Role> roles = roleRepo.findAll(
+    public Page<Role> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
+        //        return roles.map(roleRequestMapper::roleToRoleDto);
+        return roleRepo.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
         );
-        return roles.map(roleMapper::roleToRoleDto);
     }
 }

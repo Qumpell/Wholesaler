@@ -15,14 +15,13 @@ public class ContactPersonController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContactPersonDto> getOne(@PathVariable("id") Long id) {
-        ContactPersonDto contactPersonDto = contactPersonService.findById(id);
+    public ResponseEntity<ContactPersonResponse> getOne(@PathVariable("id") Long id) {
 
-        return new ResponseEntity<>(contactPersonDto, HttpStatus.OK);
+        return new ResponseEntity<>(contactPersonService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<Page<ContactPersonDto>> getAll(
+    public ResponseEntity<Page<ContactPersonResponse>> getAll(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,
@@ -38,16 +37,14 @@ public class ContactPersonController {
     }
 
     @PostMapping()
-    public ResponseEntity<ContactPerson> createOne(@RequestBody ContactPersonDto one) {
+    public ResponseEntity<ContactPersonResponse> createOne(@RequestBody ContactPersonRequest one) {
 
-        ContactPerson contactPersonOne = contactPersonService.create(one);
-        return new ResponseEntity<>(contactPersonOne, HttpStatus.CREATED);
+        return new ResponseEntity<>(contactPersonService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus( HttpStatus.OK)
-    public ResponseEntity<ContactPerson> updateOne(@PathVariable("id") Long id, @RequestBody ContactPersonDto one) {
-
+    public ResponseEntity<ContactPersonResponse> updateOne(@PathVariable("id") Long id, @RequestBody ContactPersonRequest one) {
         if (!contactPersonService.existsById(id)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

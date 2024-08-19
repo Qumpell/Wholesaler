@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface IndustryService {
 
-    Industry create(Industry one);
+    Industry create(IndustryRequest one);
 
-    Industry update(Long id, Industry one);
+    Industry update(Long id, IndustryRequest one);
 
     Industry findById(Long id);
 
@@ -20,4 +20,6 @@ public interface IndustryService {
     List<Industry> findAll();
 
     Page<Industry> findIndustriesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+
+    void existsByNameOrThrow(String name);
 }

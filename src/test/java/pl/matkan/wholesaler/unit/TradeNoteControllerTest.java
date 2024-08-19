@@ -13,10 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.tradenote.TradeNote;
-import pl.matkan.wholesaler.tradenote.TradeNoteController;
-import pl.matkan.wholesaler.tradenote.TradeNoteDto;
-import pl.matkan.wholesaler.tradenote.TradeNoteService;
+import pl.matkan.wholesaler.tradenote.*;
 import pl.matkan.wholesaler.user.User;
 
 import java.util.List;
@@ -42,26 +39,31 @@ public class TradeNoteControllerTest {
     TradeNoteService service;
 
 
-    private Page<TradeNoteDto> tradeNotePage;
+    private Page<TradeNoteResponse> tradeNotePage;
     private TradeNote tradeNote;
-    private TradeNoteDto tradeNoteDto;
+    private TradeNoteResponse tradeNoteResponse;
+    private TradeNoteRequest tradeNoteRequest;
 
     @BeforeEach
     void setUp() {
-        tradeNote= new TradeNote(
+        tradeNote = new TradeNote(
                 1L,
                 "TEST CONTENT",
-                true,
-                new Company(),
-                new User());
+                "Test", 1L, false);
 
-        tradeNoteDto = new TradeNoteDto(1L,
+        tradeNoteResponse = new TradeNoteResponse(1L,
                 "TEST CONTENT",
-                1L,
                 "TEST",
-                1L);
+                1L
+        );
 
-        tradeNotePage = new PageImpl<>(List.of(tradeNoteDto));
+        tradeNoteRequest = new TradeNoteRequest(
+                "TEST CONTENT",
+                "TEST",
+                1L
+        );
+
+        tradeNotePage = new PageImpl<>(List.of(tradeNoteResponse));
     }
 
     @Test
@@ -79,18 +81,18 @@ public class TradeNoteControllerTest {
     @Test
     void shouldGetOneTradeNote() throws Exception {
         //when //then
-        when(service.findById(1L)).thenReturn(tradeNoteDto);
+        when(service.findById(1L)).thenReturn(tradeNoteResponse);
 
         mockMvc.perform(get("/trade-notes/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.content", is("TEST CONTENT")))
                 .andExpect(jsonPath("$.ownerId", is(1)))
-                .andExpect(jsonPath("$.companyName", is("TEST")))
-                .andExpect(jsonPath("$.companyId", is(1)));
+                .andExpect(jsonPath("$.companyName", is("TEST")));
     }
+
     @Test
-    void shouldReturnNotFound_WhenGetOneTradeNote_GivenInvalidID() throws Exception{
+    void shouldReturnNotFound_WhenGetOneTradeNote_GivenInvalidID() throws Exception {
         //given
         Long id = 1L;
 
@@ -100,36 +102,38 @@ public class TradeNoteControllerTest {
         mockMvc.perform(get("/trade-notes/{id}", id))
                 .andExpect(status().isNotFound());
     }
+
     @Test
     void shouldCreateTradeNote() throws Exception {
         //when //then
-        when(service.create(any(TradeNoteDto.class))).thenReturn(tradeNote);
+        when(service.create(any(TradeNoteRequest.class))).thenReturn(tradeNoteResponse);
 
         mockMvc.perform(post("/trade-notes")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tradeNoteDto)))
+                        .content(objectMapper.writeValueAsString(tradeNoteRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)));
     }
 
     @Test
-    void shouldUpdateTradeNote() throws Exception{
+    void shouldUpdateTradeNote() throws Exception {
         //given
         Long id = 1L;
 
         //when //then
         when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(TradeNoteDto.class))).thenReturn(tradeNote);
+        when(service.update(any(Long.class), any(TradeNoteRequest.class))).thenReturn(tradeNoteResponse);
 
         mockMvc.perform(put("/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tradeNoteDto)))
+                        .content(objectMapper.writeValueAsString(tradeNoteRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)));
     }
+
     @Test
-    void shouldReturnNotFound_WhenUpdateTradeNote_GivenInvalidID() throws Exception{
+    void shouldReturnNotFound_WhenUpdateTradeNote_GivenInvalidID() throws Exception {
         //given
         Long id = 1L;
 
@@ -138,12 +142,12 @@ public class TradeNoteControllerTest {
 
         mockMvc.perform(put("/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tradeNoteDto)))
+                        .content(objectMapper.writeValueAsString(tradeNoteRequest)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void shouldDeleteTradeNote() throws Exception{
+    void shouldDeleteTradeNote() throws Exception {
         //given
         Long id = 1L;
 
@@ -154,8 +158,9 @@ public class TradeNoteControllerTest {
         mockMvc.perform(delete("/trade-notes/{id}", id))
                 .andExpect(status().isNoContent());
     }
+
     @Test
-    void shouldReturnNotFound_WhenDeleteTradeNote_GivenInvalidID() throws Exception{
+    void shouldReturnNotFound_WhenDeleteTradeNote_GivenInvalidID() throws Exception {
         //given
         Long id = 1L;
 

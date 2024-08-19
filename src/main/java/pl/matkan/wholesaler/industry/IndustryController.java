@@ -14,7 +14,6 @@ public class IndustryController {
     private final IndustryService industryService;
 
 
-
     @GetMapping("/{id}")
     public ResponseEntity<Industry> getOne(@PathVariable("id") Long id) {
 
@@ -34,12 +33,12 @@ public class IndustryController {
         );
     }
     @PostMapping()
-    public ResponseEntity<Industry> createOne(@RequestBody Industry one) {
+    public ResponseEntity<Industry> createOne(@RequestBody IndustryRequest one) {
         return new ResponseEntity<>( industryService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Industry> updateOne(@PathVariable("id") Long id, @RequestBody Industry one) {
+    public ResponseEntity<Industry> updateOne(@PathVariable("id") Long id, @RequestBody IndustryRequest one) {
 
         if (industryService.existsById(id))
         {

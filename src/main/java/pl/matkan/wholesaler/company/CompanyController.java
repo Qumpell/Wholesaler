@@ -14,12 +14,12 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDto> getOne(@PathVariable("id") Long id) {
+    public ResponseEntity<CompanyResponse> getOne(@PathVariable("id") Long id) {
         return new ResponseEntity<>(companyService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<Page<CompanyDto>> getAll(
+    public ResponseEntity<Page<CompanyResponse>> getAll(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,
@@ -31,15 +31,14 @@ public class CompanyController {
         );
     }
 
-
     @PostMapping()
-    public ResponseEntity<Company> createOne(@RequestBody CompanyRequest one) {
+    public ResponseEntity<CompanyResponse> createOne(@RequestBody CompanyRequest one) {
         return new ResponseEntity<>(companyService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Company> updateOne(@PathVariable("id") Long id, @RequestBody CompanyDto one) {
+    public ResponseEntity<CompanyResponse> updateOne(@PathVariable("id") Long id, @RequestBody CompanyRequest one) {
         if (!companyService.existsById(id)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

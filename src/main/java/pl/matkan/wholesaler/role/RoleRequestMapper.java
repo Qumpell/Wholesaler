@@ -9,9 +9,12 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface RoleMapper {
-    RoleMapper INSTANCE = Mappers.getMapper(RoleMapper.class);
-    @Mapping(source = "id",target = "id")
+public interface RoleRequestMapper {
+    RoleRequestMapper INSTANCE = Mappers.getMapper(RoleRequestMapper.class);
+
     @Mapping(source = "name",target = "name")
-    RoleDto roleToRoleDto(Role role);
+    Role roleRequestToRole(RoleRequest role);
+
+    @Mapping(source = "name",target = "name")
+    RoleRequest roleToRoleRequest(Role role);
 }

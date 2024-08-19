@@ -5,19 +5,19 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface RoleService {
-    Role create(Role one);
+    Role create(RoleRequest one);
 
-    Role update(Long id, Role one);
+    Role update(Long id, RoleRequest one);
 
-    RoleDto findById(Long id);
+    Role findById(Long id);
 
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
-    List<RoleDto> findAll();
+    List<Role> findAll();
 
-    Page<RoleDto> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<Role> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
 
     Role findByName(String name);
 }

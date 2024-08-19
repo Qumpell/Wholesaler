@@ -14,13 +14,13 @@ public class TradeNoteController {
     private final TradeNoteService tradeNoteService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<TradeNoteDto> getOne(@PathVariable("id") Long id) {
-        TradeNoteDto tradeNoteDto = tradeNoteService.findById(id);
-        return new ResponseEntity<>(tradeNoteDto, HttpStatus.OK);
+    public ResponseEntity<TradeNoteResponse> getOne(@PathVariable("id") Long id) {
+        TradeNoteResponse tradeNoteResponse = tradeNoteService.findById(id);
+        return new ResponseEntity<>(tradeNoteResponse, HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<Page<TradeNoteDto>> getAll(
+    public ResponseEntity<Page<TradeNoteResponse>> getAll(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,
@@ -31,16 +31,14 @@ public class TradeNoteController {
                 HttpStatus.OK);
     }
     @PostMapping()
-    public ResponseEntity<TradeNote> createOne(@RequestBody TradeNoteDto one) {
-        TradeNote tradeNoteOne = tradeNoteService.create(one);
-        return new ResponseEntity<>(tradeNoteOne, HttpStatus.CREATED);
+    public ResponseEntity<TradeNoteResponse> createOne(@RequestBody TradeNoteRequest one) {
+        return new ResponseEntity<>(tradeNoteService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TradeNote> updateOne(@PathVariable("id") Long id, @RequestBody TradeNoteDto one) {
+    public ResponseEntity<TradeNoteResponse> updateOne(@PathVariable("id") Long id, @RequestBody TradeNoteRequest one) {
         if (tradeNoteService.existsById(id)) {
-            TradeNote updatedOne = tradeNoteService.update(id, one);
-            return new ResponseEntity<>(updatedOne, HttpStatus.OK);
+            return new ResponseEntity<>(tradeNoteService.update(id, one), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }

@@ -5,10 +5,11 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class TradeNoteDto {
+public class TradeNoteResponse {
     private Long id;
     private String content;
-    private Long ownerId;
     private String companyName;
-    private Long companyId;
+    private Long ownerId;
+
+//    private Long companyId;
 }

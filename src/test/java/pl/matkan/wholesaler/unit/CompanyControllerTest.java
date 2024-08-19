@@ -13,10 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.company.*;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.industry.Industry;
-import pl.matkan.wholesaler.user.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -38,40 +35,29 @@ class CompanyControllerTest {
     CompanyService service;
 
 
-    private Page<CompanyDto> companiesPage;
-    private Company company;
-    private CompanyDto companyDto;
+    private Page<CompanyResponse> companiesPage;
+    private CompanyResponse companyResponse;
     private CompanyRequest companyRequest;
 
     @BeforeEach
     void setUp() {
-        company= new Company(1L,
-                        "Test",
-                        "123456789",
-                        "14-048",
-                        "Poznan",
-                        false,
-                        new Industry(),
-                new ArrayList<>(),
-                        new User(),
-                new ArrayList<>());
-
-         companyDto = new CompanyDto(1L,
+         companyResponse = new CompanyResponse(1L,
                 "Test",
                 "123456789",
                 "14-048",
                 "Poznan",
                 "IT",
                 1L);
+
          companyRequest = new CompanyRequest(
-                 companyDto.getName(),
-                 companyDto.getNip(),
-                 companyDto.getAddress(),
-                 companyDto.getCity(),
-                 companyDto.getIndustryName(),
-                 companyDto.getOwnerId()
+                 companyResponse.getName(),
+                 companyResponse.getNip(),
+                 companyResponse.getAddress(),
+                 companyResponse.getCity(),
+                 companyResponse.getIndustryName(),
+                 companyResponse.getOwnerId()
          );
-       companiesPage = new PageImpl<>(List.of(companyDto));
+       companiesPage = new PageImpl<>(List.of(companyResponse));
     }
 
     @Test
@@ -89,7 +75,7 @@ class CompanyControllerTest {
     @Test
     void shouldGetOneCompany() throws Exception {
         //when //then
-        when(service.findById(1L)).thenReturn(companyDto);
+        when(service.findById(1L)).thenReturn(companyResponse);
 
         mockMvc.perform(get("/companies/{id}", 1L))
                 .andExpect(status().isOk())
@@ -115,7 +101,7 @@ class CompanyControllerTest {
     @Test
     void shouldCreateCompany() throws Exception {
         //when //then
-        when(service.create(any(CompanyRequest.class))).thenReturn(company);
+        when(service.create(any(CompanyRequest.class))).thenReturn(companyResponse);
 
         mockMvc.perform(post("/companies")
                         .accept(MediaType.APPLICATION_JSON)
@@ -136,11 +122,11 @@ class CompanyControllerTest {
 
         //when //then
         when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(CompanyDto.class))).thenReturn(company);
+        when(service.update(any(Long.class), any(CompanyRequest.class))).thenReturn(companyResponse);
 
         mockMvc.perform(put("/companies/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(companyDto)))
+                .content(objectMapper.writeValueAsString(companyRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Test")))
@@ -158,7 +144,7 @@ class CompanyControllerTest {
 
         mockMvc.perform(put("/companies/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(companyDto)))
+                        .content(objectMapper.writeValueAsString(companyRequest)))
                 .andExpect(status().isNotFound());
     }
 

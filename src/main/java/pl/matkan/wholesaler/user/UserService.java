@@ -5,17 +5,19 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface UserService {
-    User create(UserDto one);
+    UserResponse create(UserRequest one);
 
-    User update(Long id, UserDto one);
+    UserResponse update(Long id, UserRequest one);
 
-    UserDto findById(Long id);
+    UserResponse findById(Long id);
 
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
-    List<UserDto> findAll();
+    List<UserResponse> findAll();
 
-    Page<UserDto> findUsersWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<UserResponse> findUsersWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+
+    void existsByIdOrThrow(Long id);
 }

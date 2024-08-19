@@ -16,13 +16,12 @@ public class RoleController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoleDto> getOne(@PathVariable("id") Long id) {
-        RoleDto roleDto = roleService.findById(id);
-        return new ResponseEntity<>(roleDto, HttpStatus.OK);
+    public ResponseEntity<Role> getOne(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(roleService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<Page<RoleDto>> getAll(
+    public ResponseEntity<Page<Role>> getAll(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,
@@ -32,18 +31,19 @@ public class RoleController {
     }
 
     @PostMapping()
-    public ResponseEntity<Role> createOne(@RequestBody Role one) {
+    public ResponseEntity<Role> createOne(@RequestBody RoleRequest one) {
         Role roleOne = roleService.create(one);
         return new ResponseEntity<>(roleOne, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Role> updateOne(@PathVariable("id") Long id, @RequestBody Role one) {
-        if (roleService.existsById(id)) {
-            Role updatedOne = roleService.update(id, one);
-            return new ResponseEntity<>(updatedOne, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Role> updateOne(@PathVariable("id") Long id, @RequestBody RoleRequest one) {
+        if (!roleService.existsById(id)) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(roleService.update(id, one), HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{id}")

@@ -15,12 +15,11 @@ public class UserController {
     private final UserService userSrv;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getOne(@PathVariable("id") Long id) {
-        UserDto userDto = userSrv.findById(id);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    public ResponseEntity<UserResponse> getOne(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(userSrv.findById(id), HttpStatus.OK);
     }
     @GetMapping()
-    public ResponseEntity<Page<UserDto>> getAll(
+    public ResponseEntity<Page<UserResponse>> getAll(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String field,
@@ -30,18 +29,16 @@ public class UserController {
                 HttpStatus.OK);
     }
     @PostMapping()
-    public ResponseEntity<User> createOne(@RequestBody UserDto one) {
-        User carOne = userSrv.create(one);
-        return new ResponseEntity<>(carOne, HttpStatus.CREATED);
+    public ResponseEntity<UserResponse> createOne(@RequestBody UserRequest one) {
+        return new ResponseEntity<>(userSrv.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateOne(@PathVariable("id") Long id, @RequestBody UserDto one) {
-        if (userSrv.existsById(id)) {
-            User updatedOne = userSrv.update(id, one);
-            return new ResponseEntity<>(updatedOne, HttpStatus.OK);
+    public ResponseEntity<UserResponse> updateOne(@PathVariable("id") Long id, @RequestBody UserRequest one) {
+        if (!userSrv.existsById(id)) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(userSrv.update(id, one), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

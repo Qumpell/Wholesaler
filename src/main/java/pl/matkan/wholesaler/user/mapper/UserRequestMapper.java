@@ -1,30 +1,35 @@
-package pl.matkan.wholesaler.user;
+package pl.matkan.wholesaler.user.mapper;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import pl.matkan.wholesaler.user.User;
+import pl.matkan.wholesaler.user.UserRequest;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface UserMapper {
+public interface UserRequestMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    UserRequestMapper INSTANCE = Mappers.getMapper(UserRequestMapper.class);
 
-    @Mapping(source = "id",target = "id")
-    @Mapping(source = "name",target = "firstname")
+
+    @Mapping(source = "firstname",target = "firstname")
     @Mapping(source = "surname",target = "surname")
     @Mapping(source = "login",target = "login")
+    @Mapping(source = "password",target = "password")
     @Mapping(source = "dateOfBirth",target = "dateOfBirth")
-    @Mapping(source = "role.name",target = "roleName")
-    UserDto userToUserDto(User user);
+    @Mapping(source = "roleName",target = "roleName")
+    UserRequest userToUserRequest(User user);
 
-    @Mapping(source = "id",target = "id")
-    @Mapping(source = "firstname",target = "name")
+
+    @Mapping(source = "firstname",target = "firstname")
     @Mapping(source = "surname",target = "surname")
     @Mapping(source = "login",target = "login")
+    @Mapping(source = "password",target = "password")
     @Mapping(source = "dateOfBirth",target = "dateOfBirth")
-    User userDtoToUser(UserDto userDto);
+    @Mapping(source = "roleName",target = "roleName")
+    User userRequestToUser(UserRequest userResponse);
 }

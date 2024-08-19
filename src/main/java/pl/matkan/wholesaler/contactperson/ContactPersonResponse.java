@@ -2,12 +2,10 @@ package pl.matkan.wholesaler.contactperson;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
-@Setter
-public class ContactPersonDto {
+public class ContactPersonResponse {
     private Long id;
     private String firstname;
     private String surname;
@@ -16,6 +14,4 @@ public class ContactPersonDto {
     private String position;
     private Long ownerId;
     private String companyName;
-    private Long companyId;
-
 }

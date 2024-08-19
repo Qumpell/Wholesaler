@@ -11,16 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.matkan.wholesaler.role.Role;
-import pl.matkan.wholesaler.user.User;
-import pl.matkan.wholesaler.user.UserDto;
-import pl.matkan.wholesaler.user.UserService;
+import pl.matkan.wholesaler.user.*;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.user.UserController;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -44,33 +39,30 @@ public class UserControllerTest {
     UserService service;
 
 
-    private Page<UserDto> companiesPage;
-    private User user;
-    private UserDto userDto;
+    private Page<UserResponse> companiesPage;
+    private UserResponse userResponse;
+    private UserRequest userRequest;
 
     @BeforeEach
     void setUp() {
-      user = new User(1L,
-              "Test",
-              "Test",
-              LocalDate.of(2000, Month.AUGUST,22),
-              "test",
-              "123" ,
-              false,
-              new ArrayList<>(),
-              new ArrayList<>(),
-              new ArrayList<>(),
-              new Role("ADMIN")
-      );
-
-        userDto = new UserDto(
+        userResponse = new UserResponse(
                 1L,
                 "Test",
                 "Test",
                 LocalDate.of(2000, Month.AUGUST,22),
                 "test",
                 "ADMIN");
-        companiesPage = new PageImpl<>(List.of(userDto));
+
+        userRequest = new UserRequest(
+                "Test",
+                "Test",
+                LocalDate.of(2000, Month.AUGUST,22),
+                "test",
+                "test",
+                "ADMIN"
+        );
+
+        companiesPage = new PageImpl<>(List.of(userResponse));
     }
 
     @Test
@@ -88,7 +80,7 @@ public class UserControllerTest {
     @Test
     void shouldGetOneUser() throws Exception {
         //when //then
-        when(service.findById(1L)).thenReturn(userDto);
+        when(service.findById(1L)).thenReturn(userResponse);
 
         mockMvc.perform(get("/users/{id}", 1L))
                 .andExpect(status().isOk())
@@ -109,15 +101,15 @@ public class UserControllerTest {
     @Test
     void shouldCreateUser() throws Exception {
         //when //then
-        when(service.create(any(UserDto.class))).thenReturn(user);
+        when(service.create(any(UserRequest.class))).thenReturn(userResponse);
 
         mockMvc.perform(post("/users")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto)))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Test")));
+                .andExpect(jsonPath("$.firstname", is("Test")));
     }
 
     @Test
@@ -127,14 +119,14 @@ public class UserControllerTest {
 
         //when //then
         when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(UserDto.class))).thenReturn(user);
+        when(service.update(any(Long.class), any(UserRequest.class))).thenReturn(userResponse);
 
         mockMvc.perform(put("/users/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto)))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Test")));
+                .andExpect(jsonPath("$.firstname", is("Test")));
     }
     @Test
     void shouldReturnNotFound_WhenUpdateUser_GivenInvalidID() throws Exception{
@@ -146,7 +138,7 @@ public class UserControllerTest {
 
         mockMvc.perform(put("/users/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto)))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isNotFound());
     }
 

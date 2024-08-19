@@ -11,10 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.matkan.wholesaler.contactperson.ContactPerson;
-import pl.matkan.wholesaler.contactperson.ContactPersonController;
-import pl.matkan.wholesaler.contactperson.ContactPersonDto;
-import pl.matkan.wholesaler.contactperson.ContactPersonService;
+import pl.matkan.wholesaler.contactperson.*;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 
 import java.util.List;
@@ -39,29 +36,32 @@ class ContactPersonControllerTest {
     ContactPersonService service;
 
 
-    private Page<ContactPersonDto> contactPersonPage;
-    private ContactPerson contactPerson;
-    private ContactPersonDto contactPersonDto;
+    private Page<ContactPersonResponse> contactPersonPage;
+    private ContactPersonResponse contactPersonResponse;
+    private ContactPersonRequest contactPersonRequest;
 
     @BeforeEach
     void setUp() {
-        contactPerson = new ContactPerson(
-                "Marek",
-                "Kowalski",
-                "111-222-333",
-                "test@gmail.com",
-                "support");
-
-        contactPersonDto = new ContactPersonDto(1L,
+        contactPersonResponse = new ContactPersonResponse(
+                1L,
                 "Marek",
                 "Kowalski",
                 "111-222-333",
                 "test@gmail.com",
                 "support",
                 1L,
-                "Test",
-                1L);
-        contactPersonPage = new PageImpl<>(List.of(contactPersonDto));
+                "Test");
+        contactPersonRequest = new ContactPersonRequest(
+                "Marek",
+                "Kowalski",
+                "111-222-333",
+                "test@gmail.com",
+                "support",
+                1L,
+                "Test"
+        );
+
+        contactPersonPage = new PageImpl<>(List.of(contactPersonResponse));
     }
 
     @Test
@@ -79,7 +79,7 @@ class ContactPersonControllerTest {
     @Test
     void shouldGetOneContactPerson() throws Exception {
         //when //then
-        when(service.findById(1L)).thenReturn(contactPersonDto);
+        when(service.findById(1L)).thenReturn(contactPersonResponse);
 
         mockMvc.perform(get("/contact-persons/{id}", 1L))
                 .andExpect(status().isOk())
@@ -101,14 +101,14 @@ class ContactPersonControllerTest {
     @Test
     void shouldCreateContactPerson() throws Exception {
         //when //then
-        when(service.create(any(ContactPersonDto.class))).thenReturn(contactPerson);
+        when(service.create(any(ContactPersonRequest.class))).thenReturn(contactPersonResponse);
 
         mockMvc.perform(post("/contact-persons")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(contactPersonDto)))
+                        .content(objectMapper.writeValueAsString(contactPersonRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is("Marek")))
+                .andExpect(jsonPath("$.firstname", is("Marek")))
                 .andExpect(jsonPath("$.surname", is("Kowalski")));
     }
 
@@ -119,13 +119,13 @@ class ContactPersonControllerTest {
 
         //when //then
         when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(ContactPersonDto.class))).thenReturn(contactPerson);
+        when(service.update(any(Long.class), any(ContactPersonRequest.class))).thenReturn(contactPersonResponse);
 
         mockMvc.perform(put("/contact-persons/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(contactPersonDto)))
+                        .content(objectMapper.writeValueAsString(contactPersonRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Marek")))
+                .andExpect(jsonPath("$.firstname", is("Marek")))
                 .andExpect(jsonPath("$.surname", is("Kowalski")));
     }
     @Test
@@ -138,7 +138,7 @@ class ContactPersonControllerTest {
 
         mockMvc.perform(put("/contact-persons/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(contactPersonDto)))
+                        .content(objectMapper.writeValueAsString(contactPersonRequest)))
                 .andExpect(status().isNotFound());
     }
 

@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryController;
+import pl.matkan.wholesaler.industry.IndustryRequest;
 import pl.matkan.wholesaler.industry.IndustryService;
 
 import java.util.ArrayList;
@@ -43,14 +44,17 @@ class IndustryControllerTest {
 
     private Page<Industry> industriesPage;
     private Industry industry;
+    private IndustryRequest industryRequest;
 
     @BeforeEach
     void setUp() {
 
         industry = new Industry(
                 1L,
-                "IT",
-                new ArrayList<>()
+                "IT"
+        );
+        industryRequest = new IndustryRequest(
+                "IT"
         );
 
         industriesPage = new PageImpl<>(List.of(industry));
@@ -93,26 +97,26 @@ class IndustryControllerTest {
     @Test
     void shouldCreateIndustry() throws Exception {
         //when //then
-        when(service.create(any(Industry.class))).thenReturn(industry);
+        when(service.create(any(IndustryRequest.class))).thenReturn(industry);
 
         mockMvc.perform(post("/industries")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(industry)))
+                        .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("IT")));
     }
 
     @Test
-    void shouldReturnNotConflict_WhenCreateIndustry_GivenNameAlreadyExists() throws Exception {
+    void shouldReturnConflict_WhenCreateIndustry_GivenNameAlreadyExists() throws Exception {
         //when //then
-        when(service.create(any(Industry.class))).thenThrow(DataIntegrityViolationException.class);
+        when(service.create(any(IndustryRequest.class))).thenThrow(DataIntegrityViolationException.class);
 
         mockMvc.perform(post("/industries")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(industry)))
+                        .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isConflict());
 
     }
@@ -124,11 +128,11 @@ class IndustryControllerTest {
 
         //when //then
         when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(Industry.class))).thenReturn(industry);
+        when(service.update(any(Long.class), any(IndustryRequest.class))).thenReturn(industry);
 
         mockMvc.perform(put("/industries/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(industry)))
+                        .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("IT")));
@@ -143,7 +147,7 @@ class IndustryControllerTest {
 
         mockMvc.perform(put("/industries/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(industry)))
+                        .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isNotFound());
     }
 

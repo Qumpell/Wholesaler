@@ -6,17 +6,20 @@ import java.util.List;
 
 public interface CompanyService {
 
-    Company create(CompanyRequest one);
 
-    Company update(Long id, CompanyDto one);
+    CompanyResponse create(CompanyRequest one);
 
-    CompanyDto findById(Long id);
+    CompanyResponse update(Long id, CompanyRequest one);
+
+    CompanyResponse findById(Long id);
 
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
-    List<CompanyDto> findAll();
+    List<CompanyResponse> findAll();
 
-    Page<CompanyDto> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<CompanyResponse> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+
+    void existsByNameOrThrow(String name);
 }

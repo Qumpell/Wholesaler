@@ -1,10 +1,10 @@
-FROM maven:3.9.6-eclipse-temurin-11 AS build
+FROM maven:3.9.8-eclipse-temurin-17 AS build
 WORKDIR /build
 COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:17
 WORKDIR /app
 COPY --from=build /build/target/Wholesaler-0.0.1-SNAPSHOT.jar /app/Wholesaler-0.0.1-SNAPSHOT.jar
 EXPOSE 8080

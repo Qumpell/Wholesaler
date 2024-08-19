@@ -1,14 +1,17 @@
 package pl.matkan.wholesaler.company;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.company.mapper.CompanyRequestMapper;
+import pl.matkan.wholesaler.company.mapper.CompanyResponseMapper;
 import pl.matkan.wholesaler.exception.BadRequestException;
 import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.industry.IndustryServiceImpl;
-import pl.matkan.wholesaler.user.UserServiceImpl;
+import pl.matkan.wholesaler.industry.IndustryService;
+import pl.matkan.wholesaler.user.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,58 +21,88 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
-    private final UserServiceImpl userService;
-    private final CompanyMapper companyMapper;
+    private final UserService userService;
+    private final IndustryService industryService;
+    private final CompanyResponseMapper companyResponseMapper;
     private final CompanyRequestMapper companyRequestMapper;
-    private final IndustryServiceImpl industryService;
+
 
 
     @Override
-    public Company create(CompanyRequest companyIn) {
-
-        Company companyToCreate = companyRequestMapper.companyDtoToCompany(companyIn);
+    public CompanyResponse create(CompanyRequest companyIn) {
 
         try {
-            companyToCreate.setIndustry(industryService.getOneIndustryByName(companyIn.industryName()));
-            companyToCreate.setUser(userService.getOneUserById(companyIn.ownerId()));
+            userService.existsByIdOrThrow(companyIn.ownerId());
+            industryService.existsByNameOrThrow(companyIn.industryName());
+//            Industry industry = industryService.getOneIndustryByName(companyIn.industryName());
+//            User user = userService.getOneUserById(companyIn.ownerId());
+
+//            companyToCreate.setIndustry(industry);
+//            companyToCreate.setUser(user);
+
         }catch (EntityNotFoundException e) {
             throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
         }
+        Company companyToCreate = companyRequestMapper.companyRequestToCompany(companyIn);
+        try{
 
 
-        return companyRepository.save(companyToCreate);
+            Company companyCreated = companyRepository.save(companyToCreate);
+            return companyResponseMapper.companyToCompanyResponse(companyCreated);
+
+        }catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Company with name:=" + companyToCreate.getName() + " already exists");
+        }
+
     }
 
     @Override
-    public Company update(Long id, CompanyDto updatedCompanyDto) {
+    public CompanyResponse update(Long id, CompanyRequest companyRequest) {
+
+        return companyRepository.findById(id).map(company -> {
+
+            try {
+
+                userService.existsByIdOrThrow(companyRequest.ownerId());
+                industryService.existsByNameOrThrow(companyRequest.industryName());
+
+            } catch (EntityNotFoundException e) {
+                throw new BadRequestException("Invalid payload", e.getMessage() + " " + e.getErrorDetails());
+            }
+
+            company = companyRequestMapper.companyRequestToCompany(companyRequest);
+
+            try {
+                Company updatedCompany = companyRepository.save(company);
+
+                return companyResponseMapper.companyToCompanyResponse(updatedCompany);
+
+            }catch (DataIntegrityViolationException ex){
+                throw new DataIntegrityViolationException("Company with name:=" + company.getName() + " already exists");
+            }
 
 
-//        companyRepository.findById(id).map(company -> {
-//
-//            company = companyMapper.companyDtoToCompany(updatedCompanyDto);
-//            company.setUser(userService.getOneUserById(updatedCompanyDto.getOwnerId()));
-//            company.setIndustry(industryService.getOneIndustryByName(updatedCompanyDto.getIndustryName()));
-//            return companyRepository.save(company);
-//
-//        });
-
-        Company companyToBeUpdated = getOneCompanyById(id);
-
-        companyToBeUpdated.setName(updatedCompanyDto.getName());
-        companyToBeUpdated.setAddress(updatedCompanyDto.getAddress());
-        companyToBeUpdated.setCity(updatedCompanyDto.getCity());
-        companyToBeUpdated.setNip(updatedCompanyDto.getNip());
-        companyToBeUpdated.setUser(userService.getOneUserById(updatedCompanyDto.getOwnerId()));
-        companyToBeUpdated.setIndustry(industryService.getOneIndustryByName(updatedCompanyDto.getIndustryName()));
-
-        return companyRepository.save(companyToBeUpdated);
+        }).orElseThrow(() -> new EntityNotFoundException("Company was not found" ,"with id: " + id));
     }
 
+//        Company companyToBeUpdated = getOneCompanyById(id);
+//
+//        companyToBeUpdated.setName(updatedCompanyResponse.getName());
+//        companyToBeUpdated.setAddress(updatedCompanyResponse.getAddress());
+//        companyToBeUpdated.setCity(updatedCompanyResponse.getCity());
+//        companyToBeUpdated.setNip(updatedCompanyResponse.getNip());
+//        companyToBeUpdated.setUser(userService.getOneUserById(updatedCompanyResponse.getOwnerId()));
+//        companyToBeUpdated.setIndustry(industryService.getOneIndustryByName(updatedCompanyResponse.getIndustryName()));
+
+//        return companyRepository.save(companyToBeUpdated);
+//        return null;
+
+
     @Override
-    public CompanyDto findById(Long id) {
-        return companyMapper.companyToCompanyDto(
+    public CompanyResponse findById(Long id) {
+        return companyResponseMapper.companyToCompanyResponse(
                 companyRepository.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Company not found", "with id:=" + id))
+                        .orElseThrow(() -> new EntityNotFoundException("Company was not found", "with id:=" + id))
         );
     }
 
@@ -84,24 +117,30 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> findAll() {
+    public List<CompanyResponse> findAll() {
         List<Company> companies  = companyRepository.findAll();
         return companies.stream()
-                .map(companyMapper::companyToCompanyDto)
+                .map(companyResponseMapper::companyToCompanyResponse)
                 .collect(Collectors.toList());
     }
-    public Page<CompanyDto> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order)
+    public Page<CompanyResponse> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order)
     {
         Page<Company> companies  = companyRepository.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
         );
-        return companies.map(companyMapper::companyToCompanyDto);
+        return companies.map(companyResponseMapper::companyToCompanyResponse);
     }
 
-
-    public Company getOneCompanyById(Long id) {
-        return companyRepository.findById(id)
-                .orElseThrow((() -> new EntityNotFoundException("Company not found", "with given id:= " + id))
-                );
+    @Override
+    public void existsByNameOrThrow(String name) {
+        if (!companyRepository.existsByName(name)) {
+            throw new EntityNotFoundException("Company was not found", "with name:=" + name);
+        }
     }
+
+//    public Company getOneCompanyById(Long id) {
+//        return companyRepository.findById(id)
+//                .orElseThrow((() -> new EntityNotFoundException("Company not found", "with given id:= " + id))
+//                );
+//    }
 }

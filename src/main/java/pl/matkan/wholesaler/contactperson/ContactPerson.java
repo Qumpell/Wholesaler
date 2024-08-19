@@ -23,25 +23,28 @@ public class ContactPerson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    private String name;
+    private String firstname;
     private String surname;
     private String phoneNumber;
     private String mail;
     private String position;
-    private boolean isDeleted;
+    private String companyName;
+    private Long ownerId;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    @JsonBackReference(value = "contactPersonsCompany")
-    private Company company;
+    private boolean isDeleted = Boolean.FALSE;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonBackReference(value = "contactPersonsUser")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "company_id")
+//    @JsonBackReference(value = "contactPersonsCompany")
+//    private Company company;
+
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    @JsonBackReference(value = "contactPersonsUser")
+//    private User user;
 
     public ContactPerson(String name, String surname, String phoneNumber, String mail, String position) {
-        this.name = name;
+        this.firstname = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.mail = mail;
