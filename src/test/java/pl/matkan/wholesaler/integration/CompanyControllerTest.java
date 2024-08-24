@@ -9,6 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,7 @@ import java.time.Month;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Testcontainers
@@ -91,8 +91,6 @@ class CompanyControllerTest {
                 false);
 
         owner = userRepository.save(owner);
-
-
     }
 
     @AfterEach
@@ -112,8 +110,8 @@ class CompanyControllerTest {
 
     @Test
     void shouldFindAllCompanies() {
-        //given
 
+        //given
         Company company = new Company(null,
                 "Tech Innovations Ltd.",
                 "1234567890",
@@ -177,8 +175,6 @@ class CompanyControllerTest {
 
     @Test
     void shouldReturnNotFound_WhenGetOneCompany_GivenInvalidID() {
-        //given
-        Long id = 100L;
 
         //when
         ResponseEntity<CompanyResponse> responseEntity = restTemplate.
@@ -195,7 +191,7 @@ class CompanyControllerTest {
     void shouldReturnConflict_WhenCreateCompany_WithAlreadyExistingName() {
 
         //given
-        Company company = new Company(1L,
+        Company company = new Company(null,
                 "Tech Innovators Ltd.",
                 "1234567890",
                 "123 Tech Lane",
@@ -228,6 +224,7 @@ class CompanyControllerTest {
 
     @Test
     void shouldCreateCompany_GivenValidData() {
+
         //given
         CompanyRequest companyRequest = new CompanyRequest(
                 "UNIQUE NAME",
@@ -311,9 +308,10 @@ class CompanyControllerTest {
     }
 
     @Test
-    void shouldUpdateCompany() throws Exception {
+    void shouldUpdateCompany() {
+
         //given
-        Company company = new Company(1L,
+        Company company = new Company(null,
                 "Tech Innovators Ltd.",
                 "1234567890",
                 "123 Tech Lane",
@@ -333,55 +331,178 @@ class CompanyControllerTest {
         );
 
         //when
-        ResponseEntity<String> responseEntity = restClient
+        ResponseEntity<CompanyResponse> responseEntity = restClient
                 .put()
-                        .uri("/companies/{id}", company.getId())
-                                .retrieve()
-                                        .toEntity(String.class);
+                .uri("/companies/{id}", company.getId())
+                .contentType(APPLICATION_JSON)
+                .body(companyRequest)
+                .retrieve()
+                .toEntity(CompanyResponse.class);
 
 
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody()))
+                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().getName()))
         );
     }
+
+    @Test
+    void shouldReturnNotFound_WhenUpdateCompany_GivenInvalidID() {
+
+        //given
+        Company company = new Company(null,
+                "Tech Innovators Ltd.",
+                "1234567890",
+                "123 Tech Lane",
+                "New York",
+                industry.getName(),
+                owner.getId(),
+                false);
+        company = companyRepository.save(company);
+
+        CompanyRequest companyRequest = new CompanyRequest(
+                "New Name",
+                "1234567890",
+                "123 Innovation Street",
+                "Warsaw",
+                industry.getName(),
+                owner.getId()
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate
+                .exchange(
+                        "/companies/{id}",
+                        HttpMethod.PUT,
+                        new HttpEntity<>(companyRequest),
+                        String.class,
+                        100
+                );
+
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void shouldReturnBadRequest_WhenUpdateCompany_GivenNonexistentOwnerID() {
+
+        //given
+        Company company = new Company(null,
+                "Tech Innovators Ltd.",
+                "1234567890",
+                "123 Tech Lane",
+                "New York",
+                industry.getName(),
+                owner.getId(),
+                false);
+        company = companyRepository.save(company);
+
+        CompanyRequest companyRequest = new CompanyRequest(
+                "New Name",
+                "1234567890",
+                "123 Innovation Street",
+                "Warsaw",
+                industry.getName(),
+                100L
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate
+                .exchange(
+                        "/companies/{id}",
+                        HttpMethod.PUT,
+                        new HttpEntity<>(companyRequest),
+                        String.class,
+                        company.getId()
+                );
+
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldReturnBadRequest_WhenUpdateCompany_GivenNonexistentIndustryName() {
+
+        //given
+        Company company = new Company(null,
+                "Tech Innovators Ltd.",
+                "1234567890",
+                "123 Tech Lane",
+                "New York",
+                industry.getName(),
+                owner.getId(),
+                false);
+        company = companyRepository.save(company);
+
+        CompanyRequest companyRequest = new CompanyRequest(
+                "New Name",
+                "1234567890",
+                "123 Innovation Street",
+                "Warsaw",
+                "WrongIndustryName",
+                owner.getId()
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate
+                .exchange(
+                        "/companies/{id}",
+                        HttpMethod.PUT,
+                        new HttpEntity<>(companyRequest),
+                        String.class,
+                        company.getId()
+                );
+
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldDeleteCompany(){
+        //given
+        Company company = new Company(null,
+                "Tech Innovators Ltd.",
+                "1234567890",
+                "123 Tech Lane",
+                "New York",
+                industry.getName(),
+                owner.getId(),
+                false);
+        company = companyRepository.save(company);
+
+        //when
+        ResponseEntity<String> response = restClient
+                .delete()
+                .uri("/companies/{id}", company.getId())
+                .retrieve()
+                .toEntity(String.class);
+
+        //then
+        final long id = company.getId();
+        assertAll(
+                () -> assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()),
+                () -> assertFalse(companyRepository.existsById(id))
+        );
+    }
+
+    @Test
+    void shouldReturnNotFound_WhenDeleteCompany_GivenInvalidID(){
+        //given //when
+        ResponseEntity<String> response = restTemplate
+                .exchange(
+                        "/companies/{id}",
+                        HttpMethod.DELETE,
+                        null,
+                        String.class,
+                        20
+                );
+
+        //then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }
-//    @Test
-//    void shouldReturnNotFound_WhenUpdateCompany_GivenInvalidID() throws Exception{
-//        //given
-//        Long id = 1L;
-//
-//        //when //then
-//        when(service.existsById(id)).thenReturn(false);
-//
-//        mockMvc.perform(put("/companies/{id}", id)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(companyDto)))
-//                .andExpect(status().isNotFound());
-//    }
-//
-//    @Test
-//    void shouldDeleteCompany() throws Exception{
-//        //given
-//        Long id = 1L;
-//
-//        //when //then
-//        when(service.existsById(id)).thenReturn(true);
-//        Mockito.doNothing().when(service).deleteById(id);
-//
-//        mockMvc.perform(delete("/companies/{id}", id))
-//                .andExpect(status().isNoContent());
-//    }
-//    @Test
-//    void shouldReturnNotFound_WhenDeleteCompany_GivenInvalidID() throws Exception{
-//        //given
-//        Long id = 1L;
-//
-//        //when //then
-//        when(service.existsById(id)).thenReturn(false);
-//
-//        mockMvc.perform(delete("/companies/{id}", id))
-//                .andExpect(status().isNotFound());
-//    }
 

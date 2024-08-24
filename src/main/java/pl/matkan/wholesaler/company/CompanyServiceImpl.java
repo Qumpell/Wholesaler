@@ -73,13 +73,14 @@ public class CompanyServiceImpl implements CompanyService {
             company = companyRequestMapper.companyRequestToCompany(companyRequest);
 
             try {
-                Company updatedCompany = companyRepository.save(company);
+                 Company updatedCompany = companyRepository.save(company);
 
                 return companyResponseMapper.companyToCompanyResponse(updatedCompany);
 
             }catch (DataIntegrityViolationException ex){
                 throw new DataIntegrityViolationException("Company with name:=" + company.getName() + " already exists");
             }
+
 
 
         }).orElseThrow(() -> new EntityNotFoundException("Company was not found" ,"with id: " + id));
