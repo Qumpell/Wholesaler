@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS companies (
                         nip VARCHAR(255) NOT NULL UNIQUE,
                         city VARCHAR(255),
                         address VARCHAR(255),
-                        industry_name VARCHAR(255),
-                        owner_id BIGINT,
+                        industry_name VARCHAR(255)  DEFAULT NULL,
+                        owner_id BIGINT  DEFAULT NULL,
                         is_deleted BOOLEAN DEFAULT FALSE,
                         CONSTRAINT FOREIGN KEY (industry_name) REFERENCES industries(name) ON DELETE SET NULL,
                         CONSTRAINT FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS companies (
 CREATE TABLE IF NOT EXISTS trade_notes (
                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
                         content TEXT,
-                        company_name VARCHAR(255),
-                        owner_id BIGINT,
+                        company_name VARCHAR(255)  DEFAULT NULL,
+                        owner_id BIGINT  DEFAULT NULL,
                         is_deleted BOOLEAN DEFAULT FALSE,
                         CONSTRAINT FOREIGN KEY (company_name) REFERENCES companies(name) ON DELETE SET NULL,
                         CONSTRAINT FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS contact_persons (
                         phone_number VARCHAR(255),
                         mail VARCHAR(255),
                         position VARCHAR(255),
-                        company_name VARCHAR(255),
-                        owner_id BIGINT,
+                        company_name VARCHAR(255)  DEFAULT NULL,
+                        owner_id BIGINT  DEFAULT NULL,
                         is_deleted BOOLEAN DEFAULT FALSE,
                         FOREIGN KEY (company_name) REFERENCES companies(name) ON DELETE SET NULL,
                         FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL

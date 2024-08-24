@@ -1,8 +1,8 @@
 package pl.matkan.wholesaler.integration;
 
-import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -12,32 +12,30 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 import pl.matkan.wholesaler.RestPageImpl;
-import pl.matkan.wholesaler.company.*;
+import pl.matkan.wholesaler.company.Company;
+import pl.matkan.wholesaler.company.CompanyRepository;
+import pl.matkan.wholesaler.company.CompanyRequest;
+import pl.matkan.wholesaler.company.CompanyResponse;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.role.RoleRepository;
 import pl.matkan.wholesaler.user.User;
 import pl.matkan.wholesaler.user.UserRepository;
-import pl.matkan.wholesaler.user.UserService;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,12 +52,6 @@ class CompanyControllerTest {
 
     @Autowired
     TestRestTemplate restTemplate;
-
-    @Autowired
-    CompanyService companyService;
-
-
-
     RestClient restClient;
 
     @Autowired
@@ -71,53 +63,64 @@ class CompanyControllerTest {
     @Autowired
     UserRepository userRepository;
 
-//    @BeforeAll
-//    void init(){
-//
-//    }
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    private Industry industry;
+    private Role role;
+    private User owner;
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.create("http://localhost:" + randomServerPort);
 
+        role = new Role("admin");
+        role = roleRepository.save(role);
+
+        industry = new Industry(1L, "IT");
+        industry = industryRepository.save(industry);
+        owner = new User(
+                null,
+                "test",
+                "test",
+                LocalDate.of(1999, Month.AUGUST, 22),
+                "testLogin",
+                "pass",
+                "admin",
+                false);
+
+        owner = userRepository.save(owner);
+
+
     }
+
     @AfterEach
-    void cleanUp(){
+    void cleanUp() {
         companyRepository.deleteAll();
         industryRepository.deleteAll();
         userRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
 
     @Test
-    void testConnection(){
-      assertThat(mysql.isCreated()).isTrue();
-      assertThat(mysql.isRunning()).isTrue();
+    void testConnection() {
+        assertThat(mysql.isCreated()).isTrue();
+        assertThat(mysql.isRunning()).isTrue();
     }
 
     @Test
-    void shouldFindAllCompanies(){
+    void shouldFindAllCompanies() {
         //given
-        Industry industry = new Industry("IT");
-        industryRepository.save(industry);
-        User user = new User(
-                "test",
-                "test",
-                LocalDate.of(1999, Month.AUGUST,22),
-                "testLogin",
-                "pass",
-                "admin");
 
-        userRepository.save(user);
-
-        Company company = new Company(1L,
+        Company company = new Company(null,
                 "Tech Innovations Ltd.",
                 "1234567890",
                 "123 Tech Lane",
                 "New York",
-                "IT",
-                1L,
+                industry.getName(),
+                owner.getId(),
                 false);
         companyRepository.save(company);
 
@@ -126,7 +129,8 @@ class CompanyControllerTest {
                 .get()
                 .uri("/companies")
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<>() {});
+                .toEntity(new ParameterizedTypeReference<>() {
+                });
 
         RestPageImpl<CompanyResponse> body = responseEntity.getBody();
         System.out.println();
@@ -138,27 +142,15 @@ class CompanyControllerTest {
     }
 
     @Test
-    void shouldGetOneCompany_GivenValidID(){
+    void shouldGetOneCompany_GivenValidID() {
         //given
-        Industry industry = new Industry("IT");
-        industryRepository.save(industry);
-        User user = new User(
-                "test",
-                "test",
-                LocalDate.of(1999, Month.AUGUST,22),
-                "testLogin",
-                "pass",
-                "admin");
-
-        userRepository.save(user);
-
-        Company company = new Company(2L,
+        Company company = new Company(null,
                 "Tech Innovations Ltd.",
                 "1234567890",
                 "123 Tech Lane",
                 "New York",
-                "IT",
-                1L,
+                industry.getName(),
+                owner.getId(),
                 false);
         companyRepository.save(company);
 
@@ -171,19 +163,20 @@ class CompanyControllerTest {
         CompanyResponse responseEntityBody = responseEntity.getBody();
 
         //then
-       assertAll(
-               () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-               ()->assertEquals(company.getId(), responseEntityBody.getId()),
-               ()->assertEquals(company.getName(), responseEntityBody.getName()),
-               ()->assertEquals(company.getCity(), responseEntityBody.getCity()),
-               ()->assertEquals(company.getNip(), responseEntityBody.getNip()),
-               ()->assertEquals(company.getAddress(), responseEntityBody.getAddress()),
-               ()->assertEquals(company.getIndustryName(), responseEntityBody.getIndustryName()),
-               ()->assertEquals(company.getOwnerId(), responseEntityBody.getOwnerId()));
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(company.getId(), responseEntityBody.getId()),
+                () -> assertEquals(company.getName(), responseEntityBody.getName()),
+                () -> assertEquals(company.getCity(), responseEntityBody.getCity()),
+                () -> assertEquals(company.getNip(), responseEntityBody.getNip()),
+                () -> assertEquals(company.getAddress(), responseEntityBody.getAddress()),
+                () -> assertEquals(company.getIndustryName(), responseEntityBody.getIndustryName()),
+                () -> assertEquals(company.getOwnerId(), responseEntityBody.getOwnerId()));
 
     }
+
     @Test
-    void shouldReturnNotFound_WhenGetOneCompany_GivenInvalidID(){
+    void shouldReturnNotFound_WhenGetOneCompany_GivenInvalidID() {
         //given
         Long id = 100L;
 
@@ -195,28 +188,38 @@ class CompanyControllerTest {
                         CompanyResponse.class);
 
         //then
-       assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
-    void shouldReturnConflict_WhenCreateCompany_WithAlreadyExistName(){
+    void shouldReturnConflict_WhenCreateCompany_WithAlreadyExistingName() {
 
-       //given
+        //given
+        Company company = new Company(1L,
+                "Tech Innovators Ltd.",
+                "1234567890",
+                "123 Tech Lane",
+                "New York",
+                industry.getName(),
+                owner.getId(),
+                false);
+        companyRepository.save(company);
+
         CompanyRequest companyRequest = new CompanyRequest(
                 "Tech Innovators Ltd.",
                 "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                "IT",
-                1L
+                industry.getName(),
+                owner.getId()
         );
 
         //when
-        ResponseEntity<CompanyResponse> responseEntity = restTemplate.
+        ResponseEntity<String> responseEntity = restTemplate.
                 postForEntity(
                         "/companies",
                         companyRequest,
-                        CompanyResponse.class
+                        String.class
                 );
 
         // then
@@ -224,16 +227,15 @@ class CompanyControllerTest {
     }
 
     @Test
-    @Transactional
-    void shouldCreateCompany_GivenValidData(){
-       //given
+    void shouldCreateCompany_GivenValidData() {
+        //given
         CompanyRequest companyRequest = new CompanyRequest(
                 "UNIQUE NAME",
                 "0000000000",
                 "123 Innovation Street",
                 "Warsaw",
-                "IT",
-                1L
+                industry.getName(),
+                owner.getId()
         );
 
         //when
@@ -249,22 +251,17 @@ class CompanyControllerTest {
         // then
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()),
-//                () -> assertEquals(11L, responseEntityBody.getId()),
                 () -> assertEquals(companyRequest.name(), responseEntityBody.getName()),
                 () -> assertEquals(companyRequest.address(), responseEntityBody.getAddress()),
                 () -> assertEquals(companyRequest.city(), responseEntityBody.getCity()),
                 () -> assertEquals(companyRequest.nip(), responseEntityBody.getNip()),
                 () -> assertEquals(companyRequest.ownerId(), responseEntityBody.getOwnerId()),
-                () -> assertEquals(companyRequest.industryName(), responseEntityBody.getIndustryName()),
-//                () -> assertEquals(companyRequest.ownerId(), responseEntityBody.getUser().getId()),
-//                () -> assertEquals(companyRequest.industryName(), responseEntityBody.getIndustry().getName()),
-                () -> assertTrue(companyService.existsById(responseEntityBody.getId()))
-
+                () -> assertEquals(companyRequest.industryName(), responseEntityBody.getIndustryName())
         );
     }
 
     @Test
-    void shouldReturnBadRequest_WhenCreateCompany_GivenInvalidOwnerId(){
+    void shouldReturnBadRequest_WhenCreateCompany_GivenInvalidOwnerId() {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
@@ -272,7 +269,7 @@ class CompanyControllerTest {
                 "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                "it",
+                industry.getName(),
                 100L
         );
 
@@ -289,7 +286,7 @@ class CompanyControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequest_WhenCreateCompany_GivenInvalidIndustryName(){
+    void shouldReturnBadRequest_WhenCreateCompany_GivenInvalidIndustryName() {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
@@ -297,8 +294,8 @@ class CompanyControllerTest {
                 "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                "wrong",
-                1L
+                "wrongIndustryName",
+                owner.getId()
         );
 
         //when
@@ -313,25 +310,43 @@ class CompanyControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-//    @Test
-//    void shouldUpdateCompany() throws Exception{
-//        //given
-//        Long id = 1L;
-//
-//        //when //then
-//        when(service.existsById(id)).thenReturn(true);
-//        when(service.update(any(Long.class), any(CompanyDto.class))).thenReturn(company);
-//
-//        mockMvc.perform(put("/companies/{id}", id)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(companyDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id", is(1)))
-//                .andExpect(jsonPath("$.name", is("Test")))
-//                .andExpect(jsonPath("$.nip", is("123456789")))
-//                .andExpect(jsonPath("$.address", is("14-048")))
-//                .andExpect(jsonPath("$.city", is("Poznan")));
-//    }
+    @Test
+    void shouldUpdateCompany() throws Exception {
+        //given
+        Company company = new Company(1L,
+                "Tech Innovators Ltd.",
+                "1234567890",
+                "123 Tech Lane",
+                "New York",
+                industry.getName(),
+                owner.getId(),
+                false);
+        company = companyRepository.save(company);
+
+        CompanyRequest companyRequest = new CompanyRequest(
+                "New Name",
+                "1234567890",
+                "123 Innovation Street",
+                "Warsaw",
+                industry.getName(),
+                owner.getId()
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restClient
+                .put()
+                        .uri("/companies/{id}", company.getId())
+                                .retrieve()
+                                        .toEntity(String.class);
+
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody()))
+        );
+    }
+}
 //    @Test
 //    void shouldReturnNotFound_WhenUpdateCompany_GivenInvalidID() throws Exception{
 //        //given
@@ -370,4 +385,3 @@ class CompanyControllerTest {
 //                .andExpect(status().isNotFound());
 //    }
 
-}
