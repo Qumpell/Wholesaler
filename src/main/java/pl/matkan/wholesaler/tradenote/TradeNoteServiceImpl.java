@@ -27,44 +27,39 @@ public class TradeNoteServiceImpl implements TradeNoteService {
 
     @Override
     public TradeNoteResponse create(TradeNoteRequest one) {
+        final String companyName;
 
         try {
-            companyService.existsByNameOrThrow(one.companyName());
+            companyName = companyService.findById(one.companyId()).getName();
+//            companyService.existsByNameOrThrow(one.companyName());
             userService.existsByIdOrThrow(one.ownerId());
 
         }catch (EntityNotFoundException e) {
-            throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
+            throw new BadRequestException("Invalid payload", e.getMessage() + " " + e.getErrorDetails());
         }
 
-//        TradeNote tradeNoteToCreate = tradeNoteResponseMapper.tradeNoteResponseToTradeNote(one);
-//        tradeNoteToCreate.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
-//        tradeNoteToCreate.setUser(userService.getOneUserById(one.getOwnerId()));
-
         TradeNote tradeNoteToCreate = tradeNoteRequestMapper.tradeNoteRequestToTradeNote(one);
+
         TradeNote tradeNote = tradeNoteRepo.save(tradeNoteToCreate);
 
-        return tradeNoteResponseMapper.tradeNoteToTradeNoteResponse(tradeNote);
+        return tradeNoteResponseMapper.tradeNoteToTradeNoteResponse(tradeNote, companyName);
     }
 
     @Override
     public TradeNoteResponse update(Long id, TradeNoteRequest one) {
 
-//        TradeNote tradeNoteUpdated = tradeNoteResponseMapper.tradeNoteResponseToTradeNote(one);
-//
-//        tradeNoteUpdated.setId(id);
-//        tradeNoteUpdated.setUser(userService.getOneUserById(one.getOwnerId()));
-//        tradeNoteUpdated.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
-       TradeNote existingTradeNote = tradeNoteRepo.findById(id)
-               .orElseThrow(() -> new EntityNotFoundException("Company was not found" ,"with id: " + id));
+        TradeNote existingTradeNote = findById(id);
 
         try {
             companyService.existsByNameOrThrow(one.companyName());
+//            companyService.existsById(one.companyId());
             userService.existsByIdOrThrow(one.ownerId());
 
         }catch (EntityNotFoundException e) {
             throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
         }
-        existingTradeNote = tradeNoteRequestMapper.tradeNoteRequestToTradeNote(one);
+
+        tradeNoteRequestMapper.updateTradeNoteFromRequest(one, existingTradeNote);
 
         TradeNote tradeNote = tradeNoteRepo.save(existingTradeNote);
 
@@ -105,5 +100,9 @@ public class TradeNoteServiceImpl implements TradeNoteService {
                 withSort(Sort.by(Sort.Direction.fromString(order), field))
         );
         return tradeNotes.map(tradeNoteResponseMapper::tradeNoteToTradeNoteResponse);
+    }
+
+    private void validateOwnerAndCompany(Long ownerId, Long companyId) {
+
     }
 }

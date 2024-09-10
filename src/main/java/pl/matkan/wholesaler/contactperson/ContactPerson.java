@@ -1,14 +1,10 @@
 package pl.matkan.wholesaler.contactperson;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.matkan.wholesaler.company.Company;
-import pl.matkan.wholesaler.user.User;
-
 
 
 @Entity

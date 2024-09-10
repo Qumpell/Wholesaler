@@ -14,4 +14,5 @@ public class ContactPersonResponse {
     private String position;
     private Long ownerId;
     private String companyName;
+//    private Long companyId;
 }

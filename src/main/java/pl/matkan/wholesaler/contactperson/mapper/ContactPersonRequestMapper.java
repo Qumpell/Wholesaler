@@ -21,6 +21,7 @@ public interface ContactPersonRequestMapper {
     @Mapping(source = "mail",target = "mail")
     @Mapping(source = "position",target = "position")
     @Mapping(source = "companyName",target = "companyName")
+//    @Mapping(source = "companyId",target = "companyId")
     @Mapping(source = "ownerId",target = "ownerId")
     ContactPersonRequest contactPersonToContactPersonRequest(ContactPerson contactPerson);
 
@@ -30,6 +31,7 @@ public interface ContactPersonRequestMapper {
     @Mapping(source = "mail",target = "mail")
     @Mapping(source = "position",target = "position")
     @Mapping(source = "companyName",target = "companyName")
+//    @Mapping(source = "companyId",target = "companyId")
     @Mapping(source = "ownerId",target = "ownerId")
     ContactPerson contactPersonRequestToContactPerson(ContactPersonRequest contactPersonRequest);
 }

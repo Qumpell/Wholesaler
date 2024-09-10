@@ -1,9 +1,6 @@
 package pl.matkan.wholesaler.company.mapper;
 
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRequest;
@@ -31,4 +28,7 @@ public interface CompanyRequestMapper {
     @Mapping(source = "industryName",target = "industryName")
     @Mapping(source = "ownerId",target = "ownerId")
     Company companyRequestToCompany(CompanyRequest companyRequest);
+
+    @Mapping(target = "id", ignore = true)
+    void updateCompanyFromRequest(CompanyRequest companyRequest, @MappingTarget Company company);
 }

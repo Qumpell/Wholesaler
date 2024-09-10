@@ -1,9 +1,6 @@
 package pl.matkan.wholesaler.tradenote.mapper;
 
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import pl.matkan.wholesaler.tradenote.TradeNote;
 import pl.matkan.wholesaler.tradenote.TradeNoteRequest;
@@ -15,12 +12,15 @@ public interface TradeNoteRequestMapper {
     TradeNoteRequestMapper INSTANCE = Mappers.getMapper(TradeNoteRequestMapper.class);
 
     @Mapping(source = "content",target = "content")
-    @Mapping(source = "companyName",target = "companyName")
+    @Mapping(source = "companyId",target = "companyId")
     @Mapping(source = "ownerId",target = "ownerId")
     TradeNoteRequest tradeNoteToTradeNoteRequest(TradeNote tradeNote);
 
     @Mapping(source = "content",target = "content")
-    @Mapping(source = "companyName",target = "companyName")
+    @Mapping(source = "companyId",target = "companyId")
     @Mapping(source = "ownerId",target = "ownerId")
     TradeNote tradeNoteRequestToTradeNote(TradeNoteRequest tradeNoteRequest);
+
+    @Mapping(target = "id", ignore = true)
+    void updateTradeNoteFromRequest(TradeNoteRequest tradeNoteRequest, @MappingTarget TradeNote tradeNote);
 }

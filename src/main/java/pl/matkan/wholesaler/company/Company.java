@@ -22,10 +22,17 @@ import java.util.List;
 @Getter
 @Setter
 public class Company {
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int nip;
+
+    private int regon;
+
+
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 

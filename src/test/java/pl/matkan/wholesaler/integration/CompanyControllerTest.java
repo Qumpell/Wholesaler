@@ -22,15 +22,20 @@ import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.company.CompanyRequest;
 import pl.matkan.wholesaler.company.CompanyResponse;
+import pl.matkan.wholesaler.contactperson.ContactPerson;
+import pl.matkan.wholesaler.contactperson.ContactPersonRepository;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.role.RoleRepository;
+import pl.matkan.wholesaler.tradenote.TradeNote;
+import pl.matkan.wholesaler.tradenote.TradeNoteRepository;
 import pl.matkan.wholesaler.user.User;
 import pl.matkan.wholesaler.user.UserRepository;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +75,10 @@ class CompanyControllerTest {
     private Industry industry;
     private Role role;
     private User owner;
+    @Autowired
+    private TradeNoteRepository tradeNoteRepository;
+    @Autowired
+    private ContactPersonRepository contactPersonRepository;
 
     @BeforeEach
     void setUp() {
@@ -460,6 +469,146 @@ class CompanyControllerTest {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
+//    @Test
+//    void shouldUpdateCompanyNameInRelatedTradeNotes_WhenUpdateCompany_GivenValidPayload() {
+//
+//        //given
+//        Company company = new Company(
+//                null,
+//                "Tech Innovators Ltd.",
+//                "1234567890",
+//                "123 Tech Lane",
+//                "New York",
+//                industry.getName(),
+//                owner.getId(),
+//                false);
+//        company = companyRepository.save(company);
+//
+//        TradeNote tradeNote = new TradeNote(null, "test content 0", company.getId(), owner.getId(),false);
+//        TradeNote tradeNote1 = new TradeNote(null, "test content 1", company.getId(), owner.getId(),false);
+//        TradeNote tradeNote2 = new TradeNote(null, "test content 2", company.getId(), owner.getId(),false);
+//        tradeNoteRepository.saveAll(List.of(tradeNote, tradeNote1, tradeNote2));
+//
+//
+//        CompanyRequest companyRequest = new CompanyRequest(
+//                "New Name",
+//                "1234567890",
+//                "123 Innovation Street",
+//                "Warsaw",
+//                industry.getName(),
+//                owner.getId()
+//        );
+//
+//        //when
+//        ResponseEntity<CompanyResponse> responseEntity = restClient
+//                .put()
+//                .uri("/companies/{id}", company.getId())
+//                .contentType(APPLICATION_JSON)
+//                .body(companyRequest)
+//                .retrieve()
+//                .toEntity(CompanyResponse.class);
+//
+//        List<TradeNote> tradeNotes = tradeNoteRepository.findAll();
+//
+//        //then
+//        assertAll(
+//                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+//                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().getName())),
+//                () -> assertEquals(tradeNotes.get(0).getCompanyId(), companyRequest.name()),
+//                () -> assertEquals(tradeNotes.get(1).getCompanyId(), companyRequest.name()),
+//                () -> assertEquals(tradeNotes.get(2).getCompanyId(), companyRequest.name())
+//        );
+//    }
+
+    @Test
+    void shouldDeleteRelatedTradeNotes_WhenDeleteCompany() {
+
+        //given
+        Company company = new Company(
+                null,
+                "Tech Innovators Ltd.",
+                "1234567890",
+                "123 Tech Lane",
+                "New York",
+                industry.getName(),
+                owner.getId(),
+                false);
+        company = companyRepository.save(company);
+
+        TradeNote tradeNote = new TradeNote(null, "test content 0", company.getId(), owner.getId(),false);
+        TradeNote tradeNote1 = new TradeNote(null, "test content 1", company.getId(), owner.getId(),false);
+        TradeNote tradeNote2 = new TradeNote(null, "test content 2", company.getId(), owner.getId(),false);
+        tradeNoteRepository.saveAll(List.of(tradeNote, tradeNote1, tradeNote2));
+
+
+        //when
+        ResponseEntity<CompanyResponse> responseEntity = restClient
+                .delete()
+                .uri("/companies/{id}", company.getId())
+                .retrieve()
+                .toEntity(CompanyResponse.class);
+
+        List<TradeNote> tradeNotes = tradeNoteRepository.findAll();
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode()),
+//                () -> assertEquals(0, tradeNotes.size())
+                () -> assertEquals(0, tradeNotes.size())
+        );
+    }
+
+//    @Test
+//    void shouldUpdateCompanyNameInRelatedContactPersons_WhenUpdateCompany_GivenValidPayload() {
+//
+//        //given
+//        Company company = new Company(null,
+//                "Tech Innovators Ltd.",
+//                "1234567890",
+//                "123 Tech Lane",
+//                "New York",
+//                industry.getName(),
+//                owner.getId(),
+//                false);
+//        company = companyRepository.save(company);
+//
+//      ContactPerson contactPerson = new ContactPerson(null, "test", "test", "333333333",
+//              "test@test.com" ,"manager",company.getName(), owner.getId(), false);
+//
+//      ContactPerson contactPerson1 = new ContactPerson(null, "test1", "test1", "433333333",
+//                "test1@test.com" ,"manager",company.getName(), owner.getId(), false);
+//
+//      contactPersonRepository.saveAll(List.of(contactPerson, contactPerson1));
+//
+//        CompanyRequest companyRequest = new CompanyRequest(
+//                "New Name",
+//                "1234567890",
+//                "123 Innovation Street",
+//                "Warsaw",
+//                industry.getName(),
+//                owner.getId()
+//        );
+//
+//        //when
+//        ResponseEntity<CompanyResponse> responseEntity = restClient
+//                .put()
+//                .uri("/companies/{id}", company.getId())
+//                .contentType(APPLICATION_JSON)
+//                .body(companyRequest)
+//                .retrieve()
+//                .toEntity(CompanyResponse.class);
+//
+//        List<ContactPerson> contactPersons = contactPersonRepository.findAll();
+//
+//        //then
+//        assertAll(
+//                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+//                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().getName())),
+//                () -> assertEquals(contactPersons.get(0).getCompanyName(), companyRequest.name()),
+//                () -> assertEquals(contactPersons.get(1).getCompanyName(), companyRequest.name())
+//        );
+//    }
 
     @Test
     void shouldDeleteCompany(){

@@ -8,4 +8,5 @@ public record ContactPersonRequest(
         String position,
         Long ownerId,
         String companyName) {
+//        Long companyId) {
 }

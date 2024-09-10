@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS trade_notes (
                         company_name VARCHAR(255),
                         owner_id BIGINT,
                         is_deleted BOOLEAN DEFAULT FALSE,
-                        CONSTRAINT FOREIGN KEY (company_name) REFERENCES companies(name) ON DELETE SET NULL,
+--                         CONSTRAINT FOREIGN KEY (company_name) REFERENCES companies(name) ON DELETE SET NULL,
+                        CONSTRAINT FOREIGN KEY (company_name) REFERENCES companies(name),
                         CONSTRAINT FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
 
 );

@@ -18,12 +18,13 @@ public interface TradeNoteResponseMapper {
     @Mapping(source = "content",target = "content")
     @Mapping(source = "ownerId",target = "ownerId")
     @Mapping(source = "companyName",target = "companyName")
+    @Mapping(source = "companyId",target = "companyId")
 //    @Mapping(source = "company.id",target = "companyId")
-    TradeNoteResponse tradeNoteToTradeNoteResponse(TradeNote tradeNote);
+    TradeNoteResponse tradeNoteToTradeNoteResponse(TradeNote tradeNote, String companyName);
 
     @Mapping(source = "id",target = "id")
     @Mapping(source = "content",target = "content")
     @Mapping(source = "ownerId",target = "ownerId")
-    @Mapping(source = "companyName",target = "companyName")
+    @Mapping(source = "companyId",target = "companyId")
     TradeNote tradeNoteResponseToTradeNote(TradeNoteResponse tradeNoteResponse);
 }
