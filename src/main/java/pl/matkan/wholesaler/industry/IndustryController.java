@@ -28,7 +28,7 @@ public class IndustryController {
             @RequestParam(defaultValue = "asc") String order
     ) {
         return new ResponseEntity<>(
-                industryService.findIndustriesWithPaginationAndSort(pageNumber, pageSize, field, order),
+                industryService.findAll(pageNumber, pageSize, field, order),
                 HttpStatus.OK
         );
     }

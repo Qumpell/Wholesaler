@@ -6,7 +6,8 @@ public record UserRequest(
             String firstname,
             String surname,
             LocalDate dateOfBirth,
-            String login,
+            String username,
             String password,
-            String roleName) {
+            Long roleId
+) {
 }

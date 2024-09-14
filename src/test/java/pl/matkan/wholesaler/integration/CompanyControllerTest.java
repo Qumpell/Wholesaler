@@ -22,7 +22,6 @@ import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.company.CompanyRequest;
 import pl.matkan.wholesaler.company.CompanyResponse;
-import pl.matkan.wholesaler.contactperson.ContactPerson;
 import pl.matkan.wholesaler.contactperson.ContactPersonRepository;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
@@ -35,6 +34,7 @@ import pl.matkan.wholesaler.user.UserRepository;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +68,11 @@ class CompanyControllerTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    TradeNoteRepository tradeNoteRepository;
+
+    @Autowired
+    ContactPersonRepository contactPersonRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -75,28 +80,28 @@ class CompanyControllerTest {
     private Industry industry;
     private Role role;
     private User owner;
-    @Autowired
-    private TradeNoteRepository tradeNoteRepository;
-    @Autowired
-    private ContactPersonRepository contactPersonRepository;
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.create("http://localhost:" + randomServerPort);
 
-        role = new Role("admin");
+        role = new Role(null, "admin", new ArrayList<>());
         role = roleRepository.save(role);
 
-        industry = new Industry(1L, "IT");
+        industry = new Industry(1L, "IT", new ArrayList<>());
         industry = industryRepository.save(industry);
         owner = new User(
                 null,
                 "test",
                 "test",
+                "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
                 "pass",
-                "admin",
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                role,
                 false);
 
         owner = userRepository.save(owner);
@@ -122,12 +127,15 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
+                1234567890,
+                1234567890,
                 "Tech Innovations Ltd.",
-                "1234567890",
-                "123 Tech Lane",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         companyRepository.save(company);
 
@@ -148,16 +156,20 @@ class CompanyControllerTest {
         );
     }
 
+
     @Test
     void shouldGetOneCompany_GivenValidID() {
         //given
         Company company = new Company(null,
+                1234567890,
+                1234567890,
                 "Tech Innovations Ltd.",
-                "1234567890",
-                "123 Tech Lane",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         companyRepository.save(company);
 
@@ -172,13 +184,15 @@ class CompanyControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(company.getId(), responseEntityBody.getId()),
-                () -> assertEquals(company.getName(), responseEntityBody.getName()),
-                () -> assertEquals(company.getCity(), responseEntityBody.getCity()),
-                () -> assertEquals(company.getNip(), responseEntityBody.getNip()),
-                () -> assertEquals(company.getAddress(), responseEntityBody.getAddress()),
-                () -> assertEquals(company.getIndustryName(), responseEntityBody.getIndustryName()),
-                () -> assertEquals(company.getOwnerId(), responseEntityBody.getOwnerId()));
+                () -> assertEquals(company.getId(), responseEntityBody.id()),
+                () -> assertEquals(company.getName(), responseEntityBody.name()),
+                () -> assertEquals(company.getCity(), responseEntityBody.city()),
+                () -> assertEquals(company.getNip(), responseEntityBody.nip()),
+                () -> assertEquals(company.getAddress(), responseEntityBody.address()),
+                () -> assertEquals(company.getIndustry().getName(), responseEntityBody.industryName()),
+                () -> assertEquals(company.getIndustry().getId(), responseEntityBody.industryId()),
+                () -> assertEquals(company.getUser().getId(), responseEntityBody.ownerId()),
+                () -> assertEquals(company.getUser().getUsername(), responseEntityBody.ownerUsername()));
 
     }
 
@@ -201,21 +215,25 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "Tech Innovators Ltd.",
-                "1234567890",
-                "123 Tech Lane",
+                1234567890,
+                1234567890,
+                "Tech Innovations Ltd.",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "Tech Innovators Ltd.",
                 "1234567890",
                 "123 Innovation Street",
-                "Warsaw",
-                industry.getName(),
+                industry.getId(),
                 owner.getId()
         );
 
@@ -236,11 +254,12 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "UNIQUE NAME",
-                "0000000000",
                 "123 Innovation Street",
                 "Warsaw",
-                industry.getName(),
+                industry.getId(),
                 owner.getId()
         );
 
@@ -257,12 +276,13 @@ class CompanyControllerTest {
         // then
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()),
-                () -> assertEquals(companyRequest.name(), responseEntityBody.getName()),
-                () -> assertEquals(companyRequest.address(), responseEntityBody.getAddress()),
-                () -> assertEquals(companyRequest.city(), responseEntityBody.getCity()),
-                () -> assertEquals(companyRequest.nip(), responseEntityBody.getNip()),
-                () -> assertEquals(companyRequest.ownerId(), responseEntityBody.getOwnerId()),
-                () -> assertEquals(companyRequest.industryName(), responseEntityBody.getIndustryName())
+                () -> assertEquals(companyRequest.name(), responseEntityBody.name()),
+                () -> assertEquals(companyRequest.address(), responseEntityBody.address()),
+                () -> assertEquals(companyRequest.city(), responseEntityBody.city()),
+                () -> assertEquals(companyRequest.nip(), responseEntityBody.nip()),
+                () -> assertEquals(companyRequest.regon(), responseEntityBody.regon()),
+                () -> assertEquals(companyRequest.ownerId(), responseEntityBody.ownerId()),
+                () -> assertEquals(companyRequest.industryId(), responseEntityBody.industryId())
         );
     }
 
@@ -271,11 +291,12 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "Tech",
-                "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                industry.getName(),
+                industry.getId(),
                 100L
         );
 
@@ -292,15 +313,16 @@ class CompanyControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequest_WhenCreateCompany_GivenInvalidIndustryName() {
+    void shouldReturnBadRequest_WhenCreateCompany_GivenInvalidIndustryId() {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "Tech",
-                "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                "wrongIndustryName",
+                100L,
                 owner.getId()
         );
 
@@ -321,21 +343,25 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "Tech Innovators Ltd.",
-                "1234567890",
-                "123 Tech Lane",
+                1234567890,
+                1234567890,
+                "Tech Innovations Ltd.",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "New Name",
-                "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                industry.getName(),
+                industry.getId(),
                 owner.getId()
         );
 
@@ -352,30 +378,34 @@ class CompanyControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().getName()))
+                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().name()))
         );
     }
 
     @Test
-    void shouldReturnNotFound_WhenUpdateCompany_GivenInvalidID() {
+    void shouldReturnNotFound_WhenUpdateCompany_GivenInvalidId() {
 
         //given
         Company company = new Company(null,
-                "Tech Innovators Ltd.",
-                "1234567890",
-                "123 Tech Lane",
+                1234567890,
+                1234567890,
+                "Tech Innovations Ltd.",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "New Name",
-                "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                industry.getName(),
+                industry.getId(),
                 owner.getId()
         );
 
@@ -399,21 +429,25 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "Tech Innovators Ltd.",
-                "1234567890",
-                "123 Tech Lane",
+                1234567890,
+                1234567890,
+                "Tech Innovations Ltd.",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "New Name",
-                "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                industry.getName(),
+                industry.getId(),
                 100L
         );
 
@@ -433,25 +467,30 @@ class CompanyControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequest_WhenUpdateCompany_GivenNonexistentIndustryName() {
+    void shouldReturnBadRequest_WhenUpdateCompany_GivenNonexistentIndustryId() {
 
         //given
-        Company company = new Company(null,
-                "Tech Innovators Ltd.",
-                "1234567890",
-                "123 Tech Lane",
+        Company company = new Company(
+                null,
+                1234567890,
+                1234567890,
+                "Tech Innovations Ltd.",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
+                1234567890,
+                1234567890,
                 "New Name",
-                "1234567890",
                 "123 Innovation Street",
                 "Warsaw",
-                "WrongIndustryName",
+                100L,
                 owner.getId()
         );
 
@@ -469,76 +508,27 @@ class CompanyControllerTest {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
-
-//    @Test
-//    void shouldUpdateCompanyNameInRelatedTradeNotes_WhenUpdateCompany_GivenValidPayload() {
-//
-//        //given
-//        Company company = new Company(
-//                null,
-//                "Tech Innovators Ltd.",
-//                "1234567890",
-//                "123 Tech Lane",
-//                "New York",
-//                industry.getName(),
-//                owner.getId(),
-//                false);
-//        company = companyRepository.save(company);
-//
-//        TradeNote tradeNote = new TradeNote(null, "test content 0", company.getId(), owner.getId(),false);
-//        TradeNote tradeNote1 = new TradeNote(null, "test content 1", company.getId(), owner.getId(),false);
-//        TradeNote tradeNote2 = new TradeNote(null, "test content 2", company.getId(), owner.getId(),false);
-//        tradeNoteRepository.saveAll(List.of(tradeNote, tradeNote1, tradeNote2));
-//
-//
-//        CompanyRequest companyRequest = new CompanyRequest(
-//                "New Name",
-//                "1234567890",
-//                "123 Innovation Street",
-//                "Warsaw",
-//                industry.getName(),
-//                owner.getId()
-//        );
-//
-//        //when
-//        ResponseEntity<CompanyResponse> responseEntity = restClient
-//                .put()
-//                .uri("/companies/{id}", company.getId())
-//                .contentType(APPLICATION_JSON)
-//                .body(companyRequest)
-//                .retrieve()
-//                .toEntity(CompanyResponse.class);
-//
-//        List<TradeNote> tradeNotes = tradeNoteRepository.findAll();
-//
-//        //then
-//        assertAll(
-//                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-//                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().getName())),
-//                () -> assertEquals(tradeNotes.get(0).getCompanyId(), companyRequest.name()),
-//                () -> assertEquals(tradeNotes.get(1).getCompanyId(), companyRequest.name()),
-//                () -> assertEquals(tradeNotes.get(2).getCompanyId(), companyRequest.name())
-//        );
-//    }
-
     @Test
     void shouldDeleteRelatedTradeNotes_WhenDeleteCompany() {
 
         //given
         Company company = new Company(
                 null,
-                "Tech Innovators Ltd.",
-                "1234567890",
-                "123 Tech Lane",
+                1234567890,
+                1234567890,
+                "Tech Innovations Ltd.",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         company = companyRepository.save(company);
 
-        TradeNote tradeNote = new TradeNote(null, "test content 0", company.getId(), owner.getId(),false);
-        TradeNote tradeNote1 = new TradeNote(null, "test content 1", company.getId(), owner.getId(),false);
-        TradeNote tradeNote2 = new TradeNote(null, "test content 2", company.getId(), owner.getId(),false);
+        TradeNote tradeNote = new TradeNote(null, "test content 0", company, owner, false);
+        TradeNote tradeNote1 = new TradeNote(null, "test content 1", company, owner, false);
+        TradeNote tradeNote2 = new TradeNote(null, "test content 2", company, owner, false);
         tradeNoteRepository.saveAll(List.of(tradeNote, tradeNote1, tradeNote2));
 
 
@@ -554,72 +544,24 @@ class CompanyControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode()),
-//                () -> assertEquals(0, tradeNotes.size())
                 () -> assertEquals(0, tradeNotes.size())
         );
     }
 
-//    @Test
-//    void shouldUpdateCompanyNameInRelatedContactPersons_WhenUpdateCompany_GivenValidPayload() {
-//
-//        //given
-//        Company company = new Company(null,
-//                "Tech Innovators Ltd.",
-//                "1234567890",
-//                "123 Tech Lane",
-//                "New York",
-//                industry.getName(),
-//                owner.getId(),
-//                false);
-//        company = companyRepository.save(company);
-//
-//      ContactPerson contactPerson = new ContactPerson(null, "test", "test", "333333333",
-//              "test@test.com" ,"manager",company.getName(), owner.getId(), false);
-//
-//      ContactPerson contactPerson1 = new ContactPerson(null, "test1", "test1", "433333333",
-//                "test1@test.com" ,"manager",company.getName(), owner.getId(), false);
-//
-//      contactPersonRepository.saveAll(List.of(contactPerson, contactPerson1));
-//
-//        CompanyRequest companyRequest = new CompanyRequest(
-//                "New Name",
-//                "1234567890",
-//                "123 Innovation Street",
-//                "Warsaw",
-//                industry.getName(),
-//                owner.getId()
-//        );
-//
-//        //when
-//        ResponseEntity<CompanyResponse> responseEntity = restClient
-//                .put()
-//                .uri("/companies/{id}", company.getId())
-//                .contentType(APPLICATION_JSON)
-//                .body(companyRequest)
-//                .retrieve()
-//                .toEntity(CompanyResponse.class);
-//
-//        List<ContactPerson> contactPersons = contactPersonRepository.findAll();
-//
-//        //then
-//        assertAll(
-//                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-//                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().getName())),
-//                () -> assertEquals(contactPersons.get(0).getCompanyName(), companyRequest.name()),
-//                () -> assertEquals(contactPersons.get(1).getCompanyName(), companyRequest.name())
-//        );
-//    }
-
     @Test
-    void shouldDeleteCompany(){
+    void shouldDeleteCompany() {
         //given
-        Company company = new Company(null,
-                "Tech Innovators Ltd.",
-                "1234567890",
-                "123 Tech Lane",
+        Company company = new Company(
+                null,
+                1234567890,
+                1234567890,
+                "Tech Innovations Ltd.",
                 "New York",
-                industry.getName(),
-                owner.getId(),
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false);
         company = companyRepository.save(company);
 
@@ -639,7 +581,7 @@ class CompanyControllerTest {
     }
 
     @Test
-    void shouldReturnNotFound_WhenDeleteCompany_GivenInvalidID(){
+    void shouldReturnNotFound_WhenDeleteCompany_GivenInvalidID() {
         //given //when
         ResponseEntity<String> response = restTemplate
                 .exchange(

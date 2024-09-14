@@ -8,8 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContactPersonRepository extends JpaRepository<ContactPerson, Long> {
-
-    @Modifying
-    @Query("UPDATE ContactPerson cp SET cp.companyName = :newCompanyName WHERE cp.companyName = :oldCompanyName")
-    int updateCompanyNameInContactPersons(@Param("oldCompanyName") String oldCompanyName, @Param("newCompanyName") String newCompanyName);
 }

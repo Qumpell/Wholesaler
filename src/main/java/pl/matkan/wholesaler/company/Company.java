@@ -22,71 +22,63 @@ import java.util.List;
 @Getter
 @Setter
 public class Company {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
 
     @Id
-    private int nip;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private int regon;
+    @Column(name = "nip", unique = true, nullable = false)
+    private Integer nip;
 
+    @Column(name = "regon", unique = true, nullable = false)
+    private Integer regon;
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    private String nip;
-
     private String city;
+
     private String address;
 
-    private String industryName;
-    private Long ownerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "industry_id")
+    @JsonBackReference(value = "companiesIndustry")
+    private Industry industry;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "companiesUser")
+    private User user;
+
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "contactPersonsCompany")
+    private List<ContactPerson> contactPersonList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "tradeNotesCompany")
+    private List<TradeNote> tradeNotes =  new ArrayList<>();
 
     private boolean isDeleted = Boolean.FALSE;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "industry_id")
-//    @JsonBackReference(value = "companiesIndustry")
-//    private Industry industry;
-
-//    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "contactPersonsCompany")
-//    private List<ContactPerson> contactPersonList = new ArrayList<>();
-
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    @JsonBackReference(value = "companiesUser")
-//    private User user;
-
-//    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "tradeNotesCompany")
-//    private List<TradeNote> tradeNotes =  new ArrayList<>();
 
 
-    public Company(String name, String nip, String address, String city) {
-        this.name = name;
-        this.nip = nip;
-        this.address = address;
-        this.city = city;
+    public void addContactPerson(ContactPerson contactPerson) {
+        contactPersonList.add(contactPerson);
+        contactPerson.setCompany(this);
     }
 
-//    public void addContactPerson(ContactPerson contactPerson) {
-//        contactPersonList.add(contactPerson);
-//        contactPerson.setCompany(this);
-//    }
-//    public void removeContactPerson(ContactPerson contactPerson) {
-//        contactPersonList.remove(contactPerson);
-//        contactPerson.setCompany(null);
-//    }
-//    public void addTradeNote(TradeNote tradeNote) {
-//        tradeNotes.add(tradeNote);
-//        tradeNote.setCompany(this);
-//    }
-//    public void removeTradeNote(TradeNote tradeNote) {
-//        tradeNotes.remove(tradeNote);
-//        tradeNote.setCompany(null);
-//    }
+    public void removeContactPerson(ContactPerson contactPerson) {
+        contactPersonList.remove(contactPerson);
+        contactPerson.setCompany(null);
+    }
+
+    public void addTradeNote(TradeNote tradeNote) {
+        tradeNotes.add(tradeNote);
+        tradeNote.setCompany(this);
+    }
+
+    public void removeTradeNote(TradeNote tradeNote) {
+        tradeNotes.remove(tradeNote);
+        tradeNote.setCompany(null);
+    }
 
 }

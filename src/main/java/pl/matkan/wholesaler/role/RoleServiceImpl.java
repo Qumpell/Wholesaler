@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -43,9 +43,11 @@ public class RoleServiceImpl implements RoleService {
                 throw new DataIntegrityViolationException("Role with name:=" + one.name() + " already exists");
             }
 
-        }).orElseThrow(() -> new EntityNotFoundException("Role was not found" ,"with id: " + id));
-//
-//        try{
+        }).orElseThrow(() -> new ResourceNotFoundException("Role was not found" ,"with id: " + id));
+
+//        return findById(id);
+
+        //        try{
 //            one.setId(id);
 //            return roleRepo.save(one);
 //        }
@@ -57,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role findById(Long id) {
         return roleRepo.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Role not found ", "with given id:= " + id));
+                        .orElseThrow(() -> new ResourceNotFoundException("Role not found ", "with given id:= " + id));
 
     }
 
@@ -91,17 +93,16 @@ public class RoleServiceImpl implements RoleService {
         return roleRepo.findAll();
     }
 
-    @Override
-    public Role findByName(String name) {
-        return roleRepo.findByName(name)
-                        .orElseThrow(
-                                () -> new EntityNotFoundException("Role not found ", "with given name:= " + name)
-                        );
-    }
+//    @Override
+//    public Role findByName(String name) {
+//        return roleRepo.findByName(name)
+//                        .orElseThrow(
+//                                () -> new EntityNotFoundException("Role not found ", "with given name:= " + name)
+//                        );
+//    }
 
     @Override
-    public Page<Role> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
-        //        return roles.map(roleRequestMapper::roleToRoleDto);
+    public Page<Role> findAll(int pageNumber, int pageSize, String field, String order) {
         return roleRepo.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
         );

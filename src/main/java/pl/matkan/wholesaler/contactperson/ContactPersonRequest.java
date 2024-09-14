@@ -7,6 +7,6 @@ public record ContactPersonRequest(
         String mail,
         String position,
         Long ownerId,
-        String companyName) {
-//        Long companyId) {
+        Long companyId
+) {
 }

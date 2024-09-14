@@ -7,9 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.matkan.wholesaler.company.CompanyService;
 import pl.matkan.wholesaler.exception.BadRequestException;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.tradenote.mapper.TradeNoteRequestMapper;
-import pl.matkan.wholesaler.tradenote.mapper.TradeNoteResponseMapper;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
+import pl.matkan.wholesaler.tradenote.mapper.TradeNoteMapper;
 import pl.matkan.wholesaler.user.UserService;
 
 import java.util.List;
@@ -20,58 +19,34 @@ import java.util.stream.Collectors;
 public class TradeNoteServiceImpl implements TradeNoteService {
 
     private final TradeNoteRepository tradeNoteRepo;
-    private final TradeNoteResponseMapper tradeNoteResponseMapper;
-    private final TradeNoteRequestMapper tradeNoteRequestMapper;
+    private final TradeNoteMapper tradeNoteMapper;
     private final CompanyService companyService;
     private final UserService userService;
 
     @Override
-    public TradeNoteResponse create(TradeNoteRequest one) {
-        final String companyName;
+    public TradeNoteResponse create(TradeNoteRequest dto) {
 
-        try {
-            companyName = companyService.findById(one.companyId()).getName();
-//            companyService.existsByNameOrThrow(one.companyName());
-            userService.existsByIdOrThrow(one.ownerId());
+        TradeNote tradeNote = tradeNoteMapper.tradeNoteRequestToTradeNote(dto);
 
-        }catch (EntityNotFoundException e) {
-            throw new BadRequestException("Invalid payload", e.getMessage() + " " + e.getErrorDetails());
-        }
+        tradeNote = tradeNoteRepo.save(validateAndSetOwnerAndCompany(tradeNote, dto.ownerId(), dto.companyId()));
 
-        TradeNote tradeNoteToCreate = tradeNoteRequestMapper.tradeNoteRequestToTradeNote(one);
 
-        TradeNote tradeNote = tradeNoteRepo.save(tradeNoteToCreate);
-
-        return tradeNoteResponseMapper.tradeNoteToTradeNoteResponse(tradeNote, companyName);
+        return tradeNoteMapper.tradeNoteToTradeNoteResponse(tradeNote);
     }
 
     @Override
-    public TradeNoteResponse update(Long id, TradeNoteRequest one) {
+    public TradeNoteResponse update(Long id, TradeNoteRequest dto) {
 
-        TradeNote existingTradeNote = findById(id);
+        TradeNote existingTradeNote = getOneById(id);
 
-        try {
-            companyService.existsByNameOrThrow(one.companyName());
-//            companyService.existsById(one.companyId());
-            userService.existsByIdOrThrow(one.ownerId());
+        existingTradeNote = updateExisitingTradeNote(existingTradeNote, dto);
 
-        }catch (EntityNotFoundException e) {
-            throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
-        }
-
-        tradeNoteRequestMapper.updateTradeNoteFromRequest(one, existingTradeNote);
-
-        TradeNote tradeNote = tradeNoteRepo.save(existingTradeNote);
-
-        return tradeNoteResponseMapper.tradeNoteToTradeNoteResponse(tradeNote);
+        return tradeNoteMapper.tradeNoteToTradeNoteResponse(tradeNoteRepo.save(existingTradeNote));
     }
 
     @Override
     public TradeNoteResponse findById(Long id) {
-        return tradeNoteResponseMapper.tradeNoteToTradeNoteResponse(
-                tradeNoteRepo.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Trade note was not found", "with given id:= " + id))
-        );
+        return tradeNoteMapper.tradeNoteToTradeNoteResponse(getOneById(id));
     }
 
     @Override
@@ -88,21 +63,41 @@ public class TradeNoteServiceImpl implements TradeNoteService {
     public List<TradeNoteResponse> findAll() {
         List<TradeNote> tradeNotes = tradeNoteRepo.findAll();
         return tradeNotes.stream()
-                .map(tradeNoteResponseMapper::tradeNoteToTradeNoteResponse)
+                .map(tradeNoteMapper::tradeNoteToTradeNoteResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Page<TradeNoteResponse> findTradeNotesWithPaginationAndSort(
+    public Page<TradeNoteResponse> findAll(
             int pageNumber, int pageSize, String field, String order)
     {
         Page<TradeNote> tradeNotes = tradeNoteRepo.findAll(PageRequest.of(pageNumber, pageSize).
                 withSort(Sort.by(Sort.Direction.fromString(order), field))
         );
-        return tradeNotes.map(tradeNoteResponseMapper::tradeNoteToTradeNoteResponse);
+        return tradeNotes.map(tradeNoteMapper::tradeNoteToTradeNoteResponse);
     }
 
-    private void validateOwnerAndCompany(Long ownerId, Long companyId) {
+    private TradeNote validateAndSetOwnerAndCompany(TradeNote tradeNote, Long ownerId, Long companyId) {
 
+        try {
+            tradeNote.setUser(userService.getOneById(ownerId));
+            tradeNote.setCompany(companyService.getOneById(companyId));
+        }
+        catch (ResourceNotFoundException e){
+            throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
+        }
+
+        return tradeNote;
+    }
+
+    private TradeNote getOneById(Long id) {
+        return tradeNoteRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Trade note was not found", "with given id:= " + id));
+    }
+
+    private TradeNote updateExisitingTradeNote(TradeNote existingTradeNote, TradeNoteRequest dto) {
+        existingTradeNote.setContent(dto.content());
+
+        return validateAndSetOwnerAndCompany(existingTradeNote, dto.ownerId(), dto.companyId());
     }
 }

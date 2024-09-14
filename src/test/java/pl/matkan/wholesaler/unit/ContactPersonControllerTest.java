@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.contactperson.*;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -49,8 +49,10 @@ class ContactPersonControllerTest {
                 "111-222-333",
                 "test@gmail.com",
                 "support",
+                "TestCompany",
                 1L,
-                "Test");
+                "testuser",
+                1L);
         contactPersonRequest = new ContactPersonRequest(
                 "Marek",
                 "Kowalski",
@@ -58,7 +60,7 @@ class ContactPersonControllerTest {
                 "test@gmail.com",
                 "support",
                 1L,
-                "Test"
+                1L
         );
 
         contactPersonPage = new PageImpl<>(List.of(contactPersonResponse));
@@ -67,7 +69,7 @@ class ContactPersonControllerTest {
     @Test
     void shouldFindAllContactPeople() throws Exception {
         //when //then
-        when(service.findContactPeopleWithPaginationAndSort(0, 10, "id", "asc"))
+        when(service.findAll(0, 10, "id", "asc"))
                 .thenReturn(contactPersonPage);
 
         mockMvc.perform(get("/contact-persons"))
@@ -93,7 +95,7 @@ class ContactPersonControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new EntityNotFoundException("Contact person not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("Contact person not found", "with id:=" + id));
 
         mockMvc.perform(get("/contact-persons/{id}", id))
                 .andExpect(status().isNotFound());

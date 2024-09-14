@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.contactperson.ContactPerson;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.tradenote.TradeNote;
@@ -29,73 +30,62 @@ public class User {
 
     private String firstname;
     private String surname;
+    private String email;
+
     private LocalDate dateOfBirth;
+
     @Column(unique = true, nullable = false)
-    private String login;
+    private String username;
+
     private String password;
-    private String roleName;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "companiesUser")
+    private List<Company> companies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "contactPersonsUser")
+    private List<ContactPerson> contactPersonList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "tradeNotesUser")
+    private List<TradeNote> tradeNotes = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    @JsonBackReference(value = "usersRole")
+    private Role role;
+
     private boolean isDeleted = Boolean.FALSE;
 
-    public User(String firstname, String surname, LocalDate dateOfBirth, String login, String password, String roleName) {
-        this.firstname = firstname;
-        this.surname = surname;
-        this.dateOfBirth = dateOfBirth;
-        this.login = login;
-        this.password = password;
-        this.roleName = roleName;
+    public void addCompany(Company company) {
+        companies.add(company);
+        company.setUser(this);
     }
 
+    public void removeCompany(Company company) {
+        companies.remove(company);
+        company.setUser(null);
+    }
 
-    //    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference(value = "companiesUser")
-//    private List<Company> companies = new ArrayList<>();
+    public void addContactPerson(ContactPerson contactPerson) {
+        contactPersonList.add(contactPerson);
+        contactPerson.setUser(this);
+    }
 
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference(value = "contactPersonsUser")
-//    private List<ContactPerson> contactPersonList =  new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference(value = "tradeNotesUser")
-//    private List<TradeNote> tradeNotes =  new ArrayList<>();
-//
-//    @ManyToOne
-//    @JoinColumn(name = "role_id")
-//    @JsonBackReference(value = "usersRole")
-//    private Role role;
+    public void removeContactPerson(ContactPerson contactPerson) {
+        contactPersonList.remove(contactPerson);
+        contactPerson.setUser(null);
+    }
 
+    public void addTradeNotes(TradeNote tradeNote) {
+        tradeNotes.add(tradeNote);
+        tradeNote.setUser(this);
+    }
 
-//    public User(String firstname, String surname, LocalDate dateOfBirth, String login, String password, Role role) {
-//        this.firstname = firstname;
-//        this.surname = surname;
-//        this.dateOfBirth = dateOfBirth;
-//        this.login = login;
-//        this.password = password;
-//        this.role = role;
-//    }
-
-//    public void addCompany(Company company) {
-//        companies.add(company);
-//        company.setUser(this);
-//    }
-//    public void removeCompany(Company company) {
-//        companies.remove(company);
-//        company.setUser(null);
-//    }
-//    public void addContactPerson(ContactPerson contactPerson) {
-//        contactPersonList.add(contactPerson);
-//        contactPerson.setUser(this);
-//    }
-//    public void removeContactPerson(ContactPerson contactPerson) {
-//        contactPersonList.remove(contactPerson);
-//        contactPerson.setUser(null);
-//    }
-//    public void addTradeNotes(TradeNote tradeNote) {
-//        tradeNotes.add(tradeNote);
-//        tradeNote.setUser(this);
-//    }
-//    public void removeTradeNote(TradeNote tradeNote) {
-//        tradeNotes.remove(tradeNote);
-//        tradeNote.setUser(null);
-//    }
+    public void removeTradeNote(TradeNote tradeNote) {
+        tradeNotes.remove(tradeNote);
+        tradeNote.setUser(null);
+    }
 }
 

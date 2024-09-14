@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.user.*;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -51,7 +51,8 @@ public class UserControllerTest {
                 "Test",
                 LocalDate.of(2000, Month.AUGUST,22),
                 "test",
-                "ADMIN");
+                "ADMIN",
+                1L);
 
         userRequest = new UserRequest(
                 "Test",
@@ -59,7 +60,7 @@ public class UserControllerTest {
                 LocalDate.of(2000, Month.AUGUST,22),
                 "test",
                 "test",
-                "ADMIN"
+                1L
         );
 
         companiesPage = new PageImpl<>(List.of(userResponse));
@@ -68,7 +69,7 @@ public class UserControllerTest {
     @Test
     void shouldFindAllUsers() throws Exception {
         //when //then
-        when(service.findUsersWithPaginationAndSort(0, 10, "id", "asc"))
+        when(service.findAll(0, 10, "id", "asc"))
                 .thenReturn(companiesPage);
 
         mockMvc.perform(get("/users"))
@@ -93,7 +94,7 @@ public class UserControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new EntityNotFoundException("User not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("User not found", "with id:=" + id));
 
         mockMvc.perform(get("/users/{id}", id))
                 .andExpect(status().isNotFound());

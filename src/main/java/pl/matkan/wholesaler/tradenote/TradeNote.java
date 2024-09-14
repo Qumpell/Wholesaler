@@ -23,9 +23,15 @@ public class TradeNote {
 
     private String content;
 
-    private Long companyId;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    @JsonBackReference(value = "tradeNotesCompany")
+    private Company company;
 
-    private Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "tradeNotesUser")
+    private User user;
 
     private boolean isDeleted = Boolean.FALSE;
 

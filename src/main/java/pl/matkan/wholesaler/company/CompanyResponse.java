@@ -1,18 +1,18 @@
 package pl.matkan.wholesaler.company;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 
 
-@Getter
-@AllArgsConstructor
-public class CompanyResponse {
-    private Long id;
-    private String name;
-    private String nip;
-    private String address;
-    private String city;
-    private String industryName;
-    private Long ownerId;
+public record CompanyResponse(
+        Long id,
+        Integer nip,
+        Integer regon,
+        String name,
+        String address,
+        String city,
+        String industryName,
+        Long industryId,
+        String ownerUsername,
+        Long ownerId
+) {
 }

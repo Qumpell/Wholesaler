@@ -16,6 +16,5 @@ public interface TradeNoteService {
     void deleteById(Long id);
 
     List<TradeNoteResponse> findAll();
-
-    Page<TradeNoteResponse> findTradeNotesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<TradeNoteResponse> findAll(int pageNumber, int pageSize, String field, String order);
 }

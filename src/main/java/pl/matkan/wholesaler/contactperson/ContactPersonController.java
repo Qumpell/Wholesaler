@@ -28,7 +28,7 @@ public class ContactPersonController {
             @RequestParam(defaultValue = "asc") String order
     ) {
         return new ResponseEntity<>(
-                contactPersonService.findContactPeopleWithPaginationAndSort(
+                contactPersonService.findAll(
                         pageNumber,
                         pageSize,
                         field,

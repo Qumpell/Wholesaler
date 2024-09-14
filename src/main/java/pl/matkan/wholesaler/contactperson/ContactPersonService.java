@@ -17,5 +17,5 @@ public interface ContactPersonService {
 
     List<ContactPersonResponse> findAll();
 
-    Page<ContactPersonResponse> findContactPeopleWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<ContactPersonResponse> findAll(int pageNumber, int pageSize, String field, String order);
 }

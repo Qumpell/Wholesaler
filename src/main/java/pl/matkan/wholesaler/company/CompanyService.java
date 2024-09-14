@@ -21,5 +21,7 @@ public interface CompanyService {
 
     Page<CompanyResponse> findCompaniesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
 
-    void existsByNameOrThrow(String name);
+//    void existsByNameOrThrow(String name);
+
+    Company getOneById(Long id);
 }

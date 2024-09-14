@@ -27,7 +27,7 @@ public class TradeNoteController {
             @RequestParam(defaultValue = "asc") String order
     ) {
         return new ResponseEntity<>(
-                tradeNoteService.findTradeNotesWithPaginationAndSort(pageNumber, pageSize, field, order),
+                tradeNoteService.findAll(pageNumber, pageSize, field, order),
                 HttpStatus.OK);
     }
     @PostMapping()

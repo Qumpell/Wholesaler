@@ -27,7 +27,7 @@ public class RoleController {
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order
     ){
-        return new ResponseEntity<>(roleService.findRolesWithPaginationAndSort(pageNumber, pageSize, field, order), HttpStatus.OK);
+        return new ResponseEntity<>(roleService.findAll(pageNumber, pageSize, field, order), HttpStatus.OK);
     }
 
     @PostMapping()

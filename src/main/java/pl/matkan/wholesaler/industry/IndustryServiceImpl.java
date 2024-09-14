@@ -6,13 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
-import pl.matkan.wholesaler.company.Company;
-import pl.matkan.wholesaler.company.CompanyRepository;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service("industryService")
 @RequiredArgsConstructor
@@ -20,13 +16,12 @@ public class IndustryServiceImpl implements IndustryService {
 
 
     private final IndustryRepository industryRepo;
-//    private final CompanyRepository companyRepository;
-
 
     @Override
     public Industry create(IndustryRequest one) {
         try {
-            Industry industry = new Industry(one.name());
+            Industry industry = new Industry();
+            industry.setName(one.name());
 
             return industryRepo.save(industry);
 
@@ -49,7 +44,7 @@ public class IndustryServiceImpl implements IndustryService {
                throw new DataIntegrityViolationException("Industry with name:=" + one.name() + " already exists");
            }
 
-       }).orElseThrow(() -> new EntityNotFoundException("Industry was not found", "with id:=" + id));
+       }).orElseThrow(() -> new ResourceNotFoundException("Industry was not found", "with id:=" + id));
 
 
 //        try {
@@ -67,7 +62,7 @@ public class IndustryServiceImpl implements IndustryService {
     @Override
     public Industry findById(Long id) {
         return industryRepo.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Industry was not found", "with id:=" + id)
+                () -> new ResourceNotFoundException("Industry was not found", "with id:=" + id)
         );
     }
 
@@ -99,7 +94,6 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public List<Industry> findAll() {
-        //        System.out.println("company service:=" + industryRepo.findAll());
         return industryRepo.findAll();
     }
 
@@ -112,16 +106,10 @@ public class IndustryServiceImpl implements IndustryService {
 //    }
 
     @Override
-    public Page<Industry> findIndustriesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order) {
+    public Page<Industry> findAll(int pageNumber, int pageSize, String field, String order) {
         return industryRepo.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
         );
     }
 
-    @Override
-    public void existsByNameOrThrow(String name) {
-        if(industryRepo.findByName(name).isEmpty()){
-            throw new EntityNotFoundException("Industry was not found ", "with given name:= " + name);
-        }
-    }
 }

@@ -25,7 +25,7 @@ public class UserController {
             @RequestParam(defaultValue = "id") String field,
             @RequestParam(defaultValue = "asc") String order
     ) {
-        return new ResponseEntity<>(userSrv.findUsersWithPaginationAndSort(pageNumber, pageSize, field, order),
+        return new ResponseEntity<>(userSrv.findAll(pageNumber, pageSize, field, order),
                 HttpStatus.OK);
     }
     @PostMapping()

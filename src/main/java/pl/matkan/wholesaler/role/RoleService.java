@@ -17,7 +17,8 @@ public interface RoleService {
 
     List<Role> findAll();
 
-    Page<Role> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+//    Page<Role> findRolesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<Role> findAll(int pageNumber, int pageSize, String field, String order);
 
-    Role findByName(String name);
+//    Role findByName(String name);
 }

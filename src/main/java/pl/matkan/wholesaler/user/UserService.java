@@ -11,13 +11,13 @@ public interface UserService {
 
     UserResponse findById(Long id);
 
+    User getOneById(Long id);
+
     boolean existsById(Long id);
 
     void deleteById(Long id);
 
     List<UserResponse> findAll();
 
-    Page<UserResponse> findUsersWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
-
-    void existsByIdOrThrow(Long id);
+    Page<UserResponse> findAll(int pageNumber, int pageSize, String field, String order);
 }

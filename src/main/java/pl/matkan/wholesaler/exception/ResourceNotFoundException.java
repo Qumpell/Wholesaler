@@ -11,11 +11,11 @@ import java.time.Instant;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 @Getter
-public class EntityNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends RuntimeException {
     private final Instant errorTime;
     private final String errorDetails;
 
-    public EntityNotFoundException(String message, String errorDetails) {
+    public ResourceNotFoundException(String message, String errorDetails) {
         super(message);
         this.errorTime = Instant.now();
         this.errorDetails = errorDetails;

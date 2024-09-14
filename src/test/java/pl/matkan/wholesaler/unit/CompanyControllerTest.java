@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.company.*;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -41,21 +41,26 @@ class CompanyControllerTest {
 
     @BeforeEach
     void setUp() {
-         companyResponse = new CompanyResponse(1L,
-                "Test",
-                "123456789",
+         companyResponse = new CompanyResponse(
+                 1L,
+               1234567890,
+                123456789,
+                 "Test",
                 "14-048",
                 "Poznan",
                 "IT",
-                1L);
+                1L,
+                 "johnTest",
+                 1L);
 
          companyRequest = new CompanyRequest(
-                 companyResponse.getName(),
-                 companyResponse.getNip(),
-                 companyResponse.getAddress(),
-                 companyResponse.getCity(),
-                 companyResponse.getIndustryName(),
-                 companyResponse.getOwnerId()
+                 companyResponse.nip(),
+                 companyResponse.regon(),
+                 companyResponse.name(),
+                 companyResponse.address(),
+                 companyResponse.city(),
+                 companyResponse.industryId(),
+                 companyResponse.ownerId()
          );
        companiesPage = new PageImpl<>(List.of(companyResponse));
     }
@@ -80,12 +85,13 @@ class CompanyControllerTest {
         mockMvc.perform(get("/companies/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Test")))
-                .andExpect(jsonPath("$.nip", is("123456789")))
-                .andExpect(jsonPath("$.address", is("14-048")))
-                .andExpect(jsonPath("$.city", is("Poznan")))
-                .andExpect(jsonPath("$.industryName", is("IT")))
-                .andExpect(jsonPath("$.ownerId", is(1)));
+                .andExpect(jsonPath("$.name", is(companyRequest.name())))
+                .andExpect(jsonPath("$.nip", is(companyRequest.nip())))
+                .andExpect(jsonPath("$.address", is(companyRequest.address())))
+                .andExpect(jsonPath("$.city", is(companyRequest.city())))
+                .andExpect(jsonPath("$.regon", is(companyRequest.regon())))
+                .andExpect(jsonPath("$.industryName", is(companyResponse.industryName())))
+                .andExpect(jsonPath("$.ownerId", is(companyResponse.ownerId().intValue())));
     }
     @Test
     void shouldReturnNotFound_WhenGetOneCompany_GivenInvalidID() throws Exception{
@@ -93,7 +99,7 @@ class CompanyControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new EntityNotFoundException("Company not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("Company not found", "with id:=" + id));
 
         mockMvc.perform(get("/companies/{id}", id))
                 .andExpect(status().isNotFound());
@@ -109,10 +115,11 @@ class CompanyControllerTest {
                         .content(objectMapper.writeValueAsString(companyRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Test")))
-                .andExpect(jsonPath("$.nip", is("123456789")))
-                .andExpect(jsonPath("$.address", is("14-048")))
-                .andExpect(jsonPath("$.city", is("Poznan")));
+                .andExpect(jsonPath("$.name", is(companyRequest.name())))
+                .andExpect(jsonPath("$.nip", is(companyRequest.nip())))
+                .andExpect(jsonPath("$.address", is(companyRequest.address())))
+                .andExpect(jsonPath("$.city", is(companyRequest.city())))
+                .andExpect(jsonPath("$.regon", is(companyRequest.regon())));
     }
 
     @Test
@@ -129,10 +136,11 @@ class CompanyControllerTest {
                 .content(objectMapper.writeValueAsString(companyRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Test")))
-                .andExpect(jsonPath("$.nip", is("123456789")))
-                .andExpect(jsonPath("$.address", is("14-048")))
-                .andExpect(jsonPath("$.city", is("Poznan")));
+                .andExpect(jsonPath("$.name", is(companyRequest.name())))
+                .andExpect(jsonPath("$.nip", is(companyRequest.nip())))
+                .andExpect(jsonPath("$.address", is(companyRequest.address())))
+                .andExpect(jsonPath("$.city", is(companyRequest.city())))
+                .andExpect(jsonPath("$.regon", is(companyRequest.regon())));
     }
     @Test
     void shouldReturnNotFound_WhenUpdateCompany_GivenInvalidID() throws Exception{

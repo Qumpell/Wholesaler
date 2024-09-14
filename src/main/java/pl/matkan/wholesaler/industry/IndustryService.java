@@ -3,7 +3,6 @@ package pl.matkan.wholesaler.industry;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IndustryService {
 
@@ -19,7 +18,6 @@ public interface IndustryService {
 
     List<Industry> findAll();
 
-    Page<Industry> findIndustriesWithPaginationAndSort(int pageNumber, int pageSize, String field, String order);
+    Page<Industry> findAll(int pageNumber, int pageSize, String field, String order);
 
-    void existsByNameOrThrow(String name);
 }

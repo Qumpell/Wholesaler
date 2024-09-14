@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.role.RoleController;
 import pl.matkan.wholesaler.role.RoleRequest;
@@ -50,7 +50,8 @@ class RoleControllerTest {
 
         role = new Role(
                 1L,
-                "ADMIN"
+                "ADMIN",
+                new ArrayList<>()
         );
 
         roleRequest = new RoleRequest(
@@ -63,7 +64,7 @@ class RoleControllerTest {
     @Test
     void shouldFindAllRoles() throws Exception {
         //when //then
-        when(service.findRolesWithPaginationAndSort(0, 10, "id", "asc"))
+        when(service.findAll(0, 10, "id", "asc"))
                 .thenReturn(rolePage);
 
         mockMvc.perform(get("/roles"))
@@ -83,17 +84,19 @@ class RoleControllerTest {
                 .andExpect(jsonPath("$.name", is("ADMIN")));
 
     }
+
     @Test
-    void shouldReturnNotFound_WhenGetOneRole_GivenInvalidID() throws Exception{
+    void shouldReturnNotFound_WhenGetOneRole_GivenInvalidID() throws Exception {
         //given
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new EntityNotFoundException("Role not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("Role not found", "with id:=" + id));
 
         mockMvc.perform(get("/roles/{id}", id))
                 .andExpect(status().isNotFound());
     }
+
     @Test
     void shouldCreateRole() throws Exception {
         //when //then
@@ -122,7 +125,7 @@ class RoleControllerTest {
     }
 
     @Test
-    void shouldUpdateRole() throws Exception{
+    void shouldUpdateRole() throws Exception {
         //given
         Long id = 1L;
 
@@ -137,8 +140,9 @@ class RoleControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("ADMIN")));
     }
+
     @Test
-    void shouldReturnNotFound_WhenUpdateRole_GivenInvalidID() throws Exception{
+    void shouldReturnNotFound_WhenUpdateRole_GivenInvalidID() throws Exception {
         //given
         Long id = 1L;
 
@@ -152,7 +156,7 @@ class RoleControllerTest {
     }
 
     @Test
-    void shouldDeleteRole() throws Exception{
+    void shouldDeleteRole() throws Exception {
         //given
         Long id = 1L;
 
@@ -163,8 +167,9 @@ class RoleControllerTest {
         mockMvc.perform(delete("/roles/{id}", id))
                 .andExpect(status().isNoContent());
     }
+
     @Test
-    void shouldReturnNotFound_WhenDeleteRole_GivenInvalidID() throws Exception{
+    void shouldReturnNotFound_WhenDeleteRole_GivenInvalidID() throws Exception {
         //given
         Long id = 1L;
 
