@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.matkan.wholesaler.exception.EntityNotFoundException;
+import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryController;
 import pl.matkan.wholesaler.industry.IndustryRequest;
@@ -51,7 +51,8 @@ class IndustryControllerTest {
 
         industry = new Industry(
                 1L,
-                "IT"
+                "IT",
+                new ArrayList<>()
         );
         industryRequest = new IndustryRequest(
                 "IT"
@@ -63,7 +64,7 @@ class IndustryControllerTest {
     @Test
     void shouldFindAllIndustries() throws Exception {
         //when //then
-        when(service.findIndustriesWithPaginationAndSort(0, 10, "id", "asc"))
+        when(service.findAll(0, 10, "id", "asc"))
                 .thenReturn(industriesPage);
 
         mockMvc.perform(get("/industries"))
@@ -89,7 +90,7 @@ class IndustryControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new EntityNotFoundException("Industry not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("Industry not found", "with id:=" + id));
 
         mockMvc.perform(get("/industries/{id}", id))
                 .andExpect(status().isNotFound());

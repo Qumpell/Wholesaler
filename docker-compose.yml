@@ -10,9 +10,9 @@ services:
       MYSQL_DATABASE: wholesaler
       MYSQL_USER: test
       MYSQL_PASSWORD: test
-    volumes:
-        - ./src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-        - ./src/main/resources/db/data.sql:/docker-entrypoint-initdb.d/02-data.sql
+#    volumes:
+#        - ./src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+#        - ./src/main/resources/db/data.sql:/docker-entrypoint-initdb.d/02-data.sql
     ports:
       - "3306:3306"
   wholesaler-api:
