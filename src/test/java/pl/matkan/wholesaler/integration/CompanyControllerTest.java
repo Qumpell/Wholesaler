@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -42,21 +43,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+@ActiveProfiles("test")
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CompanyControllerTest {
 
     @Container
     @ServiceConnection
-    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:9.0.1")
-            .withInitScript("init.sql");
-
+    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:9.0.1");
 
     @LocalServerPort
     int randomServerPort;
 
     @Autowired
     TestRestTemplate restTemplate;
+
     RestClient restClient;
 
     @Autowired
@@ -341,6 +342,7 @@ class CompanyControllerTest {
     @Test
     void shouldUpdateCompany() {
 
+
         //given
         Company company = new Company(null,
                 1234567890,
@@ -378,7 +380,7 @@ class CompanyControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntity.getBody().name()))
+                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(Objects.requireNonNull(responseEntity.getBody()).name()))
         );
     }
 

@@ -1,5 +1,5 @@
-app:
-  db-init: false
+#app:
+#  db-init: false
 logging:
   level:
     org:
@@ -9,32 +9,28 @@ spring:
   sql:
     init:
       mode: always
-
-  #  profiles:
-#    active: dev
   datasource:
 #    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
     url: jdbc:mysql://localhost:3306/wholesaler
     username: test
     password: test
-
   jpa:
     hibernate:
-      ddl-auto: create-drop
-#      ddl-auto: update
-#      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         show:
           sql: true
+    show-sql: true
+    defer-datasource-initialization: true
 #    generate-ddl: true
 
----
-spring:
-  config:
-    activate:
-      on-profile: test
+#---
+#spring:
+#  config:
+#    activate:
+#      on-profile: test
 ##rsa.private-key=classpath:certs/private.pem
 ##rsa.public-key=classpath:certs/public.pem
 #

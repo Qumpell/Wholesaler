@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: test
 #    volumes:
 #        - ./src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-#        - ./src/main/resources/db/data.sql:/docker-entrypoint-initdb.d/02-data.sql
+#        - ./src/main/resources/db/import.sql:/docker-entrypoint-initdb.d/import.sql
     ports:
       - "3306:3306"
   wholesaler-api:

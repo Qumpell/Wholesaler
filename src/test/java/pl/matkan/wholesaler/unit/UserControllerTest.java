@@ -49,6 +49,7 @@ public class UserControllerTest {
                 1L,
                 "Test",
                 "Test",
+                "test@test.com",
                 LocalDate.of(2000, Month.AUGUST,22),
                 "test",
                 "ADMIN",
@@ -57,6 +58,7 @@ public class UserControllerTest {
         userRequest = new UserRequest(
                 "Test",
                 "Test",
+                "test@test.com",
                 LocalDate.of(2000, Month.AUGUST,22),
                 "test",
                 "test",
