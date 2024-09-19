@@ -19,22 +19,19 @@ import java.util.stream.Collectors;
 public class ContactPersonServiceImpl implements ContactPersonService {
 
     private final ContactPersonRepository contactPersonRepository;
-//    private final ContactPersonResponseMapper responseMapper;
-//    private final ContactPersonRequestMapper requestMapper;
     private final UserService userService;
     private final CompanyService companyService;
-    private final ContactPersonMapper contactPersonMapper;
 
 
 
     @Override
     public ContactPersonResponse create(ContactPersonRequest dto) {
 
-        ContactPerson contactPerson = contactPersonMapper.contactPersonRequestToContactPerson(dto);
+        ContactPerson contactPerson = ContactPersonMapper.INSTANCE.contactPersonRequestToContactPerson(dto);
 
         contactPerson = contactPersonRepository.save(validateAndSetOwnerAndCompany(contactPerson, dto.ownerId(), dto.companyId()));
 
-        return contactPersonMapper.contactPersonToContactPersonResponse(contactPerson);
+        return ContactPersonMapper.INSTANCE.contactPersonToContactPersonResponse(contactPerson);
     }
 
     @Override
@@ -43,33 +40,11 @@ public class ContactPersonServiceImpl implements ContactPersonService {
         ContactPerson existingContactPerson = getOneById(id);
         existingContactPerson = updateExistingContactPerson(existingContactPerson, contactPersonRequest);
 
-        return contactPersonMapper.contactPersonToContactPersonResponse(contactPersonRepository.save(existingContactPerson));
-
-//        contactPersonUpdated.setId(id);
-//        contactPersonUpdated.setCompany(companyService.getOneCompanyById(one.getCompanyId()));
-//        contactPersonUpdated.setUser(userService.getOneUserById(one.getOwnerId()));
-
-//      return contactPersonRepository.findById(id).map(cp ->{
-//
-//          try{
-//              userService.existsByIdOrThrow(one.ownerId());
-//              companyService.existsByNameOrThrow(one.companyName());
-//
-//          }catch (EntityNotFoundException e){
-//              throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
-//          }
-//
-//          ContactPerson contactPersonUpdated = requestMapper.contactPersonRequestToContactPerson(one);
-//          ContactPerson updatedContactPerson = contactPersonRepository.save(contactPersonUpdated);
-//
-//          return responseMapper.contactPersonToContactPersonResponse(updatedContactPerson);
-//
-//      }).orElseThrow(() -> new EntityNotFoundException("Contact person was not found" ,"with id: " + id));
+        return ContactPersonMapper.INSTANCE.contactPersonToContactPersonResponse(contactPersonRepository.save(existingContactPerson));
     }
     @Override
     public ContactPersonResponse findById(Long id) {
-//        return responseMapper.contactPersonToContactPersonResponse(getOneById(id));
-        return contactPersonMapper.contactPersonToContactPersonResponse(getOneById(id));
+        return ContactPersonMapper.INSTANCE.contactPersonToContactPersonResponse(getOneById(id));
     }
 
     @Override
@@ -86,8 +61,7 @@ public class ContactPersonServiceImpl implements ContactPersonService {
     public List<ContactPersonResponse> findAll() {
         List<ContactPerson> contactPeople = contactPersonRepository.findAll();
         return contactPeople.stream()
-//                .map(responseMapper::contactPersonToContactPersonResponse)
-                .map(contactPersonMapper::contactPersonToContactPersonResponse)
+                .map(ContactPersonMapper.INSTANCE::contactPersonToContactPersonResponse)
                 .collect(Collectors.toList());
     }
 
@@ -96,8 +70,7 @@ public class ContactPersonServiceImpl implements ContactPersonService {
         Page<ContactPerson> contactPeople = contactPersonRepository.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.Direction.fromString(order), field)
         );
-//        return contactPeople.map(responseMapper::contactPersonToContactPersonResponse);
-        return contactPeople.map(contactPersonMapper::contactPersonToContactPersonResponse);
+        return contactPeople.map(ContactPersonMapper.INSTANCE::contactPersonToContactPersonResponse);
     }
 
     private ContactPerson updateExistingContactPerson(ContactPerson contactPerson, ContactPersonRequest dto){

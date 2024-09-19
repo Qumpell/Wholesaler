@@ -5,8 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
@@ -49,18 +49,6 @@ public class IndustryServiceImpl implements IndustryService {
            }
 
        }).orElseThrow(() -> new ResourceNotFoundException("Industry was not found", "with id:=" + id));
-
-
-//        try {
-//            Industry industry = findById(id);
-//            industry.setName(one.getName());
-//            industry.setCompanies(one.getCompanies());
-//            one.setId(id);
-//            return industryRepo.save(industry);
-//        }catch (DataIntegrityViolationException exception) {
-//            throw new DataIntegrityViolationException("Industry with name:=" + one.name() + " already exists");
-//        }
-
     }
 
     @Override
@@ -76,14 +64,8 @@ public class IndustryServiceImpl implements IndustryService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-//        Industry industryOptional = industryRepo.findById(id)
-//                .orElseThrow(() -> new EntityNotFoundException("Industry was not found", "with id:=" + id));
-//       industryRepo.deleteById(id);
-
-
-//        Optional<Industry> industryOptional = industryRepo.findById(id);
-//        if (industryOptional.isPresent()){
             Industry industry = findById(id);
             List<Company> companies = industry.getCompanies();
             if(companies != null){

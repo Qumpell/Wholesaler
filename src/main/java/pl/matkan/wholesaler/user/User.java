@@ -26,7 +26,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id
@@ -56,18 +55,9 @@ public class User {
     @JsonManagedReference(value = "tradeNotesUser")
     private List<TradeNote> tradeNotes = new ArrayList<>();
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "role_id")
-//    @JsonBackReference(value = "usersRole")
-//    private Role role;
-
     @ManyToMany(fetch = FetchType.EAGER
             , cascade = {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
-//            ,cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}
-//    )
-//    @ManyToMany(fetch = FetchType.EAGER, cascade =
-//            CascadeType.ALL)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -105,19 +95,6 @@ public class User {
     public void removeTradeNote(TradeNote tradeNote) {
         tradeNotes.remove(tradeNote);
         tradeNote.setUser(null);
-    }
-    public void addRole(Role role) {
-        if (!roles.contains(role)) {
-            roles.add(role);
-            role.getUsers().add(this);
-        }
-    }
-
-    public void removeRole(Role role) {
-        if(roles.contains(role)) {
-            roles.remove(role);
-            role.getUsers().remove(this);
-        }
     }
 }
 

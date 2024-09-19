@@ -1,7 +1,6 @@
 package pl.matkan.wholesaler.company;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,35 +22,16 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final UserService userService;
     private final IndustryService industryService;
-//    private final CompanyResponseMapper companyResponseMapper;
-//    private final CompanyRequestMapper companyRequestMapper;
-//    private final TradeNoteRepository tradeNoteRepository;
-//    private final ContactPersonRepository contactPersonRepository;
-    private final CompanyMapper companyMapper;
 
     @Override
     public CompanyResponse create(CompanyRequest companyRequest) {
 
-        Company company = companyMapper.companyRequestToCompany(companyRequest);
+        Company company = CompanyMapper.INSTANCE.companyRequestToCompany(companyRequest);
+        company = validateUniqueFields(
+                validateAndSetOwnerAndIndustry(company, companyRequest.ownerId(), companyRequest.industryId())
+        );
 
-//        validateOwnerAndIndustry(companyIn);
-//
-//        Company companyToCreate = companyRequestMapper.companyRequestToCompany(companyIn);
-        company = validateAndSetOwnerAndIndustry(company, companyRequest.ownerId(), companyRequest.industryId());
-
-//        try {
-//
-////            Company companyCreated = companyRepository.save(companyToCreate);
-////            return companyResponseMapper.companyToCompanyResponse(companyCreated);
-//            companyRepository.save(company);
-//
-//        } catch (DataIntegrityViolationException e) {
-//            throw new DataIntegrityViolationException("Company with name:=" + company.getName() + " already exists");
-//        }
-
-        company = validateUniqueFields(company);
-
-        return companyMapper.companyToCompanyResponse(company);
+        return CompanyMapper.INSTANCE.companyToCompanyResponse(company);
     }
 
     @Override
@@ -61,23 +41,9 @@ public class CompanyServiceImpl implements CompanyService {
 
         companyFetched = updateExistingCompany(companyFetched, companyRequest);
 
-
-//        validateOwnerAndIndustry(companyRequest);
-
-//        companyRequestMapper.updateCompanyFromRequest(companyRequest, company);
-
-//        try {
-////            company = companyRepository.save(company);
-//            companyRepository.save(companyFetched);
-//
-//        } catch (DataIntegrityViolationException ex) {
-//            throw new DataIntegrityViolationException("Company with name:=" + companyFetched.getName() + " already exists");
-//        }
-
-//        return companyResponseMapper.companyToCompanyResponse(company);
         companyFetched = validateUniqueFields(companyFetched);
 
-        return companyMapper.companyToCompanyResponse(companyFetched);
+        return CompanyMapper.INSTANCE.companyToCompanyResponse(companyFetched);
 
     }
 
@@ -88,15 +54,12 @@ public class CompanyServiceImpl implements CompanyService {
         existingCompany.setCity(companyRequest.city());
         existingCompany.setAddress(companyRequest.address());
 
-        existingCompany = validateAndSetOwnerAndIndustry(existingCompany, companyRequest.ownerId(), companyRequest.industryId());
-
-        return existingCompany;
+        return validateAndSetOwnerAndIndustry(existingCompany, companyRequest.ownerId(), companyRequest.industryId());
     }
 
     @Override
     public CompanyResponse findById(Long id) {
-//        return companyResponseMapper.companyToCompanyResponse(getCompanyById(id));
-        return companyMapper.companyToCompanyResponse(getOneById(id));
+        return CompanyMapper.INSTANCE.companyToCompanyResponse(getOneById(id));
     }
 
     @Override
@@ -113,8 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
     public List<CompanyResponse> findAll() {
         List<Company> companies = companyRepository.findAll();
         return companies.stream()
-//                .map(companyResponseMapper::companyToCompanyResponse)
-                .map(companyMapper::companyToCompanyResponse)
+                .map(CompanyMapper.INSTANCE::companyToCompanyResponse)
                 .collect(Collectors.toList());
     }
 
@@ -122,8 +84,7 @@ public class CompanyServiceImpl implements CompanyService {
         Page<Company> companies = companyRepository.findAll(
                 PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field))
         );
-//        return companies.map(companyResponseMapper::companyToCompanyResponse);
-        return companies.map(companyMapper::companyToCompanyResponse);
+        return companies.map(CompanyMapper.INSTANCE::companyToCompanyResponse);
     }
 
 

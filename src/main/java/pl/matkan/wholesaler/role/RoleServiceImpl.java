@@ -12,7 +12,6 @@ import pl.matkan.wholesaler.user.User;
 import pl.matkan.wholesaler.user.UserRepository;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 @Service("roleService")

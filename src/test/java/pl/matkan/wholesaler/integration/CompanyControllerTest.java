@@ -147,7 +147,7 @@ class CompanyControllerTest {
                 });
 
         RestPageImpl<CompanyResponse> body = responseEntity.getBody();
-        System.out.println();
+
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
@@ -580,7 +580,24 @@ class CompanyControllerTest {
                 () -> assertFalse(companyRepository.existsById(id))
         );
     }
+    @Test
+    void shouldNotDeleteRelatedIndustry_WhenDeleteCompany() {
+        //given
+        //when
+        ResponseEntity<String> response = restClient
+                .delete()
+                .uri("/users/{id}", owner.getId())
+                .retrieve()
+                .toEntity(String.class);
 
+        //then
+        final long id = owner.getId();
+        assertAll(
+                () -> assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()),
+                () -> assertFalse(userRepository.existsById(id)),
+                () -> assertTrue(industryRepository.existsById((industry.getId())))
+        );
+    }
     @Test
     void shouldReturnNotFound_WhenDeleteCompany_GivenInvalidID() {
         //given //when

@@ -85,5 +85,4 @@ public class Company {
         tradeNotes.remove(tradeNote);
         tradeNote.setCompany(null);
     }
-
 }
