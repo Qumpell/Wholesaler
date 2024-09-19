@@ -11,12 +11,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.user.*;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,6 +48,8 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
+        Role role = new Role(1L, "ADMIN", new HashSet<>());
+
         userResponse = new UserResponse(
                 1L,
                 "Test",
@@ -52,8 +57,7 @@ public class UserControllerTest {
                 "test@test.com",
                 LocalDate.of(2000, Month.AUGUST,22),
                 "test",
-                "ADMIN",
-                1L);
+                Set.of(role));
 
         userRequest = new UserRequest(
                 "Test",
@@ -62,7 +66,7 @@ public class UserControllerTest {
                 LocalDate.of(2000, Month.AUGUST,22),
                 "test",
                 "test",
-                1L
+                Set.of(role.getId())
         );
 
         companiesPage = new PageImpl<>(List.of(userResponse));

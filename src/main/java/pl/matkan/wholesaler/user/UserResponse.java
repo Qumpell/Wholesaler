@@ -1,6 +1,9 @@
 package pl.matkan.wholesaler.user;
 
+import pl.matkan.wholesaler.role.Role;
+
 import java.time.LocalDate;
+import java.util.Set;
 
 
 public record UserResponse(
@@ -10,7 +13,6 @@ public record UserResponse(
         String email,
         LocalDate dateOfBirth,
         String username,
-        String roleName,
-        Long roleId
+        Set<Role> roles
 ) {
 }

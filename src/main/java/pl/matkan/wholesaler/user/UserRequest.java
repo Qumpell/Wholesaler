@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.user;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record UserRequest(
             String firstname,
@@ -9,6 +10,6 @@ public record UserRequest(
             LocalDate dateOfBirth,
             String username,
             String password,
-            Long roleId
+            Set<Long> roleIds
 ) {
 }

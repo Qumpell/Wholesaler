@@ -17,12 +17,13 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(source = "roleId", target = "role.id")
+//    @Mapping(source = "roleId", target = "role.id")
+    @Mapping(source = "roleIds", target = "roles", ignore = true)
     User userRequestToUser(UserRequest userRequest);
 
 
-    @Mapping(source = "role.id", target = "roleId")
-    @Mapping(source = "role.name", target = "roleName")
+//    @Mapping(source = "role.id", target = "roleId")
+//    @Mapping(source = "role.name", target = "roleName")
     UserResponse userToUserResponse(User user);
 
 

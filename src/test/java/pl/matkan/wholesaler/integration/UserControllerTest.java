@@ -3,6 +3,8 @@ package pl.matkan.wholesaler.integration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -24,6 +27,7 @@ import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.contactperson.ContactPersonRepository;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.role.RoleRepository;
+import pl.matkan.wholesaler.role.RoleServiceImpl;
 import pl.matkan.wholesaler.tradenote.TradeNote;
 import pl.matkan.wholesaler.tradenote.TradeNoteRepository;
 import pl.matkan.wholesaler.user.User;
@@ -33,9 +37,7 @@ import pl.matkan.wholesaler.user.UserResponse;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,6 +49,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
 
+    private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
     @Container
     @ServiceConnection
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:9.0.1");
@@ -76,12 +79,15 @@ public class UserControllerTest {
 
     private Role role;
     private User owner;
+    @Autowired
+    private RoleServiceImpl roleService;
 
     @BeforeEach
+    @Transactional
     void setUp() {
         restClient = RestClient.create("http://localhost:" + randomServerPort);
-        
-        role = new Role(null, "admin", new ArrayList<>());
+
+        role = new Role(null, "admin", new HashSet<>());
         role = roleRepository.save(role);
         
         owner = new User(
@@ -95,14 +101,27 @@ public class UserControllerTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                role,
+                Set.of(role),
                 false);
 
+        role.getUsers().add(owner);
         owner = userRepository.save(owner);
+        roleRepository.save(role);
     }
 
     @AfterEach
     void cleanUp() {
+       List<User> users = userRepository.findAll();
+       for(User user: users){
+           user.setRoles(new HashSet<>());
+       }
+        userRepository.saveAll(users);
+       List<Role> roles = roleRepository.findAll();
+       for(Role role : roles){
+           role.setUsers(new HashSet<>());
+       }
+       roleRepository.saveAll(roles);
+
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -153,8 +172,7 @@ public class UserControllerTest {
                 () -> assertEquals(owner.getUsername(), responseEntityBody.username()),
                 () -> assertEquals(owner.getFirstname(), responseEntityBody.firstname()),
                 () -> assertEquals(owner.getSurname(), responseEntityBody.surname()),
-                () -> assertEquals(owner.getRole().getId(), responseEntityBody.roleId()),
-                () -> assertEquals(owner.getRole().getName(), responseEntityBody.roleName()),
+                () -> assertEquals(owner.getRoles().isEmpty(), responseEntityBody.roles().isEmpty()),
                 () -> assertEquals(owner.getDateOfBirth(), responseEntityBody.dateOfBirth())
               );
 
@@ -185,7 +203,7 @@ public class UserControllerTest {
                LocalDate.of(1999, Month.AUGUST, 22),
                "testLogin",
                "pass",
-               role.getId()
+               Set.of(role.getId())
         );
 
         //when
@@ -211,7 +229,7 @@ public class UserControllerTest {
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
                 "pas23s",
-                role.getId()
+                Set.of(role.getId())
         );
 
         //when
@@ -232,7 +250,7 @@ public class UserControllerTest {
                 () -> assertEquals(userRequest.username(), responseEntityBody.username()),
                 () -> assertEquals(userRequest.email(), responseEntityBody.email()),
                 () -> assertEquals(userRequest.dateOfBirth(), responseEntityBody.dateOfBirth()),
-                () -> assertEquals(userRequest.roleId(), responseEntityBody.roleId())
+                () -> assertEquals(userRequest.roleIds().size(), responseEntityBody.roles().size())
         );
     }
 
@@ -247,7 +265,7 @@ public class UserControllerTest {
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
                 "pas23s",
-                100L
+                Set.of(100L)
         );
 
         //when
@@ -264,7 +282,8 @@ public class UserControllerTest {
 
     @Test
     void shouldUpdateUser() {
-
+        Role role1 = new Role(null, "tester", new HashSet<>());
+        roleRepository.save(role1);
         //given
         UserRequest userRequest = new UserRequest(
                 "test1",
@@ -273,7 +292,7 @@ public class UserControllerTest {
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
                 "pas23s",
-                role.getId()
+                Set.of(role1.getId())
         );
 
         //when
@@ -285,12 +304,14 @@ public class UserControllerTest {
                 .retrieve()
                 .toEntity(UserResponse.class);
 
-
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
                 () -> assertEquals(userRequest.firstname(), Objects.requireNonNull(Objects.requireNonNull(responseEntity.getBody()).firstname())),
-                () -> assertNotEquals(userRequest.firstname(), owner.getFirstname())
+                () -> assertNotEquals(userRequest.firstname(), owner.getFirstname()),
+                () -> assertTrue(Objects.requireNonNull(responseEntity.getBody()).roles().stream().anyMatch(r -> r.getId().equals(role1.getId()))),
+                () -> assertFalse(Objects.requireNonNull(responseEntity.getBody()).roles().stream().anyMatch(r -> r.getId().equals(role.getId())))
+
         );
     }
 
@@ -305,7 +326,7 @@ public class UserControllerTest {
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
                 "pas23s",
-                role.getId()
+                Set.of(role.getId())
         );
 
         //when
@@ -334,7 +355,7 @@ public class UserControllerTest {
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
                 "pas23s",
-                100L
+                Set.of(100L)
         );
 
         //when
@@ -358,8 +379,8 @@ public class UserControllerTest {
         //given
         Company company = new Company(
                 null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -407,6 +428,24 @@ public class UserControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()),
                 () -> assertFalse(userRepository.existsById(id))
+        );
+    }
+    @Test
+    void shouldNotDeleteRelatedRoles_WhenDeleteUser() {
+        //given
+        //when
+        ResponseEntity<String> response = restClient
+                .delete()
+                .uri("/users/{id}", owner.getId())
+                .retrieve()
+                .toEntity(String.class);
+
+        //then
+        final long id = owner.getId();
+        assertAll(
+                () -> assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()),
+                () -> assertFalse(userRepository.existsById(id)),
+                () -> assertTrue(roleRepository.existsById(role.getId()))
         );
     }
 

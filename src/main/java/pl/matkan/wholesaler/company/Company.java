@@ -16,24 +16,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "companies")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "companies",
+uniqueConstraints = {
+        @UniqueConstraint(name = "companies.unique_nip_idx", columnNames = "nip"),
+        @UniqueConstraint(name = "companies.unique_regon_idx", columnNames = "regon"),
+        @UniqueConstraint(name = "companies.unique_name_idx", columnNames = "name")
+})
 public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nip", unique = true, nullable = false)
-    private Integer nip;
+    @Column(name = "nip", nullable = false)
+    private String  nip;
 
-    @Column(name = "regon", unique = true, nullable = false)
-    private Integer regon;
+    @Column(name = "regon")
+    private String regon;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     private String city;

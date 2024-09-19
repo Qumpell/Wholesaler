@@ -1,8 +1,8 @@
 package pl.matkan.wholesaler.company;
 
 public record CompanyRequest(
-        Integer nip,
-        Integer regon,
+        String nip,
+        String regon,
         String name,
         String address,
         String city,

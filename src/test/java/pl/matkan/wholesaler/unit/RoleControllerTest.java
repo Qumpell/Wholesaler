@@ -19,6 +19,7 @@ import pl.matkan.wholesaler.role.RoleRequest;
 import pl.matkan.wholesaler.role.RoleService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -51,7 +52,7 @@ class RoleControllerTest {
         role = new Role(
                 1L,
                 "ADMIN",
-                new ArrayList<>()
+                new HashSet<>()
         );
 
         roleRequest = new RoleRequest(

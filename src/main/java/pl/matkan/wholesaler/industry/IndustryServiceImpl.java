@@ -5,7 +5,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
+import pl.matkan.wholesaler.company.Company;
+import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
 import java.util.List;
@@ -16,6 +19,7 @@ public class IndustryServiceImpl implements IndustryService {
 
 
     private final IndustryRepository industryRepo;
+    private final CompanyRepository companyRepository;
 
     @Override
     public Industry create(IndustryRequest one) {
@@ -75,35 +79,26 @@ public class IndustryServiceImpl implements IndustryService {
     public void deleteById(Long id) {
 //        Industry industryOptional = industryRepo.findById(id)
 //                .orElseThrow(() -> new EntityNotFoundException("Industry was not found", "with id:=" + id));
-       industryRepo.deleteById(id);;
+//       industryRepo.deleteById(id);
 
 
 //        Optional<Industry> industryOptional = industryRepo.findById(id);
 //        if (industryOptional.isPresent()){
-//            Industry industry = industryOptional.get();
-//            List<Company> companies = industry.getCompanies();
-//            if(companies != null){
-//                for(Company company : companies){
-//                    company.setIndustry(null);
-//                }
-//                companyRepository.saveAll(companies);
-//            }
-//        }
-//        industryRepo.deleteById(id);
+            Industry industry = findById(id);
+            List<Company> companies = industry.getCompanies();
+            if(companies != null){
+                for(Company company : companies){
+                    company.setIndustry(null);
+                }
+                companyRepository.saveAll(companies);
+            }
+        industryRepo.deleteById(id);
     }
 
     @Override
     public List<Industry> findAll() {
         return industryRepo.findAll();
     }
-
-//    public Industry getOneIndustryByName(String industryName) {
-//        return industryRepo.findByName(industryName)
-//                .orElseThrow(
-//                        () -> new EntityNotFoundException("Industry was not found ",
-//                                "with given name:= " + industryName)
-//                );
-//    }
 
     @Override
     public Page<Industry> findAll(int pageNumber, int pageSize, String field, String order) {

@@ -6,8 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
+import pl.matkan.wholesaler.user.User;
+import pl.matkan.wholesaler.user.UserRepository;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 @Service("roleService")
@@ -15,15 +20,14 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepo;
-//    private final UserRepository userRepository;
-    private final RoleRequestMapper roleRequestMapper;
+    private final UserRepository userRepository;
 
     @Override
     public Role create(RoleRequest one) {
-        Role role = roleRequestMapper.roleRequestToRole(one);
+        Role role = RoleRequestMapper.INSTANCE.roleRequestToRole(one);
         try {
             return roleRepo.save(role);
-        }catch (DataIntegrityViolationException ex) {
+        } catch (DataIntegrityViolationException ex) {
             throw new DataIntegrityViolationException("Role with name:=" + one.name() + " already exists");
         }
 
@@ -31,35 +35,26 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role update(Long id, RoleRequest one) {
-        return roleRepo.findById(id).map(role ->{
+        return roleRepo.findById(id).map(role -> {
 
-            role = roleRequestMapper.roleRequestToRole(one);
+            role = RoleRequestMapper.INSTANCE.roleRequestToRole(one);
 
-            try{
+            try {
 
                 return roleRepo.save(role);
 
-            }catch (DataIntegrityViolationException ex) {
+            } catch (DataIntegrityViolationException ex) {
                 throw new DataIntegrityViolationException("Role with name:=" + one.name() + " already exists");
             }
 
-        }).orElseThrow(() -> new ResourceNotFoundException("Role was not found" ,"with id: " + id));
+        }).orElseThrow(() -> new ResourceNotFoundException("Role was not found", "with id: " + id));
 
-//        return findById(id);
-
-        //        try{
-//            one.setId(id);
-//            return roleRepo.save(one);
-//        }
-//        catch (DataIntegrityViolationException ex) {
-//            throw new DataIntegrityViolationException("Role with name:=" + one.getName() + " already exists");
-//        }
     }
 
     @Override
     public Role findById(Long id) {
         return roleRepo.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Role not found ", "with given id:= " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found ", "with given id:= " + id));
 
     }
 
@@ -69,37 +64,24 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-//        Optional<Role> roleOptional = roleRepo.findById(id);
-//        if (roleOptional.isPresent()){
-//            Role role = roleOptional.get();
-//            List<User> users = role.getUsers();
-//            if(users != null){
-//                for(User user : users){
-//                    user.setRole(null);
-//                }
-//                userRepository.saveAll(users);
-//            }
-//        }
-        roleRepo.deleteById(id);
+        Role role = findById(id);
+        Collection<User> users = role.getUsers();
+
+        for(User user : users) {
+            user.getRoles().remove(role);
+        }
+
+        userRepository.saveAll(users);
+        roleRepo.delete(role);
     }
 
     @Override
     public List<Role> findAll() {
-//       List<Role> roles = roleRepo.findAll();
-//       return roles.stream()
-//               .map(roleRequestMapper::roleToRoleDto)
-//               .collect(Collectors.toList());
         return roleRepo.findAll();
     }
 
-//    @Override
-//    public Role findByName(String name) {
-//        return roleRepo.findByName(name)
-//                        .orElseThrow(
-//                                () -> new EntityNotFoundException("Role not found ", "with given name:= " + name)
-//                        );
-//    }
 
     @Override
     public Page<Role> findAll(int pageNumber, int pageSize, String field, String order) {

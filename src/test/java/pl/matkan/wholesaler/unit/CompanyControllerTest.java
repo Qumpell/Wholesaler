@@ -43,8 +43,8 @@ class CompanyControllerTest {
     void setUp() {
          companyResponse = new CompanyResponse(
                  1L,
-               1234567890,
-                123456789,
+                 "1234567890",
+                 "1234567890",
                  "Test",
                 "14-048",
                 "Poznan",

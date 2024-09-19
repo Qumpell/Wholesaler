@@ -35,9 +35,7 @@ import pl.matkan.wholesaler.user.UserRepository;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,7 +84,7 @@ class CompanyControllerTest {
     void setUp() {
         restClient = RestClient.create("http://localhost:" + randomServerPort);
 
-        role = new Role(null, "admin", new ArrayList<>());
+        role = new Role(null, "admin", new HashSet<>());
         role = roleRepository.save(role);
 
         industry = new Industry(1L, "IT", new ArrayList<>());
@@ -102,7 +100,7 @@ class CompanyControllerTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                role,
+                Set.of(role),
                 false);
 
         owner = userRepository.save(owner);
@@ -128,8 +126,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -162,8 +160,8 @@ class CompanyControllerTest {
     void shouldGetOneCompany_GivenValidID() {
         //given
         Company company = new Company(null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -212,12 +210,12 @@ class CompanyControllerTest {
     }
 
     @Test
-    void shouldReturnConflict_WhenCreateCompany_WithAlreadyExistingName() {
+    void shouldReturnConflict_WhenCreateCompany_WithAlreadyExistingNip() {
 
         //given
         Company company = new Company(null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -229,8 +227,8 @@ class CompanyControllerTest {
         companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovators Ltd.",
                 "1234567890",
                 "123 Innovation Street",
@@ -255,8 +253,8 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "UNIQUE NAME",
                 "123 Innovation Street",
                 "Warsaw",
@@ -292,8 +290,8 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech",
                 "123 Innovation Street",
                 "Warsaw",
@@ -318,8 +316,8 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech",
                 "123 Innovation Street",
                 "Warsaw",
@@ -345,8 +343,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -358,8 +356,8 @@ class CompanyControllerTest {
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -389,8 +387,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -402,8 +400,8 @@ class CompanyControllerTest {
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -431,8 +429,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -444,8 +442,8 @@ class CompanyControllerTest {
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -474,8 +472,8 @@ class CompanyControllerTest {
         //given
         Company company = new Company(
                 null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -487,8 +485,8 @@ class CompanyControllerTest {
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -510,14 +508,15 @@ class CompanyControllerTest {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
     @Test
     void shouldDeleteRelatedTradeNotes_WhenDeleteCompany() {
 
         //given
         Company company = new Company(
                 null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -555,8 +554,8 @@ class CompanyControllerTest {
         //given
         Company company = new Company(
                 null,
-                1234567890,
-                1234567890,
+                "1234567890",
+                "1234567890",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",

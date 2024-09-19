@@ -6,13 +6,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.matkan.wholesaler.exception.BadRequestException;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
+import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.role.RoleRepository;
 import pl.matkan.wholesaler.role.RoleService;
 import pl.matkan.wholesaler.user.mapper.UserMapper;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("userService")
@@ -20,44 +25,31 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
-    //    private final UserResponseMapper userResponseMapper;
-//    private final UserRequestMapper userRequestMapper;
     private final RoleService roleService;
     private final RoleRepository roleRepository;
-    private final UserMapper userMapper;
 
 
     @Override
+    @Transactional
     public UserResponse create(UserRequest dto) {
 
-        User user = userMapper.userRequestToUser(dto);
-
-        user = validateAndSetRole(user, dto.roleId());
+        User user = UserMapper.INSTANCE.userRequestToUser(dto);
 
         try {
-            user = userRepo.save(user);
+            user = userRepo.save(validateAndSetRoles(user, dto.roleIds()));
+            attachUsersToRoles(user);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("User with username:=" + dto.username() + " already exists");
         }
-        return userMapper.userToUserResponse(user);
+        return UserMapper.INSTANCE.userToUserResponse(user);
 
-//        try {
-//            roleService.findByName(one.roleName());
-//        } catch (ResourceNotFoundException e) {
-//            throw new BadRequestException(e.getMessage(), e.getMessage());
-//        }
-//
-//        User userToCreate = userRequestMapper.userRequestToUser(one);
-//
-//        try {
-//            User userSaved = userRepo.save(userToCreate);
-//
-//            return userResponseMapper.userToUserResponse(userSaved);
-//
-//        } catch (DataIntegrityViolationException e) {
-//            throw new DataIntegrityViolationException("User with login:=" + one.login() + " already exists");
-//        }
+    }
 
+    private void attachUsersToRoles(User user) {
+        for(Role role : user.getRoles()){
+            role.getUsers().add(user);
+        }
+        roleRepository.saveAll(user.getRoles());
     }
 
     @Override
@@ -68,55 +60,18 @@ public class UserServiceImpl implements UserService {
 
         try {
             existingUser = userRepo.save(existingUser);
+            attachUsersToRoles(existingUser);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("User with username:=" + userRequest.username() + " already exists");
         }
-        return userMapper.userToUserResponse(existingUser);
+        return UserMapper.INSTANCE.userToUserResponse(existingUser);
 
-
-//        if(!existsById(id)){
-//            throw new ResourceNotFoundException("User was not found" ,"with id: " + id);
-//        }
-//
-//        try{
-//            roleService.findByName(one.roleName());
-//        }catch (ResourceNotFoundException e){
-//            throw new BadRequestException(e.getMessage(), e.getErrorDetails());
-//        }
-//
-//        try {
-//
-//            User userToUpdate = userRequestMapper.userRequestToUser(one);
-//            userToUpdate.setId(id);
-//            User userSaved = userRepo.save(userToUpdate);
-//
-//            return userResponseMapper.userToUserResponse(userSaved);
-//
-//        }catch (DataIntegrityViolationException e){
-//            throw new DataIntegrityViolationException("User with login:=" + one.login() + " already exists");
-//        }
-
-//        User userDataToUpdate = userResponseMapper.userDtoToUser(one);
-//        User clientFetched = getOneUserById(id);
-
-//        clientFetched.setFirstname(userDataToUpdate.getFirstname());
-//        clientFetched.setSurname(userDataToUpdate.getSurname());
-//        clientFetched.setLogin(userDataToUpdate.getLogin());
-//        clientFetched.setDateOfBirth(userDataToUpdate.getDateOfBirth());
-//        clientFetched.setRole(roleService.findByName(one.getRoleName()));
-
-//        return userRepo.save(clientFetched);
     }
 
 
     @Override
     public UserResponse findById(Long id) {
-//        return userResponseMapper.userToUserResponse(
-//                userRepo
-//                        .findById(id)
-//                        .orElseThrow((() -> new EntityNotFoundException("User not found", "with given id:= " + id)))
-//        );
-        return userMapper.userToUserResponse(getOneById(id));
+        return UserMapper.INSTANCE.userToUserResponse(getOneById(id));
     }
 
     @Override
@@ -125,22 +80,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        userRepo.deleteById(id);
+        User user = getOneById(id);
+        Collection<Role> roles = user.getRoles();
+        for(Role role : roles){
+            role.getUsers().remove(user);
+        }
+        roleRepository.saveAll(roles);
+        userRepo.delete(user);
     }
 
     @Override
     public List<UserResponse> findAll() {
         List<User> users = userRepo.findAll();
         return users.stream()
-                .map(userMapper::userToUserResponse)
+                .map(UserMapper.INSTANCE::userToUserResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Page<UserResponse> findAll(int offset, int pageSize, String field, String order) {
         Page<User> users = userRepo.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(Sort.Direction.fromString(order), field)));
-        return users.map(userMapper::userToUserResponse);
+        return users.map(UserMapper.INSTANCE::userToUserResponse);
     }
 
     public User getOneById(Long id) {
@@ -149,12 +111,20 @@ public class UserServiceImpl implements UserService {
                 );
     }
 
-    private User validateAndSetRole(User user, Long roleId) {
-        try {
-            user.setRole(roleService.findById(roleId));
-        } catch (ResourceNotFoundException e) {
-            throw new BadRequestException("Invalid payload", e.getMessage() + " " + e.getErrorDetails());
+    private User validateAndSetRoles(User user, Set<Long> roleIds) {
+
+        Set<Role> roles = new HashSet<>();
+        for (Long roleId : roleIds) {
+            try {
+                Role role = roleService.findById(roleId);
+                roles.add(role);
+            }catch (ResourceNotFoundException e){
+                throw new BadRequestException("Invalid payload", e.getMessage() + " " + e.getErrorDetails());
+            }
         }
+
+        user.setRoles(roles);
+
         return user;
     }
 
@@ -166,7 +136,7 @@ public class UserServiceImpl implements UserService {
         existingUser.setPassword(userRequest.password());
         existingUser.setDateOfBirth(userRequest.dateOfBirth());
 
-        return validateAndSetRole(existingUser, userRequest.roleId());
+        return validateAndSetRoles(existingUser, userRequest.roleIds());
     }
 
 }
