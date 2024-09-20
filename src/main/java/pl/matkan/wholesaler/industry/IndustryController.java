@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.industry;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -33,12 +34,12 @@ public class IndustryController {
         );
     }
     @PostMapping()
-    public ResponseEntity<Industry> createOne(@RequestBody IndustryRequest one) {
+    public ResponseEntity<Industry> createOne(@RequestBody @Valid IndustryRequest one) {
         return new ResponseEntity<>( industryService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Industry> updateOne(@PathVariable("id") Long id, @RequestBody IndustryRequest one) {
+    public ResponseEntity<Industry> updateOne(@PathVariable("id") Long id, @RequestBody @Valid IndustryRequest one) {
 
         if (industryService.existsById(id))
         {

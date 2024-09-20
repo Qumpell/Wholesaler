@@ -97,7 +97,7 @@ public class RoleControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(1, body.getTotalElements())
+                () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
         );
     }
 
@@ -116,8 +116,8 @@ public class RoleControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(role.getId(), responseEntityBody.getId()),
-                () -> assertEquals(role.getName(), responseEntityBody.getName())
+                () -> assertEquals(role.getId(), Objects.requireNonNull(responseEntityBody).getId()),
+                () -> assertEquals(role.getName(), Objects.requireNonNull(responseEntityBody).getName())
         );
 
     }
@@ -177,7 +177,7 @@ public class RoleControllerTest {
         // then
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()),
-                () -> assertEquals(roleRequest.name(), responseEntityBody.getName())
+                () -> assertEquals(roleRequest.name(), Objects.requireNonNull(responseEntityBody).getName())
               
         );
     }
@@ -241,7 +241,7 @@ public class RoleControllerTest {
                 "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
-                "pass",
+                "pass1234",
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),

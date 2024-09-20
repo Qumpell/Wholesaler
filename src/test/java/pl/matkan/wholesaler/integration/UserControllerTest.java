@@ -3,8 +3,6 @@ package pl.matkan.wholesaler.integration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -27,7 +25,6 @@ import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.contactperson.ContactPersonRepository;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.role.RoleRepository;
-import pl.matkan.wholesaler.role.RoleServiceImpl;
 import pl.matkan.wholesaler.tradenote.TradeNote;
 import pl.matkan.wholesaler.tradenote.TradeNoteRepository;
 import pl.matkan.wholesaler.user.User;
@@ -49,7 +46,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
 
-    private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
     @Container
     @ServiceConnection
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:9.0.1");
@@ -79,8 +75,6 @@ public class UserControllerTest {
 
     private Role role;
     private User owner;
-    @Autowired
-    private RoleServiceImpl roleService;
 
     @BeforeEach
     @Transactional
@@ -97,7 +91,7 @@ public class UserControllerTest {
                 "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
-                "pass",
+                "pass1234",
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -149,7 +143,7 @@ public class UserControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(1, body.getTotalElements())
+                () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
         );
     }
 
@@ -168,12 +162,12 @@ public class UserControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(owner.getId(), responseEntityBody.id()),
-                () -> assertEquals(owner.getUsername(), responseEntityBody.username()),
-                () -> assertEquals(owner.getFirstname(), responseEntityBody.firstname()),
-                () -> assertEquals(owner.getSurname(), responseEntityBody.surname()),
-                () -> assertEquals(owner.getRoles().isEmpty(), responseEntityBody.roles().isEmpty()),
-                () -> assertEquals(owner.getDateOfBirth(), responseEntityBody.dateOfBirth())
+                () -> assertEquals(owner.getId(), Objects.requireNonNull(responseEntityBody).id()),
+                () -> assertEquals(owner.getUsername(), Objects.requireNonNull(responseEntityBody).username()),
+                () -> assertEquals(owner.getFirstname(), Objects.requireNonNull(responseEntityBody).firstname()),
+                () -> assertEquals(owner.getSurname(), Objects.requireNonNull(responseEntityBody).surname()),
+                () -> assertEquals(owner.getRoles().isEmpty(), Objects.requireNonNull(responseEntityBody).roles().isEmpty()),
+                () -> assertEquals(owner.getDateOfBirth(), Objects.requireNonNull(responseEntityBody).dateOfBirth())
               );
 
     }
@@ -202,7 +196,7 @@ public class UserControllerTest {
                "test@test.com",
                LocalDate.of(1999, Month.AUGUST, 22),
                "testLogin",
-               "pass",
+               "pass1234",
                Set.of(role.getId())
         );
 
@@ -228,7 +222,7 @@ public class UserControllerTest {
                 "test1@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
-                "pas23s",
+                "pass1234",
                 Set.of(role.getId())
         );
 
@@ -245,12 +239,12 @@ public class UserControllerTest {
         // then
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()),
-                () -> assertEquals(userRequest.firstname(), responseEntityBody.firstname()),
-                () -> assertEquals(userRequest.surname(), responseEntityBody.surname()),
-                () -> assertEquals(userRequest.username(), responseEntityBody.username()),
-                () -> assertEquals(userRequest.email(), responseEntityBody.email()),
-                () -> assertEquals(userRequest.dateOfBirth(), responseEntityBody.dateOfBirth()),
-                () -> assertEquals(userRequest.roleIds().size(), responseEntityBody.roles().size())
+                () -> assertEquals(userRequest.firstname(), Objects.requireNonNull(responseEntityBody).firstname()),
+                () -> assertEquals(userRequest.surname(), Objects.requireNonNull(responseEntityBody).surname()),
+                () -> assertEquals(userRequest.username(), Objects.requireNonNull(responseEntityBody).username()),
+                () -> assertEquals(userRequest.email(), Objects.requireNonNull(responseEntityBody).email()),
+                () -> assertEquals(userRequest.dateOfBirth(), Objects.requireNonNull(responseEntityBody).dateOfBirth()),
+                () -> assertEquals(userRequest.roleIds().size(), Objects.requireNonNull(responseEntityBody).roles().size())
         );
     }
 
@@ -264,7 +258,7 @@ public class UserControllerTest {
                 "test1@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
-                "pas23s",
+                "pass1234",
                 Set.of(100L)
         );
 
@@ -291,7 +285,7 @@ public class UserControllerTest {
                 "test1@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
-                "pas23s",
+                "pass1234",
                 Set.of(role1.getId())
         );
 
@@ -325,7 +319,7 @@ public class UserControllerTest {
                 "test1@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
-                "pas23s",
+                "pass1234",
                 Set.of(role.getId())
         );
 
@@ -354,7 +348,7 @@ public class UserControllerTest {
                 "test1@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin1",
-                "pas23s",
+                "pass1234",
                 Set.of(100L)
         );
 
@@ -379,8 +373,8 @@ public class UserControllerTest {
         //given
         Company company = new Company(
                 null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",

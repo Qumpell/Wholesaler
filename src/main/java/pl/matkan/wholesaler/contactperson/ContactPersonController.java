@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.contactperson;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -37,14 +38,14 @@ public class ContactPersonController {
     }
 
     @PostMapping()
-    public ResponseEntity<ContactPersonResponse> createOne(@RequestBody ContactPersonRequest one) {
+    public ResponseEntity<ContactPersonResponse> createOne(@RequestBody @Valid ContactPersonRequest one) {
 
         return new ResponseEntity<>(contactPersonService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus( HttpStatus.OK)
-    public ResponseEntity<ContactPersonResponse> updateOne(@PathVariable("id") Long id, @RequestBody ContactPersonRequest one) {
+    public ResponseEntity<ContactPersonResponse> updateOne(@PathVariable("id") Long id, @RequestBody @Valid ContactPersonRequest one) {
         if (!contactPersonService.existsById(id)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

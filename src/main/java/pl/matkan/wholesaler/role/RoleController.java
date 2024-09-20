@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.role;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,14 +32,14 @@ public class RoleController {
     }
 
     @PostMapping()
-    public ResponseEntity<Role> createOne(@RequestBody RoleRequest one) {
+    public ResponseEntity<Role> createOne(@RequestBody @Valid RoleRequest one) {
         Role roleOne = roleService.create(one);
         return new ResponseEntity<>(roleOne, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Role> updateOne(@PathVariable("id") Long id, @RequestBody RoleRequest one) {
+    public ResponseEntity<Role> updateOne(@PathVariable("id") Long id, @RequestBody @Valid RoleRequest one) {
         if (!roleService.existsById(id)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

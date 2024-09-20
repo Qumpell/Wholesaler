@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.tradenote;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,12 +32,12 @@ public class TradeNoteController {
                 HttpStatus.OK);
     }
     @PostMapping()
-    public ResponseEntity<TradeNoteResponse> createOne(@RequestBody TradeNoteRequest one) {
+    public ResponseEntity<TradeNoteResponse> createOne(@RequestBody @Valid TradeNoteRequest one) {
         return new ResponseEntity<>(tradeNoteService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TradeNoteResponse> updateOne(@PathVariable("id") Long id, @RequestBody TradeNoteRequest one) {
+    public ResponseEntity<TradeNoteResponse> updateOne(@PathVariable("id") Long id, @RequestBody @Valid TradeNoteRequest one) {
         if (tradeNoteService.existsById(id)) {
             return new ResponseEntity<>(tradeNoteService.update(id, one), HttpStatus.OK);
         }

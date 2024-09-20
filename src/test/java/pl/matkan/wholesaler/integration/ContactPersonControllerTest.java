@@ -87,7 +87,7 @@ public class ContactPersonControllerTest {
                 "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
-                "pass",
+                "pass1234",
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -98,8 +98,8 @@ public class ContactPersonControllerTest {
 
         company = new Company(
                 null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -115,7 +115,7 @@ public class ContactPersonControllerTest {
                 null,
                 "test",
                 "test",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 company,
@@ -211,7 +211,7 @@ public class ContactPersonControllerTest {
         ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
                 "test",
                 "test",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 company.getId(),
@@ -250,11 +250,38 @@ public class ContactPersonControllerTest {
         ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
                 "test",
                 "test",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 company.getId(),
                 100L
+        );
+
+
+        //when
+        ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
+                postForEntity(
+                        "/contact-persons",
+                        contactPersonRequest,
+                        ContactPersonResponse.class
+                );
+
+        // then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldReturnBadRequest_WhenCreateContactPerson_GivenInvalidData() {
+
+        //given
+        ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
+                "test",
+                "test",
+                "111-222-333",
+                "test@test.com",
+                "Project Manager",
+                company.getId(),
+                owner.getId()
         );
 
 
@@ -277,7 +304,7 @@ public class ContactPersonControllerTest {
         ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
                 "test",
                 "test",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 100L,
@@ -302,7 +329,7 @@ public class ContactPersonControllerTest {
         ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
                 "newname",
                 "testName",
-                "111-222-334",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 company.getId(),
@@ -337,7 +364,7 @@ public class ContactPersonControllerTest {
         ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
                 "test",
                 "test",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 company.getId(),
@@ -367,7 +394,7 @@ public class ContactPersonControllerTest {
         ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
                 "test",
                 "test",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 company.getId(),
@@ -396,7 +423,7 @@ public class ContactPersonControllerTest {
         ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
                 "test",
                 "test",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
                 100L,

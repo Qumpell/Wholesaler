@@ -1,6 +1,7 @@
 package pl.matkan.wholesaler.user;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -29,12 +30,12 @@ public class UserController {
                 HttpStatus.OK);
     }
     @PostMapping()
-    public ResponseEntity<UserResponse> createOne(@RequestBody UserRequest one) {
+    public ResponseEntity<UserResponse> createOne(@RequestBody @Valid UserRequest one) {
         return new ResponseEntity<>(userSrv.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateOne(@PathVariable("id") Long id, @RequestBody UserRequest one) {
+    public ResponseEntity<UserResponse> updateOne(@PathVariable("id") Long id, @RequestBody @Valid UserRequest one) {
         if (!userSrv.existsById(id)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

@@ -85,7 +85,7 @@ public class TradeNoteControllerTest {
                 "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
-                "pass",
+                "pass1234",
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -96,8 +96,8 @@ public class TradeNoteControllerTest {
 
         company = new Company(
                 null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",

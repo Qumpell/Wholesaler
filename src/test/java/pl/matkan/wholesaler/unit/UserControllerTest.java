@@ -56,7 +56,7 @@ public class UserControllerTest {
                 "Test",
                 "test@test.com",
                 LocalDate.of(2000, Month.AUGUST,22),
-                "test",
+                "test1",
                 Set.of(role));
 
         userRequest = new UserRequest(
@@ -64,8 +64,8 @@ public class UserControllerTest {
                 "Test",
                 "test@test.com",
                 LocalDate.of(2000, Month.AUGUST,22),
-                "test",
-                "test",
+                "test1",
+                "test1234",
                 Set.of(role.getId())
         );
 

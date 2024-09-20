@@ -2,6 +2,8 @@ package pl.matkan.wholesaler.role;
 
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,8 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name cannot be blank")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 

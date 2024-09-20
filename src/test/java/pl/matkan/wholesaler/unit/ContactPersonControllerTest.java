@@ -46,7 +46,7 @@ class ContactPersonControllerTest {
                 1L,
                 "Marek",
                 "Kowalski",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@gmail.com",
                 "support",
                 "TestCompany",
@@ -56,7 +56,7 @@ class ContactPersonControllerTest {
         contactPersonRequest = new ContactPersonRequest(
                 "Marek",
                 "Kowalski",
-                "111-222-333",
+                "+48 111-222-333",
                 "test@gmail.com",
                 "support",
                 1L,

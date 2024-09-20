@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,15 +33,29 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "First name cannot be blank")
+    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     private String firstname;
+
+    @NotBlank(message = "Surname cannot be blank")
+    @Size(min = 2, max = 50, message = "Surname must be between 2 and 50 characters")
     private String surname;
+
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email should be valid")
     private String email;
 
+    @NotNull(message = "Date of birth cannot be null")
+    @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
 
+    @NotBlank(message = "Username cannot be blank")
+    @Size(min = 5, max = 20, message = "Username must be between 5 and 20 characters")
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 8, message = "Password must have at least 8 characters")
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

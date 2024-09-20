@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.company;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -32,13 +33,13 @@ public class CompanyController {
     }
 
     @PostMapping()
-    public ResponseEntity<CompanyResponse> createOne(@RequestBody CompanyRequest one) {
+    public ResponseEntity<CompanyResponse> createOne(@RequestBody @Valid CompanyRequest one) {
         return new ResponseEntity<>(companyService.create(one), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CompanyResponse> updateOne(@PathVariable("id") Long id, @RequestBody CompanyRequest one) {
+    public ResponseEntity<CompanyResponse> updateOne(@PathVariable("id") Long id, @RequestBody @Valid CompanyRequest one) {
         if (!companyService.existsById(id)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

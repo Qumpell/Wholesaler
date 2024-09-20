@@ -2,6 +2,9 @@ package pl.matkan.wholesaler.industry;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +26,8 @@ public class Industry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name cannot be blank")
+    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 

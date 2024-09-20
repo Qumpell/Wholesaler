@@ -77,26 +77,25 @@ class CompanyControllerTest {
     private RoleRepository roleRepository;
 
     private Industry industry;
-    private Role role;
     private User owner;
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.create("http://localhost:" + randomServerPort);
 
-        role = new Role(null, "admin", new HashSet<>());
+        Role role = new Role(null, "admin", new HashSet<>());
         role = roleRepository.save(role);
 
         industry = new Industry(1L, "IT", new ArrayList<>());
         industry = industryRepository.save(industry);
         owner = new User(
                 null,
-                "test",
-                "test",
+                "testtesttest",
+                "testtesttest",
                 "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
-                "pass",
+                "passpass12334",
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -126,8 +125,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -151,7 +150,7 @@ class CompanyControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(1, body.getTotalElements())
+                () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
         );
     }
 
@@ -160,8 +159,8 @@ class CompanyControllerTest {
     void shouldGetOneCompany_GivenValidID() {
         //given
         Company company = new Company(null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -183,15 +182,15 @@ class CompanyControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(company.getId(), responseEntityBody.id()),
-                () -> assertEquals(company.getName(), responseEntityBody.name()),
-                () -> assertEquals(company.getCity(), responseEntityBody.city()),
-                () -> assertEquals(company.getNip(), responseEntityBody.nip()),
-                () -> assertEquals(company.getAddress(), responseEntityBody.address()),
-                () -> assertEquals(company.getIndustry().getName(), responseEntityBody.industryName()),
-                () -> assertEquals(company.getIndustry().getId(), responseEntityBody.industryId()),
-                () -> assertEquals(company.getUser().getId(), responseEntityBody.ownerId()),
-                () -> assertEquals(company.getUser().getUsername(), responseEntityBody.ownerUsername()));
+                () -> assertEquals(company.getId(), Objects.requireNonNull(responseEntityBody).id()),
+                () -> assertEquals(company.getName(), Objects.requireNonNull(responseEntityBody).name()),
+                () -> assertEquals(company.getCity(), Objects.requireNonNull(responseEntityBody).city()),
+                () -> assertEquals(company.getNip(), Objects.requireNonNull(responseEntityBody).nip()),
+                () -> assertEquals(company.getAddress(), Objects.requireNonNull(responseEntityBody).address()),
+                () -> assertEquals(company.getIndustry().getName(), Objects.requireNonNull(responseEntityBody).industryName()),
+                () -> assertEquals(company.getIndustry().getId(), Objects.requireNonNull(responseEntityBody).industryId()),
+                () -> assertEquals(company.getUser().getId(), Objects.requireNonNull(responseEntityBody).ownerId()),
+                () -> assertEquals(company.getUser().getUsername(), Objects.requireNonNull(responseEntityBody).ownerUsername()));
 
     }
 
@@ -214,8 +213,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -227,8 +226,8 @@ class CompanyControllerTest {
         companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovators Ltd.",
                 "1234567890",
                 "123 Innovation Street",
@@ -253,8 +252,8 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "UNIQUE NAME",
                 "123 Innovation Street",
                 "Warsaw",
@@ -275,13 +274,13 @@ class CompanyControllerTest {
         // then
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()),
-                () -> assertEquals(companyRequest.name(), responseEntityBody.name()),
-                () -> assertEquals(companyRequest.address(), responseEntityBody.address()),
-                () -> assertEquals(companyRequest.city(), responseEntityBody.city()),
-                () -> assertEquals(companyRequest.nip(), responseEntityBody.nip()),
-                () -> assertEquals(companyRequest.regon(), responseEntityBody.regon()),
-                () -> assertEquals(companyRequest.ownerId(), responseEntityBody.ownerId()),
-                () -> assertEquals(companyRequest.industryId(), responseEntityBody.industryId())
+                () -> assertEquals(companyRequest.name(), Objects.requireNonNull(responseEntityBody).name()),
+                () -> assertEquals(companyRequest.address(), Objects.requireNonNull(responseEntityBody).address()),
+                () -> assertEquals(companyRequest.city(), Objects.requireNonNull(responseEntityBody).city()),
+                () -> assertEquals(companyRequest.nip(), Objects.requireNonNull(responseEntityBody).nip()),
+                () -> assertEquals(companyRequest.regon(), Objects.requireNonNull(responseEntityBody).regon()),
+                () -> assertEquals(companyRequest.ownerId(), Objects.requireNonNull(responseEntityBody).ownerId()),
+                () -> assertEquals(companyRequest.industryId(), Objects.requireNonNull(responseEntityBody).industryId())
         );
     }
 
@@ -290,8 +289,8 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech",
                 "123 Innovation Street",
                 "Warsaw",
@@ -316,8 +315,8 @@ class CompanyControllerTest {
 
         //given
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech",
                 "123 Innovation Street",
                 "Warsaw",
@@ -343,8 +342,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -356,8 +355,8 @@ class CompanyControllerTest {
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -387,8 +386,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -397,11 +396,11 @@ class CompanyControllerTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 false);
-        company = companyRepository.save(company);
+        companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -429,8 +428,8 @@ class CompanyControllerTest {
 
         //given
         Company company = new Company(null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -442,8 +441,8 @@ class CompanyControllerTest {
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -472,8 +471,8 @@ class CompanyControllerTest {
         //given
         Company company = new Company(
                 null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -485,8 +484,8 @@ class CompanyControllerTest {
         company = companyRepository.save(company);
 
         CompanyRequest companyRequest = new CompanyRequest(
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "New Name",
                 "123 Innovation Street",
                 "Warsaw",
@@ -515,8 +514,8 @@ class CompanyControllerTest {
         //given
         Company company = new Company(
                 null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
@@ -554,8 +553,8 @@ class CompanyControllerTest {
         //given
         Company company = new Company(
                 null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",

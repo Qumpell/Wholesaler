@@ -3,6 +3,10 @@ package pl.matkan.wholesaler.company;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,17 +36,25 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Pattern(regexp = "^[A-Za-z]{2,4}(?=.{2,12}$)[-_\\s0-9]*(?:[a-zA-Z][-_\\s0-9]*){0,2}$")
     @Column(name = "nip", nullable = false)
     private String  nip;
 
+    @Pattern(regexp = "\\d{9}|\\d{14}|", message = "REGON must consist of 9 or 14 digits or can be empty for companies outside Poland")
     @Column(name = "regon")
     private String regon;
 
+    @NotBlank(message = "Name cannot be blank")
+    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotBlank(message = "City cannot be blank")
+    @Size(max = 50, message = "City name must be at most 100 characters long")
     private String city;
 
+    @NotBlank(message = "Address cannot be blank")
+    @Size(max = 255, message = "Address must be at most 255 characters long")
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)

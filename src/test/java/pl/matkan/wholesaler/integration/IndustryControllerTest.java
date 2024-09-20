@@ -24,7 +24,6 @@ import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
 import pl.matkan.wholesaler.industry.IndustryRequest;
-import pl.matkan.wholesaler.tradenote.TradeNote;
 
 import java.util.*;
 
@@ -94,7 +93,7 @@ public class IndustryControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(1, body.getTotalElements())
+                () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
         );
     }
 
@@ -251,8 +250,8 @@ public class IndustryControllerTest {
 
         //given
         Company company = new Company(null,
-                "1234567890",
-                "1234567890",
+                "PL1234567890",
+                "987654321",
                 "Tech Innovations Ltd.",
                 "New York",
                 "123 Tech Lane",
