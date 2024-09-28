@@ -1,3 +1,4 @@
+
 INSERT INTO industries (id, name) VALUES (1, 'Technology');
 INSERT INTO industries (id, name) VALUES (2, 'Finance');
 INSERT INTO industries (id, name) VALUES (3, 'Retail');
@@ -5,43 +6,46 @@ INSERT INTO industries (id, name) VALUES (4, 'Healthcare');
 INSERT INTO industries (id, name) VALUES (5, 'Construction');
 
 
-INSERT INTO roles (id, name) VALUES (1, 'users');
-INSERT INTO roles (id, name) VALUES (2, 'admin');
-INSERT INTO roles (id, name) VALUES (3, 'superadmin');
+INSERT INTO roles (id, name) VALUES (1, 'ROLE_USER');
+INSERT INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
+INSERT INTO roles (id, name) VALUES (3, 'ROLE_MODERATOR');
 
+INSERT INTO users (firstname, surname, email, date_of_birth, username, password, is_deleted)
+VALUES ('John', 'Doe', 'john.doe@example.com', '1985-01-15', 'johndoe', 'password1', false),
+       ('Jane', 'Doe', 'jane.doe@example.com', '1990-04-25', 'janedoe', 'password2', false),
+       ('Michael', 'Smith', 'michael.smith@example.com', '1982-03-12', 'michaelsmith', 'password3', false),
+       ('Emily', 'Johnson', 'emily.johnson@example.com', '1988-07-23', 'emilyjohnson', 'password4', false),
+       ('Chris', 'Brown', 'chris.brown@example.com', '1995-09-11', 'chrisbrown', 'password5', false),
+       ('Jessica', 'Davis', 'jessica.davis@example.com', '1983-11-09', 'jessicadavis', 'password6', false),
+       ('David', 'Miller', 'david.miller@example.com', '1987-02-19', 'davidmiller', 'password7', false),
+       ('Sarah', 'Wilson', 'sarah.wilson@example.com', '1991-06-14', 'sarahwilson', 'password8', false),
+       ('Daniel', 'Moore', 'daniel.moore@example.com', '1986-12-22', 'danielmoore', 'password9', false),
+       ('Olivia', 'Taylor', 'olivia.taylor@example.com', '1992-05-30', 'oliviataylor', 'password10', false),
+       ('Ethan', 'Anderson', 'ethan.anderson@example.com', '1989-08-07', 'ethananderson', 'password11', false),
+       ('Sophia', 'Thomas', 'sophia.thomas@example.com', '1993-01-17', 'sophiathomas', 'password12', false),
+       ('Matthew', 'Jackson', 'matthew.jackson@example.com', '1984-10-29', 'matthewjackson', 'password13', false),
+       ('Emma', 'White', 'emma.white@example.com', '1996-04-03', 'emmawhite', 'password14', false),
+       ('James', 'Harris', 'james.harris@example.com', '1981-09-18', 'jamesharris', 'password15', false),
+    ('Admin', 'Admin', 'admin@example.com', '1985-01-15', 'admin', '$2a$10$uFUle8nQVHyBsSuwR286uubAxVZYF4qsZpvb6RAkbQvJ6AlRU2NGy', false);
 
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (1, 'John', 'Doe', 'john.doe@example.com', '1985-01-15', 'johndoe', 'password1', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (2, 'Jane', 'Doe', 'jane.doe@example.com', '1990-04-25', 'janedoe', 'password2', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (3, 'Michael', 'Smith', 'michael.smith@example.com', '1982-03-12', 'michaelsmith', 'password3', 2, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (4, 'Emily', 'Johnson', 'emily.johnson@example.com', '1988-07-23', 'emilyjohnson', 'password4', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (5, 'Chris', 'Brown', 'chris.brown@example.com', '1995-09-11', 'chrisbrown', 'password5', 3, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (6, 'Jessica', 'Davis', 'jessica.davis@example.com', '1983-11-09', 'jessicadavis', 'password6', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (7, 'David', 'Miller', 'david.miller@example.com', '1987-02-19', 'davidmiller', 'password7', 2, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (8, 'Sarah', 'Wilson', 'sarah.wilson@example.com', '1991-06-14', 'sarahwilson', 'password8', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (9, 'Daniel', 'Moore', 'daniel.moore@example.com', '1986-12-22', 'danielmoore', 'password9', 3, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (10, 'Olivia', 'Taylor', 'olivia.taylor@example.com', '1992-05-30', 'oliviataylor', 'password10', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (11, 'Ethan', 'Anderson', 'ethan.anderson@example.com', '1989-08-07', 'ethananderson', 'password11', 2, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (12, 'Sophia', 'Thomas', 'sophia.thomas@example.com', '1993-01-17', 'sophiathomas', 'password12', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (13, 'Matthew', 'Jackson', 'matthew.jackson@example.com', '1984-10-29', 'matthewjackson', 'password13', 3, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (14, 'Emma', 'White', 'emma.white@example.com', '1996-04-03', 'emmawhite', 'password14', 1, false);
-INSERT INTO users (id, firstname, surname, email, date_of_birth, username, password, role_id, is_deleted)
-VALUES (15, 'James', 'Harris', 'james.harris@example.com', '1981-09-18', 'jamesharris', 'password15', 2, false);
-
-
+INSERT INTO user_roles (user_id, role_id)
+VALUES
+    (1, 2),
+    (2, 3),
+    (3, 2),
+    (4, 1),
+    (5, 3),
+    (6, 2),
+    (7, 3),
+    (8, 2),
+    (9, 3),
+    (10, 2),
+    (11, 3),
+    (12, 2),
+    (13, 3),
+    (14, 1),
+    (15, 3),
+    (16, 1);
 
 INSERT INTO companies (id, nip, regon, name, city, address, industry_id, user_id, is_deleted)
 VALUES (1, 'PL1234567890', '987654321', 'TechCorp', 'Warsaw', '123 Nowy Świat', 1, 1, false);
@@ -63,9 +67,6 @@ INSERT INTO companies (id, nip, regon, name, city, address, industry_id, user_id
 VALUES (9, 'IT9234567890', NULL, 'MediCare', 'Milan', '606 Corso Buenos Aires', 4, 9, false);
 INSERT INTO companies (id, nip, regon, name, city, address, industry_id, user_id, is_deleted)
 VALUES (10, 'ES1023456789', NULL, 'BuilderPros', 'Barcelona', '707 Passeig de Gràcia', 5, 10, false);
-
-
-
 INSERT INTO trade_notes (id, content, company_id, user_id, is_deleted)
 VALUES (1, 'First trade note for TechCorp', 1, 1, false);
 INSERT INTO trade_notes (id, content, company_id, user_id, is_deleted)

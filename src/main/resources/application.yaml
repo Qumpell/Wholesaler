@@ -25,7 +25,10 @@ spring:
     show-sql: true
     defer-datasource-initialization: true
 #    generate-ddl: true
-
+wholesaler:
+  app:
+    jwtSecret: "fbffdde34840e0bcce2fba77562f08e67d32c1d97e5cdf0200d7fd33ba606c0c"
+    jwtExpirationMs: 86400000
 #---
 #spring:
 #  config:

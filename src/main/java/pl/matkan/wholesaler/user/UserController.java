@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/api/users")
 public class UserController {
 
     private final UserService userSrv;
@@ -29,7 +29,7 @@ public class UserController {
         return new ResponseEntity<>(userSrv.findAll(pageNumber, pageSize, field, order),
                 HttpStatus.OK);
     }
-    @PostMapping()
+    @PostMapping("/signup")
     public ResponseEntity<UserResponse> createOne(@RequestBody @Valid UserRequest one) {
         return new ResponseEntity<>(userSrv.create(one), HttpStatus.CREATED);
     }

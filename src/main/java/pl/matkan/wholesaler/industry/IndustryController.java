@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/industries")
+@RequestMapping(value = "/api/industries")
 public class IndustryController {
 
     private final IndustryService industryService;

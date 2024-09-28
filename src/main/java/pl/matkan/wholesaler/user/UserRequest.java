@@ -16,6 +16,7 @@ public record UserRequest(
         String surname,
 
         @NotBlank(message = "Email cannot be blank")
+        @Size(max = 50)
         @Email(message = "Email should be valid")
         String email,
 
@@ -28,7 +29,7 @@ public record UserRequest(
         String username,
 
         @NotBlank(message = "Password cannot be blank")
-        @Size(min = 8, message = "Password must have at least 8 characters")
+        @Size(min = 8, max = 120,message = "Password must have at least 8 characters")
         String password,
 
         @NotEmpty(message = "Role IDs cannot be empty")

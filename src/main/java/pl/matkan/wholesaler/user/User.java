@@ -1,9 +1,6 @@
 package pl.matkan.wholesaler.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +39,7 @@ public class User {
     private String surname;
 
     @NotBlank(message = "Email cannot be blank")
+    @Size(max = 50)
     @Email(message = "Email should be valid")
     private String email;
 
@@ -55,7 +53,7 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password cannot be blank")
-    @Size(min = 8, message = "Password must have at least 8 characters")
+    @Size(min = 8, max = 120,message = "Password must have at least 8 characters")
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
