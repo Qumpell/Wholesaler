@@ -1,4 +1,4 @@
-package pl.matkan.wholesaler.auth.dto;
+package pl.matkan.wholesaler.auth.jwt;
 
 import java.util.List;
 

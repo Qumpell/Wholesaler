@@ -28,7 +28,8 @@ spring:
 wholesaler:
   app:
     jwtSecret: "fbffdde34840e0bcce2fba77562f08e67d32c1d97e5cdf0200d7fd33ba606c0c"
-    jwtExpirationMs: 3600000
+#    jwtExpirationMs: 3600000 86400000
+    jwtExpirationMs: 900000
     jwtRefreshExpirationMs: 86400000
     jwtRefreshCookieName: refresh-token-cookie
 #---

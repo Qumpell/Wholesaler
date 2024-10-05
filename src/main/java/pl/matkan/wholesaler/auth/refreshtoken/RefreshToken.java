@@ -14,6 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@Table(name = "refresh_tokens")
 public class RefreshToken {
 
     @Id
@@ -29,7 +30,4 @@ public class RefreshToken {
 
     @Column(nullable = false)
     private Instant expiryDate;
-
-    private boolean isRevoked = false;
-
 }

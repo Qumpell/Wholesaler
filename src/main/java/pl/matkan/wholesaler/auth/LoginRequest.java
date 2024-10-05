@@ -1,4 +1,4 @@
-package pl.matkan.wholesaler.auth.dto;
+package pl.matkan.wholesaler.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

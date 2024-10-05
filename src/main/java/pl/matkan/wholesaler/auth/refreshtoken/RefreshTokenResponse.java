@@ -1,4 +1,4 @@
-package pl.matkan.wholesaler.auth.dto;
+package pl.matkan.wholesaler.auth.refreshtoken;
 
 public record RefreshTokenResponse(
         String accessToken) {
