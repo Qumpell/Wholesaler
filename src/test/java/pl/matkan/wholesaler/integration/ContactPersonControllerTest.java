@@ -147,7 +147,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<RestPageImpl<ContactPersonResponse>> responseEntity = restClient
                 .get()
-                .uri("/contact-persons")
+                .uri("/api/contact-persons")
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
@@ -167,7 +167,7 @@ public class ContactPersonControllerTest {
         //given
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restClient.get()
-                .uri("/contact-persons/{id}", contactPerson.getId())
+                .uri("/api/contact-persons/{id}", contactPerson.getId())
                 .retrieve()
                 .toEntity(ContactPersonResponse.class);
 
@@ -195,7 +195,7 @@ public class ContactPersonControllerTest {
 
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
-                exchange("/contact-persons/100",
+                exchange("/api/contact-persons/100",
                         HttpMethod.GET,
                         null,
                         ContactPersonResponse.class);
@@ -221,7 +221,7 @@ public class ContactPersonControllerTest {
 
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restClient.post()
-                .uri("/contact-persons")
+                .uri("/api/contact-persons")
                 .contentType(APPLICATION_JSON)
                 .body(contactPersonRequest)
                 .retrieve()
@@ -261,7 +261,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/contact-persons",
+                        "/api/contact-persons",
                         contactPersonRequest,
                         ContactPersonResponse.class
                 );
@@ -288,7 +288,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/contact-persons",
+                        "/api/contact-persons",
                         contactPersonRequest,
                         ContactPersonResponse.class
                 );
@@ -314,7 +314,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/contact-persons",
+                        "/api/contact-persons",
                         contactPersonRequest,
                         ContactPersonResponse.class
                 );
@@ -341,7 +341,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restClient
                 .put()
-                .uri("/contact-persons/{id}", contactPerson.getId())
+                .uri("/api/contact-persons/{id}", contactPerson.getId())
                 .contentType(APPLICATION_JSON)
                 .body(contactPersonRequest)
                 .retrieve()
@@ -375,7 +375,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/contact-persons/{id}",
+                        "/api/contact-persons/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(contactPersonRequest),
                         String.class,
@@ -404,7 +404,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/contact-persons/{id}",
+                        "/api/contact-persons/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(contactPersonRequest),
                         String.class,
@@ -433,7 +433,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/contact-persons/{id}",
+                        "/api/contact-persons/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(contactPersonRequest),
                         String.class,
@@ -451,7 +451,7 @@ public class ContactPersonControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/contact-persons/{id}", contactPerson.getId())
+                .uri("/api/contact-persons/{id}", contactPerson.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -469,7 +469,7 @@ public class ContactPersonControllerTest {
         //given //when
         ResponseEntity<String> response = restTemplate
                 .exchange(
-                        "/contact-persons/{id}",
+                        "/api/contact-persons/{id}",
                         HttpMethod.DELETE,
                         null,
                         String.class,

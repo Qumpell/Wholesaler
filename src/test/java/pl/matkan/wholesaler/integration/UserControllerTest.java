@@ -133,7 +133,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<RestPageImpl<UserResponse>> responseEntity = restClient
                 .get()
-                .uri("/users")
+                .uri("/api/users")
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
@@ -153,7 +153,7 @@ public class UserControllerTest {
         //given
         //when
         ResponseEntity<UserResponse> responseEntity = restClient.get()
-                .uri("/users/{id}", owner.getId())
+                .uri("/api/users/{id}", owner.getId())
                 .retrieve()
                 .toEntity(UserResponse.class);
 
@@ -177,7 +177,7 @@ public class UserControllerTest {
 
         //when
         ResponseEntity<UserResponse> responseEntity = restTemplate.
-                exchange("/users/100",
+                exchange("/api/users/100",
                         HttpMethod.GET,
                         null,
                         UserResponse.class);
@@ -203,7 +203,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate.
                 postForEntity(
-                        "/users",
+                        "/api/users/signup",
                         userRequest,
                         String.class
                 );
@@ -228,7 +228,7 @@ public class UserControllerTest {
 
         //when
         ResponseEntity<UserResponse> responseEntity = restClient.post()
-                .uri("/users")
+                .uri("/api/users/signup")
                 .contentType(APPLICATION_JSON)
                 .body(userRequest)
                 .retrieve()
@@ -265,7 +265,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<UserResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/users",
+                        "/api/users/signup",
                         userRequest,
                         UserResponse.class
                 );
@@ -292,7 +292,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<UserResponse> responseEntity = restClient
                 .put()
-                .uri("/users/{id}", owner.getId())
+                .uri("/api/users/{id}", owner.getId())
                 .contentType(APPLICATION_JSON)
                 .body(userRequest)
                 .retrieve()
@@ -326,7 +326,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/users/{id}",
+                        "/api/users/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(userRequest),
                         String.class,
@@ -355,7 +355,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/users/{id}",
+                        "/api/users/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(userRequest),
                         String.class,
@@ -394,7 +394,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<UserResponse> responseEntity = restClient
                 .delete()
-                .uri("/users/{id}", owner.getId())
+                .uri("/api/users/{id}", owner.getId())
                 .retrieve()
                 .toEntity(UserResponse.class);
 
@@ -413,7 +413,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/users/{id}", owner.getId())
+                .uri("/api/users/{id}", owner.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -430,7 +430,7 @@ public class UserControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/users/{id}", owner.getId())
+                .uri("/api/users/{id}", owner.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -448,7 +448,7 @@ public class UserControllerTest {
         //given //when
         ResponseEntity<String> response = restTemplate
                 .exchange(
-                        "/users/{id}",
+                        "/api/users/{id}",
                         HttpMethod.DELETE,
                         null,
                         String.class,

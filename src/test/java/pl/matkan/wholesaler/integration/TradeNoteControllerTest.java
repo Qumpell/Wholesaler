@@ -141,7 +141,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<RestPageImpl<TradeNoteResponse>> responseEntity = restClient
                 .get()
-                .uri("/trade-notes")
+                .uri("/api/trade-notes")
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
@@ -161,7 +161,7 @@ public class TradeNoteControllerTest {
         //given
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restClient.get()
-                .uri("/trade-notes/{id}", tradeNote.getId())
+                .uri("/api/trade-notes/{id}", tradeNote.getId())
                 .retrieve()
                 .toEntity(TradeNoteResponse.class);
 
@@ -185,7 +185,7 @@ public class TradeNoteControllerTest {
 
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restTemplate.
-                exchange("/trade-notes/100",
+                exchange("/api/trade-notes/100",
                         HttpMethod.GET,
                         null,
                         TradeNoteResponse.class);
@@ -206,7 +206,7 @@ public class TradeNoteControllerTest {
 
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restClient.post()
-                .uri("/trade-notes")
+                .uri("/api/trade-notes")
                 .contentType(APPLICATION_JSON)
                 .body(tradeNoteRequest)
                 .retrieve()
@@ -236,7 +236,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/trade-notes",
+                        "/api/trade-notes",
                         tradeNoteRequest,
                         TradeNoteResponse.class
                 );
@@ -258,7 +258,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/trade-notes",
+                        "/api/trade-notes",
                         tradeNoteRequest,
                         TradeNoteResponse.class
                 );
@@ -279,7 +279,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restClient
                 .put()
-                .uri("/trade-notes/{id}", tradeNote.getId())
+                .uri("/api/trade-notes/{id}", tradeNote.getId())
                 .contentType(APPLICATION_JSON)
                 .body(tradeNoteRequest)
                 .retrieve()
@@ -306,7 +306,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/trade-notes/{id}",
+                        "/api/trade-notes/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(tradeNoteRequest),
                         String.class,
@@ -331,7 +331,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/trade-notes/{id}",
+                        "/api/trade-notes/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(tradeNoteRequest),
                         String.class,
@@ -356,7 +356,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/trade-notes/{id}",
+                        "/api/trade-notes/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(tradeNoteRequest),
                         String.class,
@@ -374,7 +374,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/trade-notes/{id}", tradeNote.getId())
+                .uri("/api/trade-notes/{id}", tradeNote.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -392,7 +392,7 @@ public class TradeNoteControllerTest {
         //given //when
         ResponseEntity<String> response = restTemplate
                 .exchange(
-                        "/trade-notes/{id}",
+                        "/api/trade-notes/{id}",
                         HttpMethod.DELETE,
                         null,
                         String.class,

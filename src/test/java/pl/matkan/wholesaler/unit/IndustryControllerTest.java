@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 import pl.matkan.wholesaler.industry.Industry;
@@ -25,12 +26,14 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(IndustryController.class)
+@WithMockUser(username = "test", roles = {"ADMIN", "MODERATOR", "USER"})
 class IndustryControllerTest {
 
     @Autowired
@@ -67,7 +70,8 @@ class IndustryControllerTest {
         when(service.findAll(0, 10, "id", "asc"))
                 .thenReturn(industriesPage);
 
-        mockMvc.perform(get("/industries"))
+        mockMvc.perform(get("/api/industries")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.size()", is(industriesPage.getSize())));
     }
@@ -78,7 +82,8 @@ class IndustryControllerTest {
         //when //then
         when(service.findById(1L)).thenReturn(industry);
 
-        mockMvc.perform(get("/industries/{id}", 1L))
+        mockMvc.perform(get("/api/industries/{id}", 1L)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("IT")));
@@ -92,7 +97,8 @@ class IndustryControllerTest {
         //when //then
         when(service.findById(id)).thenThrow(new ResourceNotFoundException("Industry not found", "with id:=" + id));
 
-        mockMvc.perform(get("/industries/{id}", id))
+        mockMvc.perform(get("/api/industries/{id}", id)
+                        .with(csrf()))
                 .andExpect(status().isNotFound());
     }
     @Test
@@ -100,9 +106,10 @@ class IndustryControllerTest {
         //when //then
         when(service.create(any(IndustryRequest.class))).thenReturn(industry);
 
-        mockMvc.perform(post("/industries")
+        mockMvc.perform(post("/api/industries")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
@@ -114,9 +121,10 @@ class IndustryControllerTest {
         //when //then
         when(service.create(any(IndustryRequest.class))).thenThrow(DataIntegrityViolationException.class);
 
-        mockMvc.perform(post("/industries")
+        mockMvc.perform(post("/api/industries")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isConflict());
 
@@ -131,8 +139,9 @@ class IndustryControllerTest {
         when(service.existsById(id)).thenReturn(true);
         when(service.update(any(Long.class), any(IndustryRequest.class))).thenReturn(industry);
 
-        mockMvc.perform(put("/industries/{id}", id)
+        mockMvc.perform(put("/api/industries/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
@@ -146,8 +155,9 @@ class IndustryControllerTest {
         //when //then
         when(service.existsById(id)).thenReturn(false);
 
-        mockMvc.perform(put("/industries/{id}", id)
+        mockMvc.perform(put("/api/industries/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(industryRequest)))
                 .andExpect(status().isNotFound());
     }
@@ -161,7 +171,8 @@ class IndustryControllerTest {
         when(service.existsById(id)).thenReturn(true);
         Mockito.doNothing().when(service).deleteById(id);
 
-        mockMvc.perform(delete("/industries/{id}", id))
+        mockMvc.perform(delete("/api/industries/{id}", id)
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
     }
     @Test
@@ -172,7 +183,8 @@ class IndustryControllerTest {
         //when //then
         when(service.existsById(id)).thenReturn(false);
 
-        mockMvc.perform(delete("/industries/{id}", id))
+        mockMvc.perform(delete("/api/industries/{id}", id)
+                        .with(csrf()))
                 .andExpect(status().isNotFound());
     }
 
