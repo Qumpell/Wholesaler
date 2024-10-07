@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.matkan.wholesaler.exception.BadRequestException;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
     private final RoleService roleService;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
 
 
     @Override
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse create(UserRequest dto) {
 
         User user = UserMapper.INSTANCE.userRequestToUser(dto);
+        user.setPassword(encoder.encode(user.getPassword()));
 
         try {
             user = userRepo.save(validateAndSetRoles(user, dto.roleIds()));
@@ -133,7 +136,7 @@ public class UserServiceImpl implements UserService {
         existingUser.setFirstname(userRequest.firstname());
         existingUser.setUsername(userRequest.username());
         existingUser.setUsername(userRequest.username());
-        existingUser.setPassword(userRequest.password());
+        existingUser.setPassword(encoder.encode(userRequest.password()));
         existingUser.setDateOfBirth(userRequest.dateOfBirth());
 
         return validateAndSetRoles(existingUser, userRequest.roleIds());

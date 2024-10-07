@@ -84,7 +84,7 @@ public class IndustryControllerTest {
         //when
         ResponseEntity<RestPageImpl<Industry>> responseEntity = restClient
                 .get()
-                .uri("/industries")
+                .uri("/api/industries")
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
@@ -103,7 +103,7 @@ public class IndustryControllerTest {
         //given
         //when
         ResponseEntity<Industry> responseEntity = restClient.get()
-                .uri("/industries/{id}", industry.getId())
+                .uri("/api/industries/{id}", industry.getId())
                 .retrieve()
                 .toEntity(Industry.class);
 
@@ -123,7 +123,7 @@ public class IndustryControllerTest {
 
         //when
         ResponseEntity<Industry> responseEntity = restTemplate.
-                exchange("/industries/100",
+                exchange("/api/industries/100",
                         HttpMethod.GET,
                         null,
                         Industry.class);
@@ -143,7 +143,7 @@ public class IndustryControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate.
                 postForEntity(
-                        "/industries",
+                        "/api/industries",
                         industryRequest,
                         String.class
                 );
@@ -162,7 +162,7 @@ public class IndustryControllerTest {
 
         //when
         ResponseEntity<Industry> responseEntity = restClient.post()
-                .uri("/industries")
+                .uri("/api/industries")
                 .contentType(APPLICATION_JSON)
                 .body(industryRequest)
                 .retrieve()
@@ -189,7 +189,7 @@ public class IndustryControllerTest {
         //when
         ResponseEntity<Industry> responseEntity = restClient
                 .put()
-                .uri("/industries/{id}", industry.getId())
+                .uri("/api/industries/{id}", industry.getId())
                 .contentType(APPLICATION_JSON)
                 .body(industryRequest)
                 .retrieve()
@@ -214,7 +214,7 @@ public class IndustryControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/industries/{id}",
+                        "/api/industries/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(industryRequest),
                         String.class,
@@ -233,7 +233,7 @@ public class IndustryControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/industries/{id}", industry.getId())
+                .uri("/api/industries/{id}", industry.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -265,7 +265,7 @@ public class IndustryControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/industries/{id}", industry.getId())
+                .uri("/api/industries/{id}", industry.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -283,7 +283,7 @@ public class IndustryControllerTest {
         //given //when
         ResponseEntity<String> response = restTemplate
                 .exchange(
-                        "/industries/{id}",
+                        "/api/industries/{id}",
                         HttpMethod.DELETE,
                         null,
                         String.class,

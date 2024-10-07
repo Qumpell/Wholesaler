@@ -140,7 +140,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<RestPageImpl<CompanyResponse>> responseEntity = restClient
                 .get()
-                .uri("/companies")
+                .uri("/api/companies")
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
@@ -173,7 +173,7 @@ class CompanyControllerTest {
 
         //when
         ResponseEntity<CompanyResponse> responseEntity = restClient.get()
-                .uri("/companies/{id}", company.getId())
+                .uri("/api/companies/{id}", company.getId())
                 .retrieve()
                 .toEntity(CompanyResponse.class);
 
@@ -199,7 +199,7 @@ class CompanyControllerTest {
 
         //when
         ResponseEntity<CompanyResponse> responseEntity = restTemplate.
-                exchange("/companies/100",
+                exchange("/api/companies/100",
                         HttpMethod.GET,
                         null,
                         CompanyResponse.class);
@@ -238,7 +238,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate.
                 postForEntity(
-                        "/companies",
+                        "/api/companies",
                         companyRequest,
                         String.class
                 );
@@ -263,7 +263,7 @@ class CompanyControllerTest {
 
         //when
         ResponseEntity<CompanyResponse> responseEntity = restClient.post()
-                .uri("/companies")
+                .uri("/api/companies")
                 .contentType(APPLICATION_JSON)
                 .body(companyRequest)
                 .retrieve()
@@ -301,7 +301,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<CompanyResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/companies",
+                        "/api/companies",
                         companyRequest,
                         CompanyResponse.class
                 );
@@ -327,7 +327,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<CompanyResponse> responseEntity = restTemplate.
                 postForEntity(
-                        "/companies",
+                        "/api/companies",
                         companyRequest,
                         CompanyResponse.class
                 );
@@ -367,7 +367,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<CompanyResponse> responseEntity = restClient
                 .put()
-                .uri("/companies/{id}", company.getId())
+                .uri("/api/companies/{id}", company.getId())
                 .contentType(APPLICATION_JSON)
                 .body(companyRequest)
                 .retrieve()
@@ -411,7 +411,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/companies/{id}",
+                        "/api/companies/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(companyRequest),
                         String.class,
@@ -453,7 +453,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/companies/{id}",
+                        "/api/companies/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(companyRequest),
                         String.class,
@@ -496,7 +496,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/companies/{id}",
+                        "/api/companies/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(companyRequest),
                         String.class,
@@ -535,7 +535,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<CompanyResponse> responseEntity = restClient
                 .delete()
-                .uri("/companies/{id}", company.getId())
+                .uri("/api/companies/{id}", company.getId())
                 .retrieve()
                 .toEntity(CompanyResponse.class);
 
@@ -568,7 +568,7 @@ class CompanyControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/companies/{id}", company.getId())
+                .uri("/api/companies/{id}", company.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -582,18 +582,32 @@ class CompanyControllerTest {
     @Test
     void shouldNotDeleteRelatedIndustry_WhenDeleteCompany() {
         //given
+        Company company = new Company(
+                null,
+                "PL1234567890",
+                "987654321",
+                "Tech Innovations Ltd.",
+                "New York",
+                "123 Tech Lane",
+                industry,
+                owner,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                false);
+        company = companyRepository.save(company);
+
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/users/{id}", owner.getId())
+                .uri("/api/companies/{id}", company.getId())
                 .retrieve()
                 .toEntity(String.class);
 
         //then
-        final long id = owner.getId();
+        final long id = company.getId();
         assertAll(
                 () -> assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()),
-                () -> assertFalse(userRepository.existsById(id)),
+                () -> assertFalse(companyRepository.existsById(id)),
                 () -> assertTrue(industryRepository.existsById((industry.getId())))
         );
     }
@@ -602,7 +616,7 @@ class CompanyControllerTest {
         //given //when
         ResponseEntity<String> response = restTemplate
                 .exchange(
-                        "/companies/{id}",
+                        "/api/companies/{id}",
                         HttpMethod.DELETE,
                         null,
                         String.class,

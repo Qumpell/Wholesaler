@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/trade-notes")
+@RequestMapping(value = "/api/trade-notes")
 public class TradeNoteController {
 
     private final TradeNoteService tradeNoteService;

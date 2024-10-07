@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 import pl.matkan.wholesaler.tradenote.*;
@@ -19,12 +20,14 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TradeNoteController.class)
+@WithMockUser(username = "test", roles = {"ADMIN", "MODERATOR", "USER"})
 public class TradeNoteControllerTest {
 
     @Autowired
@@ -69,7 +72,8 @@ public class TradeNoteControllerTest {
         when(service.findAll(0, 10, "id", "asc"))
                 .thenReturn(tradeNotePage);
 
-        mockMvc.perform(get("/trade-notes"))
+        mockMvc.perform(get("/api/trade-notes")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.size()", is(tradeNotePage.getSize())));
     }
@@ -80,7 +84,8 @@ public class TradeNoteControllerTest {
         //when //then
         when(service.findById(1L)).thenReturn(tradeNoteResponse);
 
-        mockMvc.perform(get("/trade-notes/{id}", 1L))
+        mockMvc.perform(get("/api/trade-notes/{id}", 1L)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.content", is("TEST CONTENT")))
@@ -96,7 +101,8 @@ public class TradeNoteControllerTest {
         //when //then
         when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote not found", "with id:=" + id));
 
-        mockMvc.perform(get("/trade-notes/{id}", id))
+        mockMvc.perform(get("/api/trade-notes/{id}", id)
+                        .with(csrf()))
                 .andExpect(status().isNotFound());
     }
 
@@ -105,9 +111,10 @@ public class TradeNoteControllerTest {
         //when //then
         when(service.create(any(TradeNoteRequest.class))).thenReturn(tradeNoteResponse);
 
-        mockMvc.perform(post("/trade-notes")
+        mockMvc.perform(post("/api/trade-notes")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(tradeNoteRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)));
@@ -122,8 +129,9 @@ public class TradeNoteControllerTest {
         when(service.existsById(id)).thenReturn(true);
         when(service.update(any(Long.class), any(TradeNoteRequest.class))).thenReturn(tradeNoteResponse);
 
-        mockMvc.perform(put("/trade-notes/{id}", id)
+        mockMvc.perform(put("/api/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(tradeNoteRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)));
@@ -137,8 +145,9 @@ public class TradeNoteControllerTest {
         //when //then
         when(service.existsById(id)).thenReturn(false);
 
-        mockMvc.perform(put("/trade-notes/{id}", id)
+        mockMvc.perform(put("/api/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(tradeNoteRequest)))
                 .andExpect(status().isNotFound());
     }
@@ -152,7 +161,8 @@ public class TradeNoteControllerTest {
         when(service.existsById(id)).thenReturn(true);
         Mockito.doNothing().when(service).deleteById(id);
 
-        mockMvc.perform(delete("/trade-notes/{id}", id))
+        mockMvc.perform(delete("/api/trade-notes/{id}", id)
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
     }
 
@@ -164,7 +174,8 @@ public class TradeNoteControllerTest {
         //when //then
         when(service.existsById(id)).thenReturn(false);
 
-        mockMvc.perform(delete("/trade-notes/{id}", id))
+        mockMvc.perform(delete("/api/trade-notes/{id}", id)
+                        .with(csrf()))
                 .andExpect(status().isNotFound());
     }
 

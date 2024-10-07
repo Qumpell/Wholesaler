@@ -17,6 +17,7 @@ public record ContactPersonRequest(
         String phoneNumber,
 
         @NotBlank(message = "Email is required")
+        @Size(max = 50)
         @Email(message = "Invalid email format")
         String mail,
 

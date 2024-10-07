@@ -87,7 +87,7 @@ public class RoleControllerTest {
         //when
         ResponseEntity<RestPageImpl<Role>> responseEntity = restClient
                 .get()
-                .uri("/roles")
+                .uri("/api/roles")
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
@@ -107,7 +107,7 @@ public class RoleControllerTest {
         //given
         //when
         ResponseEntity<Role> responseEntity = restClient.get()
-                .uri("/roles/{id}", role.getId())
+                .uri("/api/roles/{id}", role.getId())
                 .retrieve()
                 .toEntity(Role.class);
 
@@ -127,7 +127,7 @@ public class RoleControllerTest {
 
         //when
         ResponseEntity<Role> responseEntity = restTemplate.
-                exchange("/roles/100",
+                exchange("/api/roles/100",
                         HttpMethod.GET,
                         null,
                         Role.class);
@@ -147,7 +147,7 @@ public class RoleControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate.
                 postForEntity(
-                        "/roles",
+                        "/api/roles",
                         roleRequest,
                         String.class
                 );
@@ -166,7 +166,7 @@ public class RoleControllerTest {
 
         //when
         ResponseEntity<Role> responseEntity = restClient.post()
-                .uri("/roles")
+                .uri("/api/roles")
                 .contentType(APPLICATION_JSON)
                 .body(roleRequest)
                 .retrieve()
@@ -193,7 +193,7 @@ public class RoleControllerTest {
         //when
         ResponseEntity<Role> responseEntity = restClient
                 .put()
-                .uri("/roles/{id}", role.getId())
+                .uri("/api/roles/{id}", role.getId())
                 .contentType(APPLICATION_JSON)
                 .body(roleRequest)
                 .retrieve()
@@ -218,7 +218,7 @@ public class RoleControllerTest {
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
-                        "/roles/{id}",
+                        "/api/roles/{id}",
                         HttpMethod.PUT,
                         new HttpEntity<>(roleRequest),
                         String.class,
@@ -255,7 +255,7 @@ public class RoleControllerTest {
         //when
         ResponseEntity<Role> responseEntity = restClient
                 .delete()
-                .uri("/roles/{id}", role.getId())
+                .uri("/api/roles/{id}", role.getId())
                 .retrieve()
                 .toEntity(Role.class);
 
@@ -274,7 +274,7 @@ public class RoleControllerTest {
         //when
         ResponseEntity<String> response = restClient
                 .delete()
-                .uri("/roles/{id}", role.getId())
+                .uri("/api/roles/{id}", role.getId())
                 .retrieve()
                 .toEntity(String.class);
 
@@ -291,7 +291,7 @@ public class RoleControllerTest {
         //given //when
         ResponseEntity<String> response = restTemplate
                 .exchange(
-                        "/roles/{id}",
+                        "/api/roles/{id}",
                         HttpMethod.DELETE,
                         null,
                         String.class,

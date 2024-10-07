@@ -1,5 +1,6 @@
 package pl.matkan.wholesaler.exception;
 
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +8,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +44,16 @@ public class ExceptionHandlerController {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<Map<String, String>> handleTokenRefreshException(RefreshTokenException ex, WebRequest request) {
+        Map<String, String> body = new HashMap<>();
+        body.put("date", new Date().toString());
+        body.put("message", ex.getMessage());
+        body.put("description", request.getDescription(false));
+
+        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
     }
 }
 

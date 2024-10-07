@@ -39,6 +39,7 @@ public class ContactPerson {
     private String phoneNumber;
 
     @NotBlank(message = "Email is required")
+    @Size(max = 50)
     @Email(message = "Invalid email format")
     private String mail;
 
