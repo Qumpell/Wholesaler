@@ -4,6 +4,7 @@ package pl.matkan.wholesaler.exception;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,24 +20,20 @@ import java.util.Map;
 public class ExceptionHandlerController {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+    public final ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Unique constraint violation: " + ex.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Map<String, String>> handleBadRequestException(BadRequestException ex) {
+    public final ResponseEntity<ErrorDetails> handleBadRequestException(BadRequestException ex) {
 
-        Map<String, String> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        body.put("error details", ex.getErrorDetails());
-        body.put("error time", String.valueOf(ex.getErrorTime()));
+        ErrorDetails errorDetails = new ErrorDetails(Date.from(ex.getErrorTime()), ex.getMessage(), ex.getErrorDetails());
 
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public final ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -47,13 +44,28 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(RefreshTokenException.class)
-    public ResponseEntity<Map<String, String>> handleTokenRefreshException(RefreshTokenException ex, WebRequest request) {
-        Map<String, String> body = new HashMap<>();
-        body.put("date", new Date().toString());
-        body.put("message", ex.getMessage());
-        body.put("description", request.getDescription(false));
+    public final ResponseEntity<ErrorDetails> handleTokenRefreshException(RefreshTokenException ex, WebRequest request) {
 
-        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),  request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<ErrorDetails> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleAccessDeniedException(ResourceNotFoundException ex, WebRequest request) {
+
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+
 }
 

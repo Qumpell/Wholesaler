@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import pl.matkan.wholesaler.auth.AccessControlService;
+import pl.matkan.wholesaler.auth.UserDetailsImpl;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class TradeNoteController {
 
     private final TradeNoteService tradeNoteService;
+    private final AccessControlService accessControlService;
 
     @GetMapping("/{id}")
     public ResponseEntity<TradeNoteResponse> getOne(@PathVariable("id") Long id) {
+
         TradeNoteResponse tradeNoteResponse = tradeNoteService.findById(id);
         return new ResponseEntity<>(tradeNoteResponse, HttpStatus.OK);
     }
@@ -32,25 +37,35 @@ public class TradeNoteController {
                 HttpStatus.OK);
     }
     @PostMapping()
-    public ResponseEntity<TradeNoteResponse> createOne(@RequestBody @Valid TradeNoteRequest one) {
-        return new ResponseEntity<>(tradeNoteService.create(one), HttpStatus.CREATED);
+    public ResponseEntity<TradeNoteResponse> createOne(
+            @RequestBody @Valid TradeNoteRequest one,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        TradeNoteDetailedRequest tradeNoteDetailedRequest = new TradeNoteDetailedRequest(one.content(), one.companyId(), userDetails.getId());
+
+        return new ResponseEntity<>(tradeNoteService.create(tradeNoteDetailedRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TradeNoteResponse> updateOne(@PathVariable("id") Long id, @RequestBody @Valid TradeNoteRequest one) {
-        if (tradeNoteService.existsById(id)) {
-            return new ResponseEntity<>(tradeNoteService.update(id, one), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<TradeNoteResponse> updateOne(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid TradeNoteRequest one,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+
+        accessControlService.canAccessResource(tradeNoteService.findById(id).ownerId(), userDetails);
+        TradeNoteDetailedRequest tradeNoteDetailedRequest = new TradeNoteDetailedRequest(one.content(), one.companyId(), userDetails.getId());
+        return new ResponseEntity<>(tradeNoteService.update(id, tradeNoteDetailedRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteOne(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteOne(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
 
-        if (!tradeNoteService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        accessControlService.canAccessResource(tradeNoteService.findById(id).ownerId(), userDetails);
+
         tradeNoteService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

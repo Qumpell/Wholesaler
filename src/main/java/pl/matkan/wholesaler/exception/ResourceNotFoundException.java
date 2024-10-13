@@ -9,7 +9,6 @@ import java.time.Instant;
 
 
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
 @Getter
 public class ResourceNotFoundException extends RuntimeException {
     private final Instant errorTime;

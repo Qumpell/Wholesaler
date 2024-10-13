@@ -8,7 +8,8 @@ logging:
 spring:
   sql:
     init:
-      mode: always
+#      mode: always
+      mode: never
   datasource:
 #    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
     url: jdbc:mysql://localhost:3306/wholesaler
@@ -16,7 +17,8 @@ spring:
     password: test
   jpa:
     hibernate:
-      ddl-auto: create
+      #validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect

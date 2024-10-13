@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface TradeNoteService {
-    TradeNoteResponse create(TradeNoteRequest one);
+    TradeNoteResponse create(TradeNoteDetailedRequest one);
 
-    TradeNoteResponse update(Long id, TradeNoteRequest one);
+    TradeNoteResponse update(Long id, TradeNoteDetailedRequest one);
 
     TradeNoteResponse findById(Long id);
 

@@ -9,23 +9,25 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.matkan.wholesaler.RestPageImpl;
+import pl.matkan.wholesaler.auth.LoginRequest;
+import pl.matkan.wholesaler.auth.jwt.JwtResponse;
+import pl.matkan.wholesaler.auth.refreshtoken.RefreshTokenRepository;
 import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
+import pl.matkan.wholesaler.role.Role;
+import pl.matkan.wholesaler.role.RoleRepository;
 import pl.matkan.wholesaler.tradenote.TradeNote;
-import pl.matkan.wholesaler.tradenote.TradeNoteRepository;
 import pl.matkan.wholesaler.tradenote.TradeNoteRequest;
+import pl.matkan.wholesaler.tradenote.TradeNoteRepository;
 import pl.matkan.wholesaler.tradenote.TradeNoteResponse;
 import pl.matkan.wholesaler.user.User;
 import pl.matkan.wholesaler.user.UserRepository;
@@ -37,6 +39,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 
 @ActiveProfiles("test")
 @Testcontainers
@@ -67,29 +70,39 @@ public class TradeNoteControllerTest {
     @Autowired
     TradeNoteRepository tradeNoteRepository;
 
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
     private TradeNote tradeNote;
-    private User owner;
     private Company company;
+    private String accessToken;
+    private User owner;
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.create("http://localhost:" + randomServerPort);
 
+        Role role = new Role(null, "USER", new HashSet<>());
+        role = roleRepository.save(role);
 
         Industry industry = new Industry(1L, "IT", new ArrayList<>());
         industry = industryRepository.save(industry);
-        owner = new User(
+
+         owner = new User(
                 null,
                 "test",
                 "test",
                 "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
-                "pass1234",
+                "$2a$10$uFUle8nQVHyBsSuwR286uubAxVZYF4qsZpvb6RAkbQvJ6AlRU2NGy", //test1234
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new HashSet<>(),
+                Set.of(role),
                 false);
 
         owner = userRepository.save(owner);
@@ -118,13 +131,26 @@ public class TradeNoteControllerTest {
         );
         tradeNote = tradeNoteRepository.save(tradeNote);
 
+        accessToken = authenticateAndGetToken(owner);
+
+    }
+    private String authenticateAndGetToken(User user) {
+        LoginRequest loginRequest = new LoginRequest("testLogin", "test1234");
+        ResponseEntity<JwtResponse> response = restTemplate.postForEntity(
+                "/api/auth/signin",
+                loginRequest,
+                JwtResponse.class
+        );
+        return Objects.requireNonNull(response.getBody()).accessToken();
     }
 
     @AfterEach
     void cleanUp() {
+        refreshTokenRepository.deleteAll();
         companyRepository.deleteAll();
         industryRepository.deleteAll();
         userRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
 
@@ -142,6 +168,7 @@ public class TradeNoteControllerTest {
         ResponseEntity<RestPageImpl<TradeNoteResponse>> responseEntity = restClient
                 .get()
                 .uri("/api/trade-notes")
+                .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
@@ -162,6 +189,7 @@ public class TradeNoteControllerTest {
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restClient.get()
                 .uri("/api/trade-notes/{id}", tradeNote.getId())
+                .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
                 .toEntity(TradeNoteResponse.class);
 
@@ -195,41 +223,68 @@ public class TradeNoteControllerTest {
     }
 
     @Test
-    void shouldCreateTradeNote_GivenValidData() {
+    void shouldCreateTradeNote_GivenValidData() throws Exception {
 
         //given
         TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
                 "test content",
-                company.getId(),
-                owner.getId()
+                company.getId()
         );
 
         //when
         ResponseEntity<TradeNoteResponse> responseEntity = restClient.post()
                 .uri("/api/trade-notes")
-                .contentType(APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken)
                 .body(tradeNoteRequest)
                 .retrieve()
                 .toEntity(TradeNoteResponse.class);
 
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         TradeNoteResponse responseEntityBody = responseEntity.getBody();
-
         // then
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()),
                 () -> assertEquals(tradeNoteRequest.content(), Objects.requireNonNull(responseEntityBody).content()),
                 () -> assertEquals(tradeNoteRequest.companyId(), Objects.requireNonNull(responseEntityBody).companyId()),
-                () -> assertEquals(tradeNoteRequest.ownerId(), Objects.requireNonNull(responseEntityBody).ownerId())
+                () -> assertEquals(owner.getId(), Objects.requireNonNull(responseEntityBody).ownerId())
         );
+
     }
 
+//    @Test
+//    void shouldReturnBadRequest_WhenCreateTradeNote_GivenInvalidOwnerId() {
+//
+//        //given
+//        TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
+//                "1234567890",
+//                company.getId()
+//        );
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + accessToken);
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<TradeNoteRequest> entity = new HttpEntity<>(tradeNoteRequest, headers);
+//
+//        //when
+//        ResponseEntity<TradeNoteResponse> responseEntity = restTemplate.
+//                postForEntity(
+//                        "/api/trade-notes",
+//                        entity,
+//                        TradeNoteResponse.class
+//                );
+//
+//        // then
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+//    }
+
     @Test
-    void shouldReturnBadRequest_WhenCreateTradeNote_GivenInvalidOwnerId() {
+    void shouldReturnBadRequest_WhenCreateTradeNote_GivenInvalidCompanyId() {
 
         //given
-        TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
-                "1234567890",
-                company.getId(),
+        TradeNoteRequest tradeNoteDetailedRequest = new TradeNoteRequest(
+                "content",
                 100L
         );
 
@@ -237,29 +292,7 @@ public class TradeNoteControllerTest {
         ResponseEntity<TradeNoteResponse> responseEntity = restTemplate.
                 postForEntity(
                         "/api/trade-notes",
-                        tradeNoteRequest,
-                        TradeNoteResponse.class
-                );
-
-        // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    void shouldReturnBadRequest_WhenCreateTradeNote_GivenInvalidCompanyId() {
-
-        //given
-        TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
-                "content",
-                100L,
-                owner.getId()
-        );
-
-        //when
-        ResponseEntity<TradeNoteResponse> responseEntity = restTemplate.
-                postForEntity(
-                        "/api/trade-notes",
-                        tradeNoteRequest,
+                        tradeNoteDetailedRequest,
                         TradeNoteResponse.class
                 );
 
@@ -270,10 +303,9 @@ public class TradeNoteControllerTest {
     @Test
     void shouldUpdateTradeNote() {
         //given
-        TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
+        TradeNoteRequest tradeNoteDetailedRequest = new TradeNoteRequest(
                 "new content new",
-                company.getId(),
-                owner.getId()
+                company.getId()
         );
 
         //when
@@ -281,7 +313,8 @@ public class TradeNoteControllerTest {
                 .put()
                 .uri("/api/trade-notes/{id}", tradeNote.getId())
                 .contentType(APPLICATION_JSON)
-                .body(tradeNoteRequest)
+                .header("Authorization", "Bearer " + accessToken)
+                .body(tradeNoteDetailedRequest)
                 .retrieve()
                 .toEntity(TradeNoteResponse.class);
 
@@ -289,7 +322,7 @@ public class TradeNoteControllerTest {
         //then
         assertAll(
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
-                () -> assertEquals(tradeNoteRequest.content(), Objects.requireNonNull(Objects.requireNonNull(responseEntity.getBody()).content()))
+                () -> assertEquals(tradeNoteDetailedRequest.content(), Objects.requireNonNull(Objects.requireNonNull(responseEntity.getBody()).content()))
         );
     }
 
@@ -297,10 +330,9 @@ public class TradeNoteControllerTest {
     void shouldReturnNotFound_WhenUpdateTradeNote_GivenInvalidId() {
 
         //given
-        TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
+        TradeNoteRequest tradeNoteDetailedRequest = new TradeNoteRequest(
                 "new content",
-                company.getId(),
-                owner.getId()
+                company.getId()
         );
 
         //when
@@ -308,7 +340,7 @@ public class TradeNoteControllerTest {
                 .exchange(
                         "/api/trade-notes/{id}",
                         HttpMethod.PUT,
-                        new HttpEntity<>(tradeNoteRequest),
+                        new HttpEntity<>(tradeNoteDetailedRequest),
                         String.class,
                         100
                 );
@@ -318,30 +350,29 @@ public class TradeNoteControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Test
-    void shouldReturnBadRequest_WhenUpdateTradeNote_GivenNonexistentOwnerID() {
-
-        //given
-        TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
-                "new content",
-                company.getId(),
-                100L
-        );
-
-        //when
-        ResponseEntity<String> responseEntity = restTemplate
-                .exchange(
-                        "/api/trade-notes/{id}",
-                        HttpMethod.PUT,
-                        new HttpEntity<>(tradeNoteRequest),
-                        String.class,
-                        tradeNote.getId()
-                );
-
-
-        //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
+//    @Test
+//    void shouldReturnBadRequest_WhenUpdateTradeNote_GivenNonexistentOwnerID() {
+//
+//        //given
+//        TradeNoteRequest tradeNoteDetailedRequest = new TradeNoteRequest(
+//                "new content",
+//                company.getId()
+//        );
+//
+//        //when
+//        ResponseEntity<String> responseEntity = restTemplate
+//                .exchange(
+//                        "/api/trade-notes/{id}",
+//                        HttpMethod.PUT,
+//                        new HttpEntity<>(tradeNoteDetailedRequest),
+//                        String.class,
+//                        tradeNote.getId()
+//                );
+//
+//
+//        //then
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+//    }
 
     @Test
     void shouldReturnBadRequest_WhenUpdateTradeNote_GivenNonexistentCompanyId() {
@@ -349,16 +380,20 @@ public class TradeNoteControllerTest {
         //given
         TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(
                 "content test",
-                100L,
-                owner.getId()
+                100L
         );
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<TradeNoteRequest> entity = new HttpEntity<>(tradeNoteRequest, headers);
         //when
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
                         "/api/trade-notes/{id}",
                         HttpMethod.PUT,
-                        new HttpEntity<>(tradeNoteRequest),
+                        entity,
                         String.class,
                         tradeNote.getId()
                 );
@@ -375,6 +410,7 @@ public class TradeNoteControllerTest {
         ResponseEntity<String> response = restClient
                 .delete()
                 .uri("/api/trade-notes/{id}", tradeNote.getId())
+                .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
                 .toEntity(String.class);
 

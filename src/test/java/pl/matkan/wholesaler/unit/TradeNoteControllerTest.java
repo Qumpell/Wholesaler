@@ -3,6 +3,7 @@ package pl.matkan.wholesaler.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,8 +11,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.matkan.wholesaler.auth.AccessControlService;
+import pl.matkan.wholesaler.auth.UserDetailsImpl;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 import pl.matkan.wholesaler.tradenote.*;
 
@@ -39,15 +45,21 @@ public class TradeNoteControllerTest {
     @MockBean
     TradeNoteService service;
 
+    @MockBean
+    AccessControlService accessControlService;
 
     private Page<TradeNoteResponse> tradeNotePage;
     private TradeNoteResponse tradeNoteResponse;
-    private TradeNoteRequest tradeNoteRequest;
+    private TradeNoteDetailedRequest tradeNoteDetailedRequest;
 
     @BeforeEach
     void setUp() {
 
+        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@test.com","password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
+        );
         tradeNoteResponse = new TradeNoteResponse(
                 1L,
                 "TEST CONTENT",
@@ -57,7 +69,7 @@ public class TradeNoteControllerTest {
                 1L
         );
 
-        tradeNoteRequest = new TradeNoteRequest(
+        tradeNoteDetailedRequest = new TradeNoteDetailedRequest(
                 "TEST CONTENT",
                 1L,
                 1L
@@ -109,13 +121,13 @@ public class TradeNoteControllerTest {
     @Test
     void shouldCreateTradeNote() throws Exception {
         //when //then
-        when(service.create(any(TradeNoteRequest.class))).thenReturn(tradeNoteResponse);
+        when(service.create(any(TradeNoteDetailedRequest.class))).thenReturn(tradeNoteResponse);
 
         mockMvc.perform(post("/api/trade-notes")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
-                        .content(objectMapper.writeValueAsString(tradeNoteRequest)))
+                        .content(objectMapper.writeValueAsString(tradeNoteDetailedRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)));
     }
@@ -127,12 +139,12 @@ public class TradeNoteControllerTest {
 
         //when //then
         when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(TradeNoteRequest.class))).thenReturn(tradeNoteResponse);
+        when(service.update(any(Long.class), any(TradeNoteDetailedRequest.class))).thenReturn(tradeNoteResponse);
 
         mockMvc.perform(put("/api/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
-                        .content(objectMapper.writeValueAsString(tradeNoteRequest)))
+                        .content(objectMapper.writeValueAsString(tradeNoteDetailedRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)));
     }
@@ -148,7 +160,7 @@ public class TradeNoteControllerTest {
         mockMvc.perform(put("/api/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
-                        .content(objectMapper.writeValueAsString(tradeNoteRequest)))
+                        .content(objectMapper.writeValueAsString(tradeNoteDetailedRequest)))
                 .andExpect(status().isNotFound());
     }
 

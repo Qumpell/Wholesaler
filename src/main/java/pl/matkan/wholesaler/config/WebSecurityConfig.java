@@ -62,6 +62,7 @@ public class WebSecurityConfig{
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        //TODO
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
@@ -69,9 +70,10 @@ public class WebSecurityConfig{
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/users/signup" ).permitAll()
-                                .requestMatchers("/api/users").hasRole("ADMIN")
+                                .requestMatchers("/api/users/**").hasRole("ADMIN")
                                 .requestMatchers("/roles/**" ).hasRole("ADMIN")
-                                .requestMatchers("/api/trade-notes" ).hasRole("USER")
+                                .requestMatchers("/api/trade-notes/**" ).hasRole("USER")
+                                .requestMatchers("/api/contact-persons/**" ).hasRole("USER")
                                 .requestMatchers(HttpMethod.POST,"/api/**").hasRole("MODERATOR")
                                 .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("MODERATOR")
                                 .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("MODERATOR")

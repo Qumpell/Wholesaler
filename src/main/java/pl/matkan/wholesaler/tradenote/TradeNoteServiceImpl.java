@@ -24,7 +24,7 @@ public class TradeNoteServiceImpl implements TradeNoteService {
     private final UserService userService;
 
     @Override
-    public TradeNoteResponse create(TradeNoteRequest dto) {
+    public TradeNoteResponse create(TradeNoteDetailedRequest dto) {
 
         TradeNote tradeNote = tradeNoteMapper.tradeNoteRequestToTradeNote(dto);
 
@@ -35,7 +35,7 @@ public class TradeNoteServiceImpl implements TradeNoteService {
     }
 
     @Override
-    public TradeNoteResponse update(Long id, TradeNoteRequest dto) {
+    public TradeNoteResponse update(Long id, TradeNoteDetailedRequest dto) {
 
         TradeNote existingTradeNote = getOneById(id);
 
@@ -95,7 +95,7 @@ public class TradeNoteServiceImpl implements TradeNoteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Trade note was not found", "with given id:= " + id));
     }
 
-    private TradeNote updateExisitingTradeNote(TradeNote existingTradeNote, TradeNoteRequest dto) {
+    private TradeNote updateExisitingTradeNote(TradeNote existingTradeNote, TradeNoteDetailedRequest dto) {
         existingTradeNote.setContent(dto.content());
 
         return validateAndSetOwnerAndCompany(existingTradeNote, dto.ownerId(), dto.companyId());

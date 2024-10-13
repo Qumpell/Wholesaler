@@ -11,9 +11,6 @@ public record TradeNoteRequest(
         String content,
 
         @NotNull(message = "Company ID cannot be null")
-        Long companyId,
-
-        @NotNull(message = "Owner ID cannot be null")
-        Long ownerId
+        Long companyId
 ) {
 }
