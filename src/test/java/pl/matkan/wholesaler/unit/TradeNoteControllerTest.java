@@ -3,7 +3,6 @@ package pl.matkan.wholesaler.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -55,7 +54,7 @@ public class TradeNoteControllerTest {
     @BeforeEach
     void setUp() {
 
-        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@test.com","password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        qUserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
@@ -138,7 +137,7 @@ public class TradeNoteControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(true);
+        when(service.findById(id)).thenReturn(tradeNoteResponse);
         when(service.update(any(Long.class), any(TradeNoteDetailedRequest.class))).thenReturn(tradeNoteResponse);
 
         mockMvc.perform(put("/api/trade-notes/{id}", id)
@@ -155,7 +154,7 @@ public class TradeNoteControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(false);
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote not found", "with id:=" + id));
 
         mockMvc.perform(put("/api/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -170,7 +169,7 @@ public class TradeNoteControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(true);
+        when(service.findById(id)).thenReturn(tradeNoteResponse);
         Mockito.doNothing().when(service).deleteById(id);
 
         mockMvc.perform(delete("/api/trade-notes/{id}", id)
@@ -184,7 +183,8 @@ public class TradeNoteControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(false);
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote not found", "with id:=" + id));
+
 
         mockMvc.perform(delete("/api/trade-notes/{id}", id)
                         .with(csrf()))
