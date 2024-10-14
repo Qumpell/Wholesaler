@@ -1,14 +1,14 @@
-
 INSERT INTO industries (id, name) VALUES (1, 'Technology');
 INSERT INTO industries (id, name) VALUES (2, 'Finance');
 INSERT INTO industries (id, name) VALUES (3, 'Retail');
 INSERT INTO industries (id, name) VALUES (4, 'Healthcare');
 INSERT INTO industries (id, name) VALUES (5, 'Construction');
-
+COMMIT;
 
 INSERT INTO roles (id, name) VALUES (1, 'ROLE_USER');
 INSERT INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
 INSERT INTO roles (id, name) VALUES (3, 'ROLE_MODERATOR');
+COMMIT;
 
 INSERT INTO users (firstname, surname, email, date_of_birth, username, password, is_deleted)
 VALUES ('John', 'Doe', 'john.doe@example.com', '1985-01-15', 'johndoe', 'password1', false),
@@ -27,7 +27,7 @@ VALUES ('John', 'Doe', 'john.doe@example.com', '1985-01-15', 'johndoe', 'passwor
        ('Emma', 'White', 'emma.white@example.com', '1996-04-03', 'emmawhite', 'password14', false),
        ('James', 'Harris', 'james.harris@example.com', '1981-09-18', 'jamesharris', 'password15', false),
     ('Admin', 'Admin', 'admin@example.com', '1985-01-15', 'admin', '$2a$10$uFUle8nQVHyBsSuwR286uubAxVZYF4qsZpvb6RAkbQvJ6AlRU2NGy', false);
-
+COMMIT;
 INSERT INTO user_roles (user_id, role_id)
 VALUES
     (1, 2),
@@ -46,7 +46,7 @@ VALUES
     (14, 1),
     (15, 3),
     (16, 1);
-
+COMMIT;
 INSERT INTO companies (id, nip, regon, name, city, address, industry_id, user_id, is_deleted)
 VALUES (1, 'PL1234567890', '987654321', 'TechCorp', 'Warsaw', '123 Nowy Świat', 1, 1, false);
 INSERT INTO companies (id, nip, regon, name, city, address, industry_id, user_id, is_deleted)
@@ -67,6 +67,8 @@ INSERT INTO companies (id, nip, regon, name, city, address, industry_id, user_id
 VALUES (9, 'IT9234567890', NULL, 'MediCare', 'Milan', '606 Corso Buenos Aires', 4, 9, false);
 INSERT INTO companies (id, nip, regon, name, city, address, industry_id, user_id, is_deleted)
 VALUES (10, 'ES1023456789', NULL, 'BuilderPros', 'Barcelona', '707 Passeig de Gràcia', 5, 10, false);
+COMMIT;
+
 INSERT INTO trade_notes (id, content, company_id, user_id, is_deleted)
 VALUES (1, 'First trade note for TechCorp', 1, 1, false);
 INSERT INTO trade_notes (id, content, company_id, user_id, is_deleted)
@@ -107,7 +109,7 @@ INSERT INTO trade_notes (id, content, company_id, user_id, is_deleted)
 VALUES (19, 'BuilderPros wins major infrastructure project', 10, 10, false);
 INSERT INTO trade_notes (id, content, company_id, user_id, is_deleted)
 VALUES (20, 'BuilderPros expands construction team', 10, 1, false);
-
+COMMIT;
 
 INSERT INTO contact_persons (id, firstname, surname, phone_number, mail, position, company_id, user_id, is_deleted)
 VALUES (1, 'John', 'Doe', '123456789', 'john.doe@techcorp.com', 'Manager', 1, 1, false);
@@ -139,3 +141,4 @@ INSERT INTO contact_persons (id, firstname, surname, phone_number, mail, positio
 VALUES (14, 'Linda', 'Clark', '333444555', 'linda.clark@healthplus.com', 'Nurse Practitioner', 4, 4, false);
 INSERT INTO contact_persons (id, firstname, surname, phone_number, mail, position, company_id, user_id, is_deleted)
 VALUES (15, 'Daniel', 'Lewis', '222333444', 'daniel.lewis@constructbuild.com', 'Architect', 5, 5, false);
+COMMIT;
