@@ -2,8 +2,7 @@ package pl.matkan.wholesaler.contactperson;
 
 import jakarta.validation.constraints.*;
 
-public record ContactPersonRequest(
-
+public record ContactPersonDetailedRequest(
         @NotBlank(message = "Firstname is required")
         @Size(min = 2, max = 50, message = "Firstname must be between 2 and 50 characters")
         String firstname,
@@ -27,6 +26,10 @@ public record ContactPersonRequest(
 
         @NotNull(message = "Company ID is required")
         @Positive(message = "Company ID must be a positive number")
-        Long companyId
+        Long companyId,
+
+        @NotNull(message = "Owner ID is required")
+        @Positive(message = "Owner ID must be a positive number")
+        Long ownerId
 ) {
 }

@@ -9,6 +9,8 @@ import pl.matkan.wholesaler.company.CompanyService;
 import pl.matkan.wholesaler.contactperson.mapper.ContactPersonMapper;
 import pl.matkan.wholesaler.exception.BadRequestException;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
+import pl.matkan.wholesaler.tradenote.TradeNote;
+import pl.matkan.wholesaler.tradenote.TradeNoteResponse;
 import pl.matkan.wholesaler.user.UserService;
 
 import java.util.List;
@@ -23,9 +25,8 @@ public class ContactPersonServiceImpl implements ContactPersonService {
     private final CompanyService companyService;
 
 
-
     @Override
-    public ContactPersonResponse create(ContactPersonRequest dto) {
+    public ContactPersonResponse create(ContactPersonDetailedRequest dto) {
 
         ContactPerson contactPerson = ContactPersonMapper.INSTANCE.contactPersonRequestToContactPerson(dto);
 
@@ -35,13 +36,14 @@ public class ContactPersonServiceImpl implements ContactPersonService {
     }
 
     @Override
-    public ContactPersonResponse update(Long id, ContactPersonRequest contactPersonRequest) {
+    public ContactPersonResponse update(Long id, ContactPersonDetailedRequest contactPersonRequest) {
 
         ContactPerson existingContactPerson = getOneById(id);
         existingContactPerson = updateExistingContactPerson(existingContactPerson, contactPersonRequest);
 
         return ContactPersonMapper.INSTANCE.contactPersonToContactPersonResponse(contactPersonRepository.save(existingContactPerson));
     }
+
     @Override
     public ContactPersonResponse findById(Long id) {
         return ContactPersonMapper.INSTANCE.contactPersonToContactPersonResponse(getOneById(id));
@@ -73,7 +75,15 @@ public class ContactPersonServiceImpl implements ContactPersonService {
         return contactPeople.map(ContactPersonMapper.INSTANCE::contactPersonToContactPersonResponse);
     }
 
-    private ContactPerson updateExistingContactPerson(ContactPerson contactPerson, ContactPersonRequest dto){
+    @Override
+    public Page<ContactPersonResponse> findAllByUser(int pageNumber, int pageSize, String field, String order, Long userId) {
+        Page<ContactPerson> contactPeople = contactPersonRepository.findByUserIdAndIsDeletedFalse(
+                PageRequest.of(pageNumber, pageSize).withSort(Sort.Direction.fromString(order), field), userId
+        );
+        return contactPeople.map(ContactPersonMapper.INSTANCE::contactPersonToContactPersonResponse);
+    }
+
+    private ContactPerson updateExistingContactPerson(ContactPerson contactPerson, ContactPersonDetailedRequest dto) {
         contactPerson.setFirstname(dto.firstname());
         contactPerson.setSurname(dto.surname());
         contactPerson.setMail(dto.mail());
@@ -87,16 +97,16 @@ public class ContactPersonServiceImpl implements ContactPersonService {
     private ContactPerson getOneById(Long id) {
         return contactPersonRepository
                 .findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Contact person was not found", "with given id:= " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Contact person was not found", "with given id:= " + id));
     }
+
     private ContactPerson validateAndSetOwnerAndCompany(ContactPerson contactPerson, Long ownerId, Long companyId) {
 
         try {
             contactPerson.setUser(userService.getOneById(ownerId));
             contactPerson.setCompany(companyService.getOneById(companyId));
-        }
-        catch (ResourceNotFoundException e){
-            throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
+        } catch (ResourceNotFoundException e) {
+            throw new BadRequestException("Invalid payload", e.getMessage() + " " + e.getErrorDetails());
         }
 
         return contactPerson;
