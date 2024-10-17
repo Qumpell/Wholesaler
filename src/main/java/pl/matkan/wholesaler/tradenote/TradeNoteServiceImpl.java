@@ -68,9 +68,18 @@ public class TradeNoteServiceImpl implements TradeNoteService {
     }
 
     @Override
+    public Page<TradeNoteResponse> findAllByUser(int pageNumber, int pageSize, String field, String order, Long userId) {
+
+        Page<TradeNote> tradeNotes = tradeNoteRepo.findByUserIdAndIsDeletedFalse(
+                PageRequest.of(pageNumber, pageSize).
+                        withSort(Sort.by(Sort.Direction.fromString(order), field)),
+                userId);
+        return tradeNotes.map(tradeNoteMapper::tradeNoteToTradeNoteResponse);
+    }
+
+    @Override
     public Page<TradeNoteResponse> findAll(
-            int pageNumber, int pageSize, String field, String order)
-    {
+            int pageNumber, int pageSize, String field, String order) {
         Page<TradeNote> tradeNotes = tradeNoteRepo.findAll(PageRequest.of(pageNumber, pageSize).
                 withSort(Sort.by(Sort.Direction.fromString(order), field))
         );
@@ -82,9 +91,8 @@ public class TradeNoteServiceImpl implements TradeNoteService {
         try {
             tradeNote.setUser(userService.getOneById(ownerId));
             tradeNote.setCompany(companyService.getOneById(companyId));
-        }
-        catch (ResourceNotFoundException e){
-            throw new BadRequestException("Invalid payload", e.getMessage() + " " +  e.getErrorDetails());
+        } catch (ResourceNotFoundException e) {
+            throw new BadRequestException("Invalid payload", e.getMessage() + " " + e.getErrorDetails());
         }
 
         return tradeNote;

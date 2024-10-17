@@ -36,6 +36,20 @@ public class TradeNoteController {
                 tradeNoteService.findAll(pageNumber, pageSize, field, order),
                 HttpStatus.OK);
     }
+
+    @GetMapping("/{userId}/all")
+    public ResponseEntity<Page<TradeNoteResponse>> getAllByUser(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order,
+            @PathVariable Long userId) {
+
+        return new ResponseEntity<>(
+                tradeNoteService.findAllByUser(pageNumber, pageSize, field, order, userId),
+                HttpStatus.OK);
+    }
+
     @PostMapping()
     public ResponseEntity<TradeNoteResponse> createOne(
             @RequestBody @Valid TradeNoteRequest one,
