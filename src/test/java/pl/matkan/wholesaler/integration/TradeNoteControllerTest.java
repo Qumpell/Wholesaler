@@ -21,6 +21,7 @@ import pl.matkan.wholesaler.auth.jwt.JwtResponse;
 import pl.matkan.wholesaler.auth.refreshtoken.RefreshTokenRepository;
 import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
+import pl.matkan.wholesaler.contactperson.ContactPersonResponse;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
 import pl.matkan.wholesaler.role.Role;
@@ -182,7 +183,26 @@ public class TradeNoteControllerTest {
         );
     }
 
+    @Test
+    void shouldFindAllTradeNotesForGivenUserId() {
 
+        //given
+        //when
+        ResponseEntity<RestPageImpl<TradeNoteResponse>> responseEntity = restClient
+                .get()
+                .uri("/api/trade-notes/{user_id}/all", owner.getId())
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<>() {
+                });
+
+        RestPageImpl<TradeNoteResponse> body = responseEntity.getBody();
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
+        );
+    }
     @Test
     void shouldGetOneTradeNote_GivenValidID() {
         //given

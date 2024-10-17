@@ -54,7 +54,7 @@ public class TradeNoteControllerTest {
     @BeforeEach
     void setUp() {
 
-        qUserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
@@ -89,6 +89,17 @@ public class TradeNoteControllerTest {
                 .andExpect(jsonPath("$.content.size()", is(tradeNotePage.getSize())));
     }
 
+    @Test
+    void shouldFindAllUserTradeNotes() throws Exception {
+        //when //then
+        when(service.findAllByUser(0, 10, "id", "asc", 1L))
+                .thenReturn(tradeNotePage);
+
+        mockMvc.perform(get("/api/trade-notes/{userId}/all", 1L)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.size()", is(tradeNotePage.getSize())));
+    }
 
     @Test
     void shouldGetOneTradeNote() throws Exception {
@@ -110,7 +121,7 @@ public class TradeNoteControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote was not found", "with id:=" + id));
 
         mockMvc.perform(get("/api/trade-notes/{id}", id)
                         .with(csrf()))
@@ -154,7 +165,7 @@ public class TradeNoteControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote was not found", "with id:=" + id));
 
         mockMvc.perform(put("/api/trade-notes/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -183,7 +194,7 @@ public class TradeNoteControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote not found", "with id:=" + id));
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("TradeNote was not found", "with id:=" + id));
 
 
         mockMvc.perform(delete("/api/trade-notes/{id}", id)

@@ -9,16 +9,16 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.matkan.wholesaler.RestPageImpl;
+import pl.matkan.wholesaler.auth.LoginRequest;
+import pl.matkan.wholesaler.auth.jwt.JwtResponse;
+import pl.matkan.wholesaler.auth.refreshtoken.RefreshTokenRepository;
 import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
 import pl.matkan.wholesaler.contactperson.ContactPerson;
@@ -27,6 +27,9 @@ import pl.matkan.wholesaler.contactperson.ContactPersonRequest;
 import pl.matkan.wholesaler.contactperson.ContactPersonResponse;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
+import pl.matkan.wholesaler.role.Role;
+import pl.matkan.wholesaler.role.RoleRepository;
+import pl.matkan.wholesaler.tradenote.TradeNoteRequest;
 import pl.matkan.wholesaler.user.User;
 import pl.matkan.wholesaler.user.UserRepository;
 
@@ -35,6 +38,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,17 +73,28 @@ public class ContactPersonControllerTest {
     @Autowired
     ContactPersonRepository contactPersonRepository;
 
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
     private ContactPerson contactPerson;
     private User owner;
     private Company company;
+    private String accessToken;
+
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.create("http://localhost:" + randomServerPort);
 
+        Role role = new Role(null, "USER", new HashSet<>());
+        role = roleRepository.save(role);
 
         Industry industry = new Industry(1L, "IT", new ArrayList<>());
         industry = industryRepository.save(industry);
+
         owner = new User(
                 null,
                 "test",
@@ -87,11 +102,11 @@ public class ContactPersonControllerTest {
                 "test@test.com",
                 LocalDate.of(1999, Month.AUGUST, 22),
                 "testLogin",
-                "pass1234",
+                "$2a$10$uFUle8nQVHyBsSuwR286uubAxVZYF4qsZpvb6RAkbQvJ6AlRU2NGy", //test1234
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new HashSet<>(),
+                Set.of(role),
                 false);
 
         owner = userRepository.save(owner);
@@ -124,13 +139,26 @@ public class ContactPersonControllerTest {
         );
         contactPerson = contactPersonRepository.save(contactPerson);
 
+        accessToken = authenticateAndGetToken(owner);
+    }
+
+    private String authenticateAndGetToken(User user) {
+        LoginRequest loginRequest = new LoginRequest("testLogin", "test1234");
+        ResponseEntity<JwtResponse> response = restTemplate.postForEntity(
+                "/api/auth/signin",
+                loginRequest,
+                JwtResponse.class
+        );
+        return Objects.requireNonNull(response.getBody()).accessToken();
     }
 
     @AfterEach
     void cleanUp() {
+        refreshTokenRepository.deleteAll();
         companyRepository.deleteAll();
         industryRepository.deleteAll();
         userRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
 
@@ -160,7 +188,26 @@ public class ContactPersonControllerTest {
                 () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
         );
     }
+    @Test
+    void shouldFindAllContactPersonsForGivenUserId() {
 
+        //given
+        //when
+        ResponseEntity<RestPageImpl<ContactPersonResponse>> responseEntity = restClient
+                .get()
+                .uri("/api/contact-persons/{user_id}/all", owner.getId())
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<>() {
+                });
+
+        RestPageImpl<ContactPersonResponse> body = responseEntity.getBody();
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
+        );
+    }
 
     @Test
     void shouldGetOneContactPerson_GivenValidID() {
@@ -214,14 +261,13 @@ public class ContactPersonControllerTest {
                 "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
-                company.getId(),
-                owner.getId()
-
+                company.getId()
                 );
 
         //when
         ResponseEntity<ContactPersonResponse> responseEntity = restClient.post()
                 .uri("/api/contact-persons")
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(APPLICATION_JSON)
                 .body(contactPersonRequest)
                 .retrieve()
@@ -238,37 +284,37 @@ public class ContactPersonControllerTest {
                 () -> assertEquals(contactPersonRequest.position(), Objects.requireNonNull(responseEntityBody).position()),
                 () -> assertEquals(contactPersonRequest.phoneNumber(), Objects.requireNonNull(responseEntityBody).phoneNumber()),
                 () -> assertEquals(contactPersonRequest.companyId(), Objects.requireNonNull(responseEntityBody).companyId()),
-                () -> assertEquals(contactPersonRequest.ownerId(), Objects.requireNonNull(responseEntityBody).companyId())
+                () -> assertEquals(owner.getId(), Objects.requireNonNull(responseEntityBody).companyId())
 
         );
     }
 
-    @Test
-    void shouldReturnBadRequest_WhenCreateContactPerson_GivenInvalidOwnerId() {
-
-        //given
-        ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
-                "test",
-                "test",
-                "+48 111-222-333",
-                "test@test.com",
-                "Project Manager",
-                company.getId(),
-                100L
-        );
-
-
-        //when
-        ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
-                postForEntity(
-                        "/api/contact-persons",
-                        contactPersonRequest,
-                        ContactPersonResponse.class
-                );
-
-        // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
+//    @Test
+//    void shouldReturnBadRequest_WhenCreateContactPerson_GivenInvalidOwnerId() {
+//
+//        //given
+//        ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
+//                "test",
+//                "test",
+//                "+48 111-222-333",
+//                "test@test.com",
+//                "Project Manager",
+//                company.getId(),
+//                100L
+//        );
+//
+//
+//        //when
+//        ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
+//                postForEntity(
+//                        "/api/contact-persons",
+//                        contactPersonRequest,
+//                        ContactPersonResponse.class
+//                );
+//
+//        // then
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+//    }
 
     @Test
     void shouldReturnBadRequest_WhenCreateContactPerson_GivenInvalidData() {
@@ -280,8 +326,7 @@ public class ContactPersonControllerTest {
                 "111-222-333",
                 "test@test.com",
                 "Project Manager",
-                company.getId(),
-                owner.getId()
+                company.getId()
         );
 
 
@@ -307,16 +352,21 @@ public class ContactPersonControllerTest {
                 "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
-                100L,
-                owner.getId()
+                100L
         );
 
         //when
-        ResponseEntity<ContactPersonResponse> responseEntity = restTemplate.
-                postForEntity(
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<ContactPersonRequest> entity = new HttpEntity<>(contactPersonRequest, headers);
+        ResponseEntity<String> responseEntity = restTemplate
+                .exchange(
                         "/api/contact-persons",
-                        contactPersonRequest,
-                        ContactPersonResponse.class
+                        HttpMethod.POST,
+                        entity,
+                        String.class
                 );
 
         // then
@@ -332,9 +382,7 @@ public class ContactPersonControllerTest {
                 "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
-                company.getId(),
-                owner.getId()
-
+                company.getId()
         );
 
 
@@ -342,6 +390,7 @@ public class ContactPersonControllerTest {
         ResponseEntity<ContactPersonResponse> responseEntity = restClient
                 .put()
                 .uri("/api/contact-persons/{id}", contactPerson.getId())
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(APPLICATION_JSON)
                 .body(contactPersonRequest)
                 .retrieve()
@@ -367,8 +416,7 @@ public class ContactPersonControllerTest {
                 "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
-                company.getId(),
-                owner.getId()
+                company.getId()
         );
 
 
@@ -387,34 +435,34 @@ public class ContactPersonControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Test
-    void shouldReturnBadRequest_WhenUpdateContactPerson_GivenNonexistentOwnerID() {
-
-        //given
-        ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
-                "test",
-                "test",
-                "+48 111-222-333",
-                "test@test.com",
-                "Project Manager",
-                company.getId(),
-               100L
-        );
-
-        //when
-        ResponseEntity<String> responseEntity = restTemplate
-                .exchange(
-                        "/api/contact-persons/{id}",
-                        HttpMethod.PUT,
-                        new HttpEntity<>(contactPersonRequest),
-                        String.class,
-                        contactPerson.getId()
-                );
-
-
-        //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
+//    @Test
+//    void shouldReturnBadRequest_WhenUpdateContactPerson_GivenNonexistentOwnerID() {
+//
+//        //given
+//        ContactPersonRequest contactPersonRequest = new ContactPersonRequest(
+//                "test",
+//                "test",
+//                "+48 111-222-333",
+//                "test@test.com",
+//                "Project Manager",
+//                company.getId(),
+//               100L
+//        );
+//
+//        //when
+//        ResponseEntity<String> responseEntity = restTemplate
+//                .exchange(
+//                        "/api/contact-persons/{id}",
+//                        HttpMethod.PUT,
+//                        new HttpEntity<>(contactPersonRequest),
+//                        String.class,
+//                        contactPerson.getId()
+//                );
+//
+//
+//        //then
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+//    }
 
     @Test
     void shouldReturnBadRequest_WhenUpdateContactPerson_GivenNonexistentCompanyId() {
@@ -426,16 +474,20 @@ public class ContactPersonControllerTest {
                 "+48 111-222-333",
                 "test@test.com",
                 "Project Manager",
-                100L,
-                owner.getId()
+                100L
         );
 
         //when
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<ContactPersonRequest> entity = new HttpEntity<>(contactPersonRequest, headers);
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange(
                         "/api/contact-persons/{id}",
                         HttpMethod.PUT,
-                        new HttpEntity<>(contactPersonRequest),
+                        entity,
                         String.class,
                         contactPerson.getId()
                 );
@@ -452,6 +504,7 @@ public class ContactPersonControllerTest {
         ResponseEntity<String> response = restClient
                 .delete()
                 .uri("/api/contact-persons/{id}", contactPerson.getId())
+                .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
                 .toEntity(String.class);
 
