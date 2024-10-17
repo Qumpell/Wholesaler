@@ -131,10 +131,10 @@ public class TradeNoteControllerTest {
         );
         tradeNote = tradeNoteRepository.save(tradeNote);
 
-        accessToken = authenticateAndGetToken(owner);
+        accessToken = authenticateAndGetToken();
 
     }
-    private String authenticateAndGetToken(User user) {
+    private String authenticateAndGetToken() {
         LoginRequest loginRequest = new LoginRequest("testLogin", "test1234");
         ResponseEntity<JwtResponse> response = restTemplate.postForEntity(
                 "/api/auth/signin",
@@ -182,7 +182,26 @@ public class TradeNoteControllerTest {
         );
     }
 
+    @Test
+    void shouldFindAllTradeNotesForGivenUserId() {
 
+        //given
+        //when
+        ResponseEntity<RestPageImpl<TradeNoteResponse>> responseEntity = restClient
+                .get()
+                .uri("/api/trade-notes/{user_id}/all", owner.getId())
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<>() {
+                });
+
+        RestPageImpl<TradeNoteResponse> body = responseEntity.getBody();
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(1, Objects.requireNonNull(body).getTotalElements())
+        );
+    }
     @Test
     void shouldGetOneTradeNote_GivenValidID() {
         //given
@@ -223,7 +242,7 @@ public class TradeNoteControllerTest {
     }
 
     @Test
-    void shouldCreateTradeNote_GivenValidData() throws Exception {
+    void shouldCreateTradeNote_GivenValidData() {
 
         //given
         TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(

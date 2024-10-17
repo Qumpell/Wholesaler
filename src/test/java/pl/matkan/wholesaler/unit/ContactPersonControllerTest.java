@@ -10,8 +10,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.matkan.wholesaler.auth.AccessControlService;
+import pl.matkan.wholesaler.auth.UserDetailsImpl;
 import pl.matkan.wholesaler.contactperson.*;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
@@ -38,6 +43,8 @@ class ContactPersonControllerTest {
     @MockBean
     ContactPersonService service;
 
+    @MockBean
+    AccessControlService accessControlService;
 
     private Page<ContactPersonResponse> contactPersonPage;
     private ContactPersonResponse contactPersonResponse;
@@ -45,6 +52,13 @@ class ContactPersonControllerTest {
 
     @BeforeEach
     void setUp() {
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
+        );
+
         contactPersonResponse = new ContactPersonResponse(
                 1L,
                 "Marek",
@@ -62,7 +76,6 @@ class ContactPersonControllerTest {
                 "+48 111-222-333",
                 "test@gmail.com",
                 "support",
-                1L,
                 1L
         );
 
@@ -81,6 +94,17 @@ class ContactPersonControllerTest {
                 .andExpect(jsonPath("$.content.size()", is(contactPersonPage.getSize())));
     }
 
+    @Test
+    void shouldFindAllUserTradeNotes() throws Exception {
+        //when //then
+        when(service.findAllByUser(0, 10, "id", "asc", 1L))
+                .thenReturn(contactPersonPage);
+
+        mockMvc.perform(get("/api/contact-persons/{userId}/all", 1L)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.size()", is(contactPersonPage.getSize())));
+    }
 
     @Test
     void shouldGetOneContactPerson() throws Exception {
@@ -109,7 +133,7 @@ class ContactPersonControllerTest {
     @Test
     void shouldCreateContactPerson() throws Exception {
         //when //then
-        when(service.create(any(ContactPersonRequest.class))).thenReturn(contactPersonResponse);
+        when(service.create(any(ContactPersonDetailedRequest.class))).thenReturn(contactPersonResponse);
 
         mockMvc.perform(post("/api/contact-persons")
                         .accept(MediaType.APPLICATION_JSON)
@@ -127,8 +151,8 @@ class ContactPersonControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(ContactPersonRequest.class))).thenReturn(contactPersonResponse);
+        when(service.findById(id)).thenReturn(contactPersonResponse);
+        when(service.update(any(Long.class), any(ContactPersonDetailedRequest.class))).thenReturn(contactPersonResponse);
 
         mockMvc.perform(put("/api/contact-persons/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -144,7 +168,7 @@ class ContactPersonControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(false);
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("Contact person not found", "with id:=" + id));
 
         mockMvc.perform(put("/api/contact-persons/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -159,7 +183,7 @@ class ContactPersonControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(true);
+        when(service.findById(id)).thenReturn(contactPersonResponse);
         Mockito.doNothing().when(service).deleteById(id);
 
         mockMvc.perform(delete("/api/contact-persons/{id}", id)
@@ -172,7 +196,7 @@ class ContactPersonControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(false);
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("Contact person was not found", "with id:=" + id));
 
         mockMvc.perform(delete("/api/contact-persons/{id}", id)
                         .with(csrf()))
