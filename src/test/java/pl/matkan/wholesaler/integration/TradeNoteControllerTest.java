@@ -21,7 +21,6 @@ import pl.matkan.wholesaler.auth.jwt.JwtResponse;
 import pl.matkan.wholesaler.auth.refreshtoken.RefreshTokenRepository;
 import pl.matkan.wholesaler.company.Company;
 import pl.matkan.wholesaler.company.CompanyRepository;
-import pl.matkan.wholesaler.contactperson.ContactPersonResponse;
 import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
 import pl.matkan.wholesaler.role.Role;
@@ -132,10 +131,10 @@ public class TradeNoteControllerTest {
         );
         tradeNote = tradeNoteRepository.save(tradeNote);
 
-        accessToken = authenticateAndGetToken(owner);
+        accessToken = authenticateAndGetToken();
 
     }
-    private String authenticateAndGetToken(User user) {
+    private String authenticateAndGetToken() {
         LoginRequest loginRequest = new LoginRequest("testLogin", "test1234");
         ResponseEntity<JwtResponse> response = restTemplate.postForEntity(
                 "/api/auth/signin",
@@ -243,7 +242,7 @@ public class TradeNoteControllerTest {
     }
 
     @Test
-    void shouldCreateTradeNote_GivenValidData() throws Exception {
+    void shouldCreateTradeNote_GivenValidData() {
 
         //given
         TradeNoteRequest tradeNoteRequest = new TradeNoteRequest(

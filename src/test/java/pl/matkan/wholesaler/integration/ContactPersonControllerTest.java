@@ -29,7 +29,6 @@ import pl.matkan.wholesaler.industry.Industry;
 import pl.matkan.wholesaler.industry.IndustryRepository;
 import pl.matkan.wholesaler.role.Role;
 import pl.matkan.wholesaler.role.RoleRepository;
-import pl.matkan.wholesaler.tradenote.TradeNoteRequest;
 import pl.matkan.wholesaler.user.User;
 import pl.matkan.wholesaler.user.UserRepository;
 
@@ -139,10 +138,10 @@ public class ContactPersonControllerTest {
         );
         contactPerson = contactPersonRepository.save(contactPerson);
 
-        accessToken = authenticateAndGetToken(owner);
+        accessToken = authenticateAndGetToken();
     }
 
-    private String authenticateAndGetToken(User user) {
+    private String authenticateAndGetToken() {
         LoginRequest loginRequest = new LoginRequest("testLogin", "test1234");
         ResponseEntity<JwtResponse> response = restTemplate.postForEntity(
                 "/api/auth/signin",
