@@ -10,8 +10,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.matkan.wholesaler.auth.UserDetailsImpl;
 import pl.matkan.wholesaler.company.*;
 import pl.matkan.wholesaler.exception.ResourceNotFoundException;
 
@@ -44,6 +48,12 @@ class CompanyControllerTest {
 
     @BeforeEach
     void setUp() {
+        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testUser", "test@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
+        );
+
         companyResponse = new CompanyResponse(
                 1L,
                 "PL1234567890",
@@ -62,8 +72,7 @@ class CompanyControllerTest {
                 companyResponse.name(),
                 companyResponse.address(),
                 companyResponse.city(),
-                companyResponse.industryId(),
-                companyResponse.ownerId()
+                companyResponse.industryId()
         );
         companiesPage = new PageImpl<>(List.of(companyResponse));
     }
@@ -115,7 +124,7 @@ class CompanyControllerTest {
     @Test
     void shouldCreateCompany() throws Exception {
         //when //then
-        when(service.create(any(CompanyRequest.class))).thenReturn(companyResponse);
+        when(service.create(any(CompanyDetailedRequest.class))).thenReturn(companyResponse);
 
         mockMvc.perform(post("/api/companies")
                         .accept(MediaType.APPLICATION_JSON)
@@ -137,8 +146,8 @@ class CompanyControllerTest {
         Long id = 1L;
 
         //when //then
-        when(service.existsById(id)).thenReturn(true);
-        when(service.update(any(Long.class), any(CompanyRequest.class))).thenReturn(companyResponse);
+        when(service.findById(id)).thenReturn(companyResponse);
+        when(service.update(any(Long.class), any(CompanyDetailedRequest.class))).thenReturn(companyResponse);
 
         mockMvc.perform(put("/api/companies/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -160,6 +169,7 @@ class CompanyControllerTest {
 
         //when //then
         when(service.existsById(id)).thenReturn(false);
+        when(service.findById(id)).thenThrow(new ResourceNotFoundException("Company was not found", "with id:=" + id));
 
         mockMvc.perform(put("/api/companies/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
