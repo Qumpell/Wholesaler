@@ -24,7 +24,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final IndustryService industryService;
 
     @Override
-    public CompanyResponse create(CompanyRequest companyRequest) {
+    public CompanyResponse create(CompanyDetailedRequest companyRequest) {
 
         Company company = CompanyMapper.INSTANCE.companyRequestToCompany(companyRequest);
         company = validateUniqueFields(
@@ -35,7 +35,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyResponse update(Long id, CompanyRequest companyRequest) {
+    public CompanyResponse update(Long id, CompanyDetailedRequest companyRequest) {
 
         Company companyFetched = getOneById(id);
 
@@ -47,7 +47,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     }
 
-    private Company updateExistingCompany(Company existingCompany, CompanyRequest companyRequest) {
+    private Company updateExistingCompany(Company existingCompany, CompanyDetailedRequest companyRequest) {
         existingCompany.setNip(companyRequest.nip());
         existingCompany.setRegon(companyRequest.regon());
         existingCompany.setName(companyRequest.name());

@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import pl.matkan.wholesaler.auth.UserDetailsImpl;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -33,17 +35,39 @@ public class CompanyController {
     }
 
     @PostMapping()
-    public ResponseEntity<CompanyResponse> createOne(@RequestBody @Valid CompanyRequest one) {
-        return new ResponseEntity<>(companyService.create(one), HttpStatus.CREATED);
+    public ResponseEntity<CompanyResponse> createOne(
+            @RequestBody @Valid CompanyRequest one,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        CompanyDetailedRequest companyDetailedRequest = new CompanyDetailedRequest(
+                one.nip(),
+                one.regon(),
+                one.name(),
+                one.address(),
+                one.city(),
+                one.industryId(),
+                userDetails.getId()
+        );
+        return new ResponseEntity<>(companyService.create(companyDetailedRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CompanyResponse> updateOne(@PathVariable("id") Long id, @RequestBody @Valid CompanyRequest one) {
-        if (!companyService.existsById(id)) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(companyService.update(id, one), HttpStatus.OK);
+    public ResponseEntity<CompanyResponse> updateOne(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid CompanyRequest one) {
+
+        final Long ownerId = companyService.findById(id).ownerId();
+        CompanyDetailedRequest companyDetailedRequest = new CompanyDetailedRequest(
+                one.nip(),
+                one.regon(),
+                one.name(),
+                one.address(),
+                one.city(),
+                one.industryId(),
+                ownerId
+        );
+        return new ResponseEntity<>(companyService.update(id, companyDetailedRequest), HttpStatus.OK);
 
     }
 

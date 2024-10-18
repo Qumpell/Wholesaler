@@ -7,9 +7,9 @@ import java.util.List;
 public interface CompanyService {
 
 
-    CompanyResponse create(CompanyRequest one);
+    CompanyResponse create(CompanyDetailedRequest one);
 
-    CompanyResponse update(Long id, CompanyRequest one);
+    CompanyResponse update(Long id, CompanyDetailedRequest one);
 
     CompanyResponse findById(Long id);
 

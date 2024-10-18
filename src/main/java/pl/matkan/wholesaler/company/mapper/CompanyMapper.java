@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import pl.matkan.wholesaler.company.Company;
+import pl.matkan.wholesaler.company.CompanyDetailedRequest;
 import pl.matkan.wholesaler.company.CompanyRequest;
 import pl.matkan.wholesaler.company.CompanyResponse;
 
@@ -19,7 +20,7 @@ public interface CompanyMapper {
 
     @Mapping(source = "industryId", target = "industry.id")
     @Mapping(source = "ownerId", target = "user.id")
-    Company companyRequestToCompany(CompanyRequest dto);
+    Company companyRequestToCompany(CompanyDetailedRequest dto);
 
     @Mapping(source = "industry.id", target = "industryId")
     @Mapping(source = "industry.name", target = "industryName")

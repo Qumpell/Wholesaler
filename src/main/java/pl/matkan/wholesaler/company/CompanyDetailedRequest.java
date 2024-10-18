@@ -2,8 +2,7 @@ package pl.matkan.wholesaler.company;
 
 import jakarta.validation.constraints.*;
 
-public record CompanyRequest(
-
+public record CompanyDetailedRequest(
         @Pattern(regexp = "^[A-Za-z]{2,4}(?=.{2,12}$)[-_\\s0-9]*(?:[a-zA-Z][-_\\s0-9]*){0,2}$")
         String nip,
 
@@ -24,6 +23,10 @@ public record CompanyRequest(
 
         @NotNull(message = "Industry ID is required")
         @Positive
-        Long industryId
+        Long industryId,
+
+        @NotNull(message = "Owner ID is required")
+        @Positive
+        Long ownerId
 ) {
 }
