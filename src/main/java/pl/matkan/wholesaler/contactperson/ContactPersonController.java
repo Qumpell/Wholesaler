@@ -77,7 +77,8 @@ public class ContactPersonController {
             @RequestBody @Valid ContactPersonRequest one,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        accessControlService.canAccessResource(contactPersonService.findById(id).ownerId(), userDetails);
+        final Long ownerId = contactPersonService.findById(id).ownerId();
+        accessControlService.canAccessResource(ownerId, userDetails);
         ContactPersonDetailedRequest contactPersonDTO = new ContactPersonDetailedRequest(
                 one.firstname(),
                 one.surname(),
@@ -85,7 +86,7 @@ public class ContactPersonController {
                 one.mail(),
                 one.position(),
                 one.companyId(),
-                userDetails.getId()
+                ownerId
         );
         return new ResponseEntity<>(contactPersonService.update(id, contactPersonDTO), HttpStatus.OK);
 

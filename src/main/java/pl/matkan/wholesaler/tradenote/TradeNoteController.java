@@ -67,8 +67,9 @@ public class TradeNoteController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        accessControlService.canAccessResource(tradeNoteService.findById(id).ownerId(), userDetails);
-        TradeNoteDetailedRequest tradeNoteDetailedRequest = new TradeNoteDetailedRequest(one.content(), one.companyId(), userDetails.getId());
+        final Long ownerId = tradeNoteService.findById(id).ownerId();
+        accessControlService.canAccessResource(ownerId, userDetails);
+        TradeNoteDetailedRequest tradeNoteDetailedRequest = new TradeNoteDetailedRequest(one.content(), one.companyId(), ownerId);
         return new ResponseEntity<>(tradeNoteService.update(id, tradeNoteDetailedRequest), HttpStatus.OK);
     }
 
