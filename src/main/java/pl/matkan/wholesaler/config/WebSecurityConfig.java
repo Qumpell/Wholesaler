@@ -68,17 +68,15 @@ public class WebSecurityConfig{
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/users/signup" ).permitAll()
-                                .requestMatchers("/api/users/**").hasRole("ADMIN")
-                                .requestMatchers("/roles/**" ).hasRole("ADMIN")
-                                .requestMatchers("/api/trade-notes/**" ).hasRole("USER")
-                                .requestMatchers("/api/contact-persons/**" ).hasRole("USER")
-                                .requestMatchers(HttpMethod.POST,"/api/**").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("MODERATOR")
-                                .requestMatchers("/api/**").hasRole("USER")
+                        auth.requestMatchers("/api/auth/**", "/api/users/signup").permitAll()
+                                .requestMatchers("/api/users/**", "api/roles/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET,"/api/companies/**", "/api/industries/**").hasAnyRole("ADMIN", "USER","MODERATOR")
+                                .requestMatchers(HttpMethod.POST, "/api/companies/**", "/api/industries/**").hasRole("MODERATOR")
+                                .requestMatchers(HttpMethod.PUT, "/api/companies/**", "/api/industries/**").hasRole("MODERATOR")
+                                .requestMatchers(HttpMethod.DELETE, "/api/companies/**", "/api/industries/**").hasRole("MODERATOR")
+                                .requestMatchers("/api/trade-notes/**", "/api/contact-persons/**", "/api/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
                                 .anyRequest().authenticated()
+
                 );
 
         http.authenticationProvider(authenticationProvider());
