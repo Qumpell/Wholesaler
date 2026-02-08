@@ -3,7 +3,7 @@ version: '3.8'
 name: wholesaler-app
 services:
   database-mysql:
-    image: mysql:latest
+    image: mysql:9.0.1
     container_name: database-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -12,6 +12,9 @@ services:
       MYSQL_PASSWORD: test
     ports:
       - "3306:3306"
+#    volumes:
+#      - ./src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql
+
   wholesaler-api:
     build:
       context: .
@@ -24,6 +27,3 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://database-mysql:3306/wholesaler
       SPRING_DATASOURCE_USERNAME: test
       SPRING_DATASOURCE_PASSWORD: test
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-
-

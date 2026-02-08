@@ -1,35 +1,44 @@
-app:
-  db-init: true
+#app:
+#  db-init: false
 logging:
   level:
     org:
       springframework:
         web: TRACE
 spring:
-#  profiles:
-#    active: dev
+  sql:
+    init:
+      mode: always
+#      mode: never
   datasource:
-
 #    url: jdbc:mysql://localhost:3306/wholesaler?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
-#    url: jdbc:mysql://mysql:3306/wholesaler
     url: jdbc:mysql://localhost:3306/wholesaler
     username: test
     password: test
   jpa:
     hibernate:
-#      ddl-auto: create-drop
-      ddl-auto: update
+      #validate
+      ddl-auto: create
     properties:
-      hibernates:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         show:
           sql: true
-    generate-ddl: true
-
----
-spring:
-  config:
-    activate:
-      on-profile: test
+    show-sql: true
+    defer-datasource-initialization: true
+#    generate-ddl: true
+wholesaler:
+  app:
+    jwtSecret: "fbffdde34840e0bcce2fba77562f08e67d32c1d97e5cdf0200d7fd33ba606c0c"
+#    jwtExpirationMs: 3600000 86400000
+    jwtExpirationMs: 900000
+    jwtRefreshExpirationMs: 86400000
+    jwtRefreshCookieName: refresh-token-cookie
+#---
+#spring:
+#  config:
+#    activate:
+#      on-profile: test
 ##rsa.private-key=classpath:certs/private.pem
 ##rsa.public-key=classpath:certs/public.pem
 #
